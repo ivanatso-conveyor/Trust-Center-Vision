@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sort Coco — Sorting Variations</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-300:#7AE8CB;--green-400:#5DDBB8;--green-500:#33C69F;--green-600:#2AA886;
+    --green-700:#1E7F65;--green-900:#0F3D31;--bg-primary:#0D0D12;--bg-surface:#16161E;
+    --bg-elevated:#1E1E2A;--border-default:#2A2A3A;--text-primary:#E8E8ED;
+    --text-secondary:#9898A8;--text-muted:#5E5E72;--gold:#FFD700;--pink:#FF6B9D;--red:#EF4444;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',system-ui,sans-serif;min-height:100vh;padding:40px 20px}
+  .header{text-align:center;margin-bottom:20px}
+  .header h1{font-family:'Press Start 2P',monospace;font-size:22px;color:var(--green-500);margin-bottom:12px}
+  .header p{font-size:15px;color:var(--text-secondary);max-width:700px;margin:0 auto;line-height:1.6}
+  .section-label{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--text-muted);letter-spacing:3px;margin:48px auto 24px;max-width:1050px;border-left:3px solid var(--green-700);padding-left:12px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:1050px;margin:0 auto}
+  .card{background:var(--bg-surface);border:1px solid var(--border-default);border-radius:16px;padding:24px;text-align:center;transition:all 0.3s ease;position:relative}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green-500),transparent);opacity:0;transition:opacity 0.3s ease}
+  .card:hover{border-color:var(--green-700);transform:translateY(-3px);box-shadow:0 8px 30px rgba(51,198,159,0.06)}
+  .card:hover::before{opacity:1}
+  .card-number{position:absolute;top:12px;left:12px;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--text-muted)}
+  .pixel-canvas{width:120px;height:120px;margin:16px auto 20px;display:flex;align-items:center;justify-content:center}
+  svg.coco{width:120px;height:120px;image-rendering:pixelated}
+  .card-title{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--green-400);margin-bottom:6px}
+  .card-subtitle{font-size:13px;color:var(--text-secondary);font-weight:600;margin-bottom:12px}
+  .card-desc{font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:14px;min-height:50px}
+  .traits{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+  .trait{font-size:10px;padding:3px 8px;border-radius:99px;background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border-default)}
+  .trait.green{border-color:var(--green-700);color:var(--green-400)}
+  .trait.gold{border-color:#665200;color:var(--gold)}
+  .trait.purple{border-color:#4A2A7A;color:#B088F9}
+  .trait.red{border-color:#7A2A2A;color:var(--red)}
+
+  .footer{text-align:center;margin-top:50px;padding-top:30px;border-top:1px solid var(--border-default)}
+  .footer p{font-size:12px;color:var(--text-muted);line-height:1.8;max-width:700px;margin:0 auto}
+  .footer .note{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green-700);margin-top:12px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Sort Coco</h1>
+  <p>8 ways to sort. Same C-Block 8x8 base, different sorting animations. Each one maps to a real Trust Center action.</p>
+</div>
+
+<div class="section-label">Sorting Variations</div>
+<div class="grid">
+
+  <!-- 01 LEFT/RIGHT SORT — approved vs flagged -->
+  <div class="card">
+    <span class="card-number">01</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- C shape body -->
+        <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+        <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+        <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+        <!-- Eyes flick left then right -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="x" values="3;2;2;3;4;4;3" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="x" values="5;4;4;5;6;6;5" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Approved flash left -->
+        <rect x="0" y="1" width="1" height="1" fill="#7AE8CB" opacity="0">
+          <animate attributeName="opacity" values="0;0.8;0.3;0;0;0;0" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Flagged flash right -->
+        <rect x="7" y="1" width="1" height="1" fill="#FFD700" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0;0.8;0.3;0" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Left / Right</div>
+    <div class="card-subtitle">Approved vs Flagged</div>
+    <p class="card-desc">Eyes flick left → green flash (approved). Eyes flick right → gold flash (needs review). The classic triage sort.</p>
+    <div class="traits">
+      <span class="trait green">Approved</span>
+      <span class="trait gold">Flagged</span>
+    </div>
+  </div>
+
+  <!-- 02 PASS/REJECT — checkmark vs X flashing -->
+  <div class="card">
+    <span class="card-number">02</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+        <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+        <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+        <!-- Eyes — steady, judging -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <rect x="5" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Checkmark pixel (flashes green then fades) -->
+        <rect x="6" y="1" width="1" height="1" fill="#7AE8CB" opacity="0">
+          <animate attributeName="opacity" values="0;0.9;0.9;0.4;0;0;0;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="0" width="1" height="1" fill="#7AE8CB" opacity="0">
+          <animate attributeName="opacity" values="0;0.9;0.9;0.4;0;0;0;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- X pixel (flashes red then fades) -->
+        <rect x="6" y="0" width="1" height="1" fill="#EF4444" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0;0;0.9;0.9;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="1" width="1" height="1" fill="#EF4444" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0;0;0.9;0.9;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Pass / Reject</div>
+    <div class="card-subtitle">Check vs X</div>
+    <p class="card-desc">A green checkmark flashes, then a red X. Binary decision — does this doc meet the bar or not? Steady, confident eyes.</p>
+    <div class="traits">
+      <span class="trait green">Check</span>
+      <span class="trait red">Reject</span>
+    </div>
+  </div>
+
+  <!-- 03 PRIORITY SORT — item drops down through levels -->
+  <div class="card">
+    <span class="card-number">03</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+        <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+        <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+        <!-- Eyes track downward with item -->
+        <rect x="4" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="y" values="2;2;2;3;3;2" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="y" values="2;2;2;3;3;2" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Priority item dropping: starts gold (high), turns green (low) as it drops -->
+        <rect x="7" y="0" width="1" height="1" fill="#EF4444" opacity="0">
+          <animate attributeName="opacity" values="0.8;0.8;0;0;0;0" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="2" width="1" height="1" fill="#FFD700" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.8;0;0;0" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="4" width="1" height="1" fill="#7AE8CB" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0.8;0.5;0" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Priority Stack</div>
+    <div class="card-subtitle">High → Med → Low</div>
+    <p class="card-desc">Items drop through three levels — red (urgent) at top, gold (medium) in middle, green (low) at bottom. Eyes track downward with each item.</p>
+    <div class="traits">
+      <span class="trait red">Urgent</span>
+      <span class="trait gold">Medium</span>
+      <span class="trait green">Low</span>
+    </div>
+  </div>
+
+  <!-- 04 BELT THROUGH — items flow through the C opening -->
+  <div class="card">
+    <span class="card-number">04</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+        <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+        <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+        <!-- Eyes watch item cross -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="x" values="4;3;3;4;5;5;4" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="x" values="6;5;5;6;6;6;6" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Item enters C opening, passes through, exits sorted -->
+        <rect x="7" y="3" width="1" height="1" fill="#E8E8ED">
+          <animate attributeName="x" values="7;5;3;3;5;7" dur="2.5s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="3;3;3;4;4;4" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Item changes color after sorting (white → green) -->
+        <rect x="7" y="3" width="1" height="1" fill="#7AE8CB" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0.8;0.8;0.5" dur="2.5s" repeatCount="indefinite"/>
+          <animate attributeName="x" values="7;5;3;3;5;7" dur="2.5s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="3;3;3;4;4;4" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Belt Through</div>
+    <div class="card-subtitle">In White → Out Green</div>
+    <p class="card-desc">A doc enters the C opening as white (unprocessed), passes through the curve, and exits green (processed). The C IS the sorting machine.</p>
+    <div class="traits">
+      <span class="trait">Unprocessed</span>
+      <span class="trait green">Processed</span>
+    </div>
+  </div>
+
+  <!-- 05 QUEUE SORT — items stack up on one side, release one at a time -->
+  <div class="card">
+    <span class="card-number">05</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+        <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+        <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+        <!-- Eyes — focused, processing -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <rect x="5" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Queue: 3 items stacked on left, one pops out right -->
+        <rect x="0" y="4" width="1" height="1" fill="#E8E8ED" opacity="0.4"/>
+        <rect x="0" y="3" width="1" height="1" fill="#E8E8ED" opacity="0.3"/>
+        <rect x="0" y="1" width="1" height="1" fill="#E8E8ED" opacity="0.2"/>
+        <!-- Item being processed — slides from left queue to right -->
+        <rect x="0" y="5" width="1" height="1" fill="#FFD700">
+          <animate attributeName="x" values="0;0;3;5;7;7;0" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;0.8;0.8;0.8;0.6;0;0.8" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Queue Sort</div>
+    <div class="card-subtitle">First In, First Out</div>
+    <p class="card-desc">Items stack up on the left as a queue. One at a time gets pulled across and dispatched right. Orderly, methodical. The backlog processor.</p>
+    <div class="traits">
+      <span class="trait">Queued</span>
+      <span class="trait gold">Processing</span>
+      <span class="trait green">Dispatched</span>
+    </div>
+  </div>
+
+  <!-- 06 TAG SORT — items get tagged with colors -->
+  <div class="card">
+    <span class="card-number">06</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+        <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+        <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+        <!-- Eyes — blink between items -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="opacity" values="1;1;0;1;1;1;0;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="1;1;0;1;1;1;0;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Item appears, gets tagged with a color, then next item -->
+        <!-- Item 1: gets green tag -->
+        <rect x="7" y="2" width="1" height="1" fill="#E8E8ED">
+          <animate attributeName="opacity" values="0.7;0.7;0.7;0;0;0;0;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="3" width="1" height="1" fill="#7AE8CB" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.9;0.9;0;0;0;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Item 2: gets gold tag -->
+        <rect x="7" y="2" width="1" height="1" fill="#E8E8ED" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0;0.7;0.7;0.7;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="3" width="1" height="1" fill="#FFD700" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0;0;0;0.9;0.9" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Tag Sort</div>
+    <div class="card-subtitle">Label & Categorize</div>
+    <p class="card-desc">A doc appears blank, then gets tagged — green (SOC2), gold (ISO), etc. Eyes blink between each tagging. Categorizing trust docs by framework.</p>
+    <div class="traits">
+      <span class="trait green">SOC2</span>
+      <span class="trait gold">ISO</span>
+      <span class="trait purple">Categorize</span>
+    </div>
+  </div>
+
+  <!-- 07 ROUTE SORT — item enters, eyes decide, item exits a direction -->
+  <div class="card">
+    <span class="card-number">07</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+        <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+        <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+        <!-- Eyes — thinking then deciding -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="x" values="3;4;4;3;3;3" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="x" values="5;5;5;4;5;5" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Incoming doc from top -->
+        <rect x="4" y="0" width="1" height="1" fill="#E8E8ED">
+          <animate attributeName="y" values="0;1;2;2;2;0" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.7;0.7;0.7;0;0;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Routed doc exits diagonally to person -->
+        <rect x="7" y="5" width="1" height="1" fill="#7AE8CB" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0.8;0.4;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Routing arrow pixel -->
+        <rect x="6" y="4" width="1" height="1" fill="#7AE8CB" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0.5;0.2;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Route Sort</div>
+    <div class="card-subtitle">Send to Person</div>
+    <p class="card-desc">Doc arrives from above. Eyes think. Then it gets routed diagonally to the right person. Gap routing — sending questions to the right admin.</p>
+    <div class="traits">
+      <span class="trait green">Routing</span>
+      <span class="trait purple">Smart</span>
+      <span class="trait">Assign</span>
+    </div>
+  </div>
+
+  <!-- 08 BATCH SORT — multiple items flash sorted at once -->
+  <div class="card">
+    <span class="card-number">08</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+        <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+        <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+        <!-- Eyes — widening before batch -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="opacity" values="1;1;1;1;1;0.5;1" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="1;1;1;1;1;0.5;1" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Unsorted cluster (white) turns all green at once -->
+        <rect x="6" y="0" width="1" height="1" fill="#E8E8ED">
+          <animate attributeName="fill" values="#E8E8ED;#E8E8ED;#E8E8ED;#E8E8ED;#E8E8ED;#7AE8CB;#7AE8CB" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="1" width="1" height="1" fill="#E8E8ED">
+          <animate attributeName="fill" values="#E8E8ED;#E8E8ED;#E8E8ED;#E8E8ED;#E8E8ED;#7AE8CB;#7AE8CB" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="2" width="1" height="1" fill="#E8E8ED">
+          <animate attributeName="fill" values="#E8E8ED;#E8E8ED;#E8E8ED;#E8E8ED;#E8E8ED;#7AE8CB;#7AE8CB" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="3" width="1" height="1" fill="#E8E8ED">
+          <animate attributeName="fill" values="#E8E8ED;#E8E8ED;#E8E8ED;#E8E8ED;#E8E8ED;#7AE8CB;#7AE8CB" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Batch Sort</div>
+    <div class="card-subtitle">All at Once</div>
+    <p class="card-desc">A cluster of unsorted docs (white) all flash green simultaneously. Bulk processing — Coco handles the whole questionnaire in one go.</p>
+    <div class="traits">
+      <span class="trait green">Bulk</span>
+      <span class="trait green">Instant</span>
+      <span class="trait">Efficient</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>
+    All 8 use the same C-Block 8x8 base. Each sorting style maps to a real Trust Center action — triaging docs, pass/reject decisions, priority levels, belt processing, queue management, framework tagging, gap routing, and bulk questionnaire handling.
+  </p>
+  <p class="note">SORT COCO VARIATIONS — CONVEYOR TRUST CENTER VISION — MARCH 2026</p>
+</div>
+
+</body>
+</html>

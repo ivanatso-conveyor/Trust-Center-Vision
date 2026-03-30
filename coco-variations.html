@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coco Character Variations — Conveyor Trust Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-300: #7AE8CB;
+    --green-400: #5DDBB8;
+    --green-500: #33C69F;
+    --green-600: #2AA886;
+    --green-700: #1E7F65;
+    --green-900: #0F3D31;
+    --bg-primary: #0D0D12;
+    --bg-surface: #16161E;
+    --bg-elevated: #1E1E2A;
+    --bg-hover: #252535;
+    --border-default: #2A2A3A;
+    --border-bright: #3A3A4F;
+    --text-primary: #E8E8ED;
+    --text-secondary: #9898A8;
+    --text-muted: #5E5E72;
+    --gold: #FFD700;
+    --shield-blue: #4A90D9;
+    --pink-accent: #FF6B9D;
+    --pixel: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .header h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 24px;
+    color: var(--green-500);
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+  }
+
+  .header p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--green-700), var(--green-400), var(--green-700));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .card:hover {
+    border-color: var(--green-700);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(51, 198, 159, 0.08);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card-number {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .pixel-canvas {
+    width: 160px;
+    height: 160px;
+    margin: 20px auto 24px;
+    position: relative;
+    image-rendering: pixelated;
+  }
+
+  .card-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    color: var(--green-400);
+    margin-bottom: 8px;
+  }
+
+  .card-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .traits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .trait {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+  }
+
+  .trait.green { border-color: var(--green-700); color: var(--green-400); }
+  .trait.gold { border-color: #665200; color: var(--gold); }
+  .trait.blue { border-color: #2A4A7A; color: var(--shield-blue); }
+
+  /* ====== PIXEL ART via CSS Grid ====== */
+  .pixel-grid {
+    display: grid;
+    gap: 1px;
+    image-rendering: pixelated;
+  }
+
+  .px {
+    width: var(--pixel);
+    height: var(--pixel);
+    border-radius: 1px;
+  }
+
+  /* Animations */
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  @keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(15deg); }
+    75% { transform: rotate(-5deg); }
+  }
+
+  @keyframes blink {
+    0%, 90%, 100% { opacity: 1; }
+    95% { opacity: 0; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    33% { transform: translateY(-4px) rotate(1deg); }
+    66% { transform: translateY(-2px) rotate(-1deg); }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 4px rgba(51,198,159,0.3)); }
+    50% { filter: drop-shadow(0 0 12px rgba(51,198,159,0.6)); }
+  }
+
+  @keyframes shimmer {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+
+  .bounce { animation: bounce 2s ease-in-out infinite; }
+  .float { animation: float 3s ease-in-out infinite; }
+  .pulse { animation: pulse-glow 2s ease-in-out infinite; }
+  .blink { animation: blink 4s ease infinite; }
+
+  /* ====== SVG Pixel Characters ====== */
+  svg.coco {
+    width: 160px;
+    height: 160px;
+    image-rendering: pixelated;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border-default);
+  }
+
+  .footer p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .footer .note {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--green-700);
+    margin-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Meet Coco</h1>
+  <p>Six character variations for Conveyor's Trust Center AI companion. Each explores a different personality angle while keeping the 8-bit charm, security orientation, and approachable friendliness.</p>
+</div>
+
+<div class="grid">
+
+  <!-- ====== VARIATION 1: Shield Guardian ====== -->
+  <div class="card">
+    <span class="card-number">01</span>
+    <div class="pixel-canvas bounce">
+      <svg class="coco" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body: shield shape -->
+        <rect x="4" y="1" width="8" height="1" fill="#2AA886"/>
+        <rect x="3" y="2" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="3" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="4" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="5" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="6" width="10" height="1" fill="#2AA886"/>
+        <rect x="4" y="7" width="8" height="1" fill="#2AA886"/>
+        <rect x="4" y="8" width="8" height="1" fill="#1E7F65"/>
+        <rect x="5" y="9" width="6" height="1" fill="#1E7F65"/>
+        <rect x="6" y="10" width="4" height="1" fill="#1E7F65"/>
+        <rect x="7" y="11" width="2" height="1" fill="#0F3D31"/>
+        <!-- Eyes: big friendly -->
+        <rect x="5" y="4" width="2" height="2" fill="#FFFFFF"/>
+        <rect x="9" y="4" width="2" height="2" fill="#FFFFFF"/>
+        <rect x="6" y="4" width="1" height="1" fill="#0D0D12"/>
+        <rect x="10" y="4" width="1" height="1" fill="#0D0D12"/>
+        <!-- Blush -->
+        <rect x="4" y="6" width="1" height="1" fill="#FF6B9D" opacity="0.4"/>
+        <rect x="11" y="6" width="1" height="1" fill="#FF6B9D" opacity="0.4"/>
+        <!-- Smile -->
+        <rect x="7" y="7" width="2" height="1" fill="#FFFFFF"/>
+        <!-- Arms -->
+        <rect x="1" y="5" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="6" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="13" y="5" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="14" y="6" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="5" y="12" width="2" height="1" fill="#33C69F"/>
+        <rect x="9" y="12" width="2" height="1" fill="#33C69F"/>
+        <!-- Shield emblem on chest -->
+        <rect x="7" y="3" width="2" height="1" fill="#7AE8CB"/>
+        <rect x="7" y="2" width="2" height="1" fill="#5DDBB8"/>
+      </svg>
+    </div>
+    <div class="card-title">Shield Coco</div>
+    <div class="card-subtitle">The Trust Guardian</div>
+    <p class="card-desc">Body shaped as a shield — the universal symbol of security. Rounded at the top, pointed at the bottom. A glowing emblem on the chest signals active protection. Warm blush cheeks keep it friendly.</p>
+    <div class="traits">
+      <span class="trait green">Protective</span>
+      <span class="trait green">Sturdy</span>
+      <span class="trait blue">Shield Form</span>
+      <span class="trait">Classic</span>
+    </div>
+  </div>
+
+  <!-- ====== VARIATION 2: Lock Buddy ====== -->
+  <div class="card">
+    <span class="card-number">02</span>
+    <div class="pixel-canvas float">
+      <svg class="coco" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <!-- Lock shackle (top arc) -->
+        <rect x="5" y="0" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="6" y="0" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="10" y="0" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="4" y="1" width="1" height="2" fill="#5DDBB8"/>
+        <rect x="11" y="1" width="1" height="2" fill="#5DDBB8"/>
+        <!-- Body: rounded square lock -->
+        <rect x="3" y="3" width="10" height="1" fill="#2AA886"/>
+        <rect x="2" y="4" width="12" height="1" fill="#33C69F"/>
+        <rect x="2" y="5" width="12" height="1" fill="#33C69F"/>
+        <rect x="2" y="6" width="12" height="1" fill="#33C69F"/>
+        <rect x="2" y="7" width="12" height="1" fill="#33C69F"/>
+        <rect x="2" y="8" width="12" height="1" fill="#2AA886"/>
+        <rect x="2" y="9" width="12" height="1" fill="#2AA886"/>
+        <rect x="3" y="10" width="10" height="1" fill="#1E7F65"/>
+        <!-- Eyes: happy crescents -->
+        <rect x="5" y="5" width="1" height="1" fill="#FFFFFF"/>
+        <rect x="4" y="6" width="1" height="1" fill="#FFFFFF"/>
+        <rect x="6" y="6" width="1" height="1" fill="#FFFFFF"/>
+        <rect x="10" y="5" width="1" height="1" fill="#FFFFFF"/>
+        <rect x="9" y="6" width="1" height="1" fill="#FFFFFF"/>
+        <rect x="11" y="6" width="1" height="1" fill="#FFFFFF"/>
+        <!-- Keyhole smile -->
+        <rect x="7" y="7" width="2" height="1" fill="#FFD700"/>
+        <rect x="7" y="8" width="2" height="2" fill="#FFD700"/>
+        <rect x="8" y="9" width="1" height="1" fill="#0D0D12"/>
+        <!-- Arms -->
+        <rect x="0" y="6" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="0" y="7" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="14" y="6" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="15" y="7" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="4" y="11" width="2" height="1" fill="#33C69F"/>
+        <rect x="4" y="12" width="1" height="1" fill="#1E7F65"/>
+        <rect x="10" y="11" width="2" height="1" fill="#33C69F"/>
+        <rect x="11" y="12" width="1" height="1" fill="#1E7F65"/>
+      </svg>
+    </div>
+    <div class="card-title">Lock Coco</div>
+    <div class="card-subtitle">The Friendly Padlock</div>
+    <p class="card-desc">A padlock with a face! The shackle becomes a playful "hair" arc, the body is a chunky rounded square, and the keyhole doubles as a golden smile. Happy crescent eyes radiate warmth.</p>
+    <div class="traits">
+      <span class="trait green">Playful</span>
+      <span class="trait gold">Keyhole Smile</span>
+      <span class="trait blue">Lock Form</span>
+      <span class="trait">Chunky</span>
+    </div>
+  </div>
+
+  <!-- ====== VARIATION 3: Conveyor Bot ====== -->
+  <div class="card">
+    <span class="card-number">03</span>
+    <div class="pixel-canvas pulse">
+      <svg class="coco" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <rect x="7" y="0" width="2" height="1" fill="#7AE8CB"/>
+        <rect x="7" y="0" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="fill" values="#5DDBB8;#7AE8CB;#5DDBB8" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="8" y="1" width="1" height="1" fill="#2AA886"/>
+        <!-- Head -->
+        <rect x="4" y="2" width="8" height="1" fill="#2AA886"/>
+        <rect x="3" y="3" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="4" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="5" width="10" height="1" fill="#33C69F"/>
+        <rect x="4" y="6" width="8" height="1" fill="#2AA886"/>
+        <!-- Screen face area -->
+        <rect x="4" y="3" width="8" height="3" fill="#0F3D31" opacity="0.5"/>
+        <!-- Eyes: digital/screen style -->
+        <rect x="5" y="4" width="2" height="1" fill="#7AE8CB"/>
+        <rect x="9" y="4" width="2" height="1" fill="#7AE8CB"/>
+        <!-- Happy mouth: digital -->
+        <rect x="6" y="5" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="7" y="5" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="9" y="5" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Body: conveyor belt middle -->
+        <rect x="4" y="7" width="8" height="1" fill="#33C69F"/>
+        <rect x="3" y="8" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="9" width="10" height="1" fill="#2AA886"/>
+        <rect x="4" y="10" width="8" height="1" fill="#1E7F65"/>
+        <!-- Belt detail -->
+        <rect x="4" y="9" width="2" height="1" fill="#0F3D31"/>
+        <rect x="7" y="9" width="2" height="1" fill="#0F3D31"/>
+        <rect x="10" y="9" width="2" height="1" fill="#0F3D31"/>
+        <!-- Arms: mechanical -->
+        <rect x="1" y="7" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="8" width="1" height="2" fill="#5DDBB8"/>
+        <rect x="13" y="7" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="14" y="8" width="1" height="2" fill="#5DDBB8"/>
+        <!-- Treads/wheels -->
+        <rect x="4" y="11" width="3" height="2" fill="#1E7F65"/>
+        <rect x="5" y="12" width="1" height="1" fill="#33C69F"/>
+        <rect x="9" y="11" width="3" height="2" fill="#1E7F65"/>
+        <rect x="10" y="12" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Bot Coco</div>
+    <div class="card-subtitle">The Conveyor Robot</div>
+    <p class="card-desc">A mini robot with a screen face showing digital eyes, a pulsing antenna, and treads instead of feet. A conveyor belt detail runs across the torso. The most "tech" variation — signals AI intelligence.</p>
+    <div class="traits">
+      <span class="trait green">Techy</span>
+      <span class="trait green">Screen Face</span>
+      <span class="trait">Antenna</span>
+      <span class="trait blue">Treads</span>
+    </div>
+  </div>
+
+  <!-- ====== VARIATION 4: Badge Owl ====== -->
+  <div class="card">
+    <span class="card-number">04</span>
+    <div class="pixel-canvas bounce" style="animation-duration: 2.5s;">
+      <svg class="coco" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ear tufts -->
+        <rect x="3" y="1" width="1" height="1" fill="#2AA886"/>
+        <rect x="4" y="0" width="1" height="1" fill="#33C69F"/>
+        <rect x="11" y="0" width="1" height="1" fill="#33C69F"/>
+        <rect x="12" y="1" width="1" height="1" fill="#2AA886"/>
+        <!-- Head -->
+        <rect x="4" y="1" width="8" height="1" fill="#2AA886"/>
+        <rect x="3" y="2" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="3" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="4" width="10" height="1" fill="#33C69F"/>
+        <!-- Big round owl eyes -->
+        <rect x="4" y="3" width="3" height="2" fill="#FFFFFF"/>
+        <rect x="9" y="3" width="3" height="2" fill="#FFFFFF"/>
+        <rect x="5" y="3" width="2" height="2" fill="#0D0D12"/>
+        <rect x="10" y="3" width="2" height="2" fill="#0D0D12"/>
+        <rect x="6" y="3" width="1" height="1" fill="#FFFFFF"/>
+        <rect x="11" y="3" width="1" height="1" fill="#FFFFFF"/>
+        <!-- Beak -->
+        <rect x="7" y="5" width="2" height="1" fill="#FFD700"/>
+        <rect x="8" y="6" width="1" height="1" fill="#CD7F32"/>
+        <!-- Body -->
+        <rect x="3" y="6" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="7" width="10" height="1" fill="#2AA886"/>
+        <rect x="4" y="8" width="8" height="1" fill="#2AA886"/>
+        <rect x="4" y="9" width="8" height="1" fill="#1E7F65"/>
+        <rect x="5" y="10" width="6" height="1" fill="#1E7F65"/>
+        <!-- Chest badge emblem -->
+        <rect x="6" y="7" width="4" height="2" fill="#FFD700" opacity="0.7"/>
+        <rect x="7" y="7" width="2" height="1" fill="#FFFFFF"/>
+        <!-- Wings -->
+        <rect x="1" y="6" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="7" width="2" height="2" fill="#33C69F"/>
+        <rect x="0" y="8" width="1" height="1" fill="#2AA886"/>
+        <rect x="13" y="6" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="13" y="7" width="2" height="2" fill="#33C69F"/>
+        <rect x="15" y="8" width="1" height="1" fill="#2AA886"/>
+        <!-- Talons -->
+        <rect x="5" y="11" width="2" height="1" fill="#CD7F32"/>
+        <rect x="9" y="11" width="2" height="1" fill="#CD7F32"/>
+      </svg>
+    </div>
+    <div class="card-title">Owl Coco</div>
+    <div class="card-subtitle">The Wise Watchkeeper</div>
+    <p class="card-desc">An owl symbolizes wisdom and vigilance — perfect for a security companion. Large expressive eyes see everything, ear tufts add personality, and a golden badge on the chest hints at credentials and achievements.</p>
+    <div class="traits">
+      <span class="trait green">Wise</span>
+      <span class="trait gold">Badge Chest</span>
+      <span class="trait">Vigilant</span>
+      <span class="trait blue">Owl Form</span>
+    </div>
+  </div>
+
+  <!-- ====== VARIATION 5: Key Character ====== -->
+  <div class="card">
+    <span class="card-number">05</span>
+    <div class="pixel-canvas float" style="animation-duration: 3.5s;">
+      <svg class="coco" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <!-- Key head (circle) -->
+        <rect x="5" y="1" width="6" height="1" fill="#2AA886"/>
+        <rect x="4" y="2" width="8" height="1" fill="#33C69F"/>
+        <rect x="3" y="3" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="4" width="10" height="1" fill="#33C69F"/>
+        <rect x="3" y="5" width="10" height="1" fill="#33C69F"/>
+        <rect x="4" y="6" width="8" height="1" fill="#2AA886"/>
+        <rect x="5" y="7" width="6" height="1" fill="#1E7F65"/>
+        <!-- Key hole in head (makes it look like a key bow) -->
+        <rect x="6" y="3" width="4" height="3" fill="#0F3D31" opacity="0.3"/>
+        <!-- Eyes inside the keyhole area -->
+        <rect x="6" y="3" width="1" height="2" fill="#FFFFFF"/>
+        <rect x="9" y="3" width="1" height="2" fill="#FFFFFF"/>
+        <rect x="6" y="4" width="1" height="1" fill="#0D0D12"/>
+        <rect x="9" y="4" width="1" height="1" fill="#0D0D12"/>
+        <!-- Smile -->
+        <rect x="7" y="5" width="2" height="1" fill="#FFFFFF"/>
+        <!-- Blush -->
+        <rect x="5" y="5" width="1" height="1" fill="#FF6B9D" opacity="0.3"/>
+        <rect x="10" y="5" width="1" height="1" fill="#FF6B9D" opacity="0.3"/>
+        <!-- Key shaft -->
+        <rect x="7" y="8" width="2" height="1" fill="#33C69F"/>
+        <rect x="7" y="9" width="2" height="1" fill="#2AA886"/>
+        <rect x="7" y="10" width="2" height="1" fill="#2AA886"/>
+        <!-- Key teeth -->
+        <rect x="9" y="9" width="2" height="1" fill="#1E7F65"/>
+        <rect x="9" y="11" width="2" height="1" fill="#1E7F65"/>
+        <rect x="7" y="11" width="2" height="1" fill="#1E7F65"/>
+        <rect x="5" y="10" width="2" height="1" fill="#1E7F65"/>
+        <!-- Arms (from the round head) -->
+        <rect x="1" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="5" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="13" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="14" y="5" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Sparkle -->
+        <rect x="2" y="1" width="1" height="1" fill="#7AE8CB" opacity="0.6">
+          <animate attributeName="opacity" values="0.6;0;0.6" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="13" y="2" width="1" height="1" fill="#7AE8CB" opacity="0.4">
+          <animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <div class="card-title">Key Coco</div>
+    <div class="card-subtitle">The Access Keeper</div>
+    <p class="card-desc">A literal key with a face! The round bow (top) is Coco's head, with eyes peeking through the keyhole opening. The shaft and teeth form the body. Sparkles float around, signaling that Coco unlocks access to trust.</p>
+    <div class="traits">
+      <span class="trait green">Symbolic</span>
+      <span class="trait green">Sparkles</span>
+      <span class="trait">Key Form</span>
+      <span class="trait gold">Unlocks Trust</span>
+    </div>
+  </div>
+
+  <!-- ====== VARIATION 6: C-Block Companion ====== -->
+  <div class="card">
+    <span class="card-number">06</span>
+    <div class="pixel-canvas bounce" style="animation-duration: 1.8s;">
+      <svg class="coco" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <!-- "C" shape body — the Conveyor logo anthropomorphized -->
+        <rect x="5" y="1" width="7" height="1" fill="#5DDBB8"/>
+        <rect x="4" y="2" width="8" height="1" fill="#33C69F"/>
+        <rect x="3" y="3" width="4" height="1" fill="#33C69F"/>
+        <rect x="3" y="4" width="3" height="1" fill="#33C69F"/>
+        <rect x="3" y="5" width="3" height="1" fill="#33C69F"/>
+        <rect x="3" y="6" width="3" height="1" fill="#33C69F"/>
+        <rect x="3" y="7" width="4" height="1" fill="#33C69F"/>
+        <rect x="4" y="8" width="8" height="1" fill="#33C69F"/>
+        <rect x="5" y="9" width="7" height="1" fill="#2AA886"/>
+        <!-- Fill the C shape inner curve -->
+        <rect x="7" y="3" width="5" height="1" fill="#2AA886"/>
+        <rect x="6" y="4" width="6" height="1" fill="#1E7F65" opacity="0.4"/>
+        <rect x="6" y="5" width="6" height="1" fill="#1E7F65" opacity="0.3"/>
+        <rect x="6" y="6" width="6" height="1" fill="#1E7F65" opacity="0.4"/>
+        <rect x="7" y="7" width="5" height="1" fill="#2AA886"/>
+        <!-- Face on the top bar of the C -->
+        <rect x="6" y="2" width="2" height="1" fill="#FFFFFF"/>
+        <rect x="9" y="2" width="2" height="1" fill="#FFFFFF"/>
+        <rect x="7" y="2" width="1" height="1" fill="#0D0D12"/>
+        <rect x="10" y="2" width="1" height="1" fill="#0D0D12"/>
+        <!-- Big smile on the curve -->
+        <rect x="4" y="5" width="1" height="1" fill="#FFFFFF"/>
+        <rect x="4" y="6" width="1" height="1" fill="#FFFFFF"/>
+        <rect x="5" y="7" width="1" height="1" fill="#FFFFFF"/>
+        <rect x="6" y="7" width="1" height="1" fill="#FFFFFF"/>
+        <!-- Conveyor belt dots running through the C opening -->
+        <rect x="8" y="5" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="x" values="8;10;12;8" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="10" y="5" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="x" values="10;12;8;10" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="12" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="x" values="12;8;10;12" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Arms -->
+        <rect x="1" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="5" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="12" y="3" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="13" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="5" y="10" width="2" height="1" fill="#33C69F"/>
+        <rect x="5" y="11" width="1" height="1" fill="#1E7F65"/>
+        <rect x="9" y="10" width="2" height="1" fill="#33C69F"/>
+        <rect x="10" y="11" width="1" height="1" fill="#1E7F65"/>
+        <!-- Hat / cap on top -->
+        <rect x="5" y="0" width="6" height="1" fill="#FFD700"/>
+        <rect x="7" y="0" width="1" height="1" fill="#FFFFFF" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="card-title">C-Block Coco</div>
+    <div class="card-subtitle">The Conveyor Original</div>
+    <p class="card-desc">The Conveyor "C" logo itself, brought to life! Eyes on the top curve, a smile along the inner arc, and animated dots flowing through the opening like a conveyor belt in motion. A golden cap adds charm. The most brand-native option.</p>
+    <div class="traits">
+      <span class="trait green">Brand Native</span>
+      <span class="trait gold">Golden Cap</span>
+      <span class="trait green">Animated Belt</span>
+      <span class="trait">Iconic</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>
+    Each variation can be extended with a full sprite sheet of emotional states (idle, thinking, working, celebrating, confused, sleeping) and contextual costumes (detective hat for searching, hard hat for building, graduation cap for educating). The final choice should balance brand recognition, emotional warmth, and instant readability at small sizes (32px favicon, 48px floating button, 120px profile).
+  </p>
+  <p class="note">CONVEYOR TRUST CENTER VISION — MARCH 2026</p>
+</div>
+
+</body>
+</html>

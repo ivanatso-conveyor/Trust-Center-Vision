@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+/* ── Design Tokens ── */
+@theme {
+  /* ── Brand Primary Scale (default: Conveyor green, swapped at runtime) ── */
+  --color-brand-50:  oklch(0.97 0.04 168);
+  --color-brand-100: oklch(0.93 0.07 168);
+  --color-brand-200: oklch(0.85 0.12 168);
+  --color-brand-300: oklch(0.77 0.15 168);
+  --color-brand-400: oklch(0.72 0.15 168);
+  --color-brand-500: oklch(0.67 0.14 168);
+  --color-brand-600: oklch(0.59 0.12 168);
+  --color-brand-700: oklch(0.50 0.10 168);
+  --color-brand-800: oklch(0.40 0.08 168);
+  --color-brand-900: oklch(0.30 0.06 168);
+  --color-brand-950: oklch(0.20 0.04 168);
+
+  /* ── Brand Accent Scale (default: gold, swapped at runtime) ── */
+  --color-accent-50:  oklch(0.97 0.05 90);
+  --color-accent-100: oklch(0.93 0.10 90);
+  --color-accent-200: oklch(0.87 0.15 90);
+  --color-accent-300: oklch(0.82 0.17 90);
+  --color-accent-400: oklch(0.80 0.18 90);
+  --color-accent-500: oklch(0.75 0.16 90);
+  --color-accent-600: oklch(0.65 0.14 90);
+  --color-accent-700: oklch(0.55 0.12 90);
+  --color-accent-800: oklch(0.45 0.10 90);
+  --color-accent-900: oklch(0.35 0.07 90);
+
+  /* ── Semantic Backgrounds (dark mode defaults) ── */
+  --color-bg-primary: #0D0D12;
+  --color-bg-surface: #16161E;
+  --color-bg-elevated: #1E1E2A;
+  --color-bg-hover: #252535;
+
+  /* ── Semantic Borders ── */
+  --color-border-default: #2A2A3A;
+  --color-border-bright: #3A3A4F;
+
+  /* ── Semantic Text ── */
+  --color-text-primary: #E8E8ED;
+  --color-text-secondary: #9898A8;
+  --color-text-muted: #5E5E72;
+
+  /* ── Badge Colors (mapped to scales) ── */
+  --color-badge-gold: var(--color-accent-400);
+  --color-badge-silver: #C0C0D0;
+  --color-badge-bronze: #CD7F32;
+
+  /* ── Status Colors ── */
+  --color-status-warning: oklch(0.75 0.15 75);
+  --color-status-error: oklch(0.63 0.22 25);
+
+  /* ── Typography ── */
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+/* ── Base ── */
+html {
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--color-border-default); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-border-bright); }
+
+/* ── Theme-aware custom properties (non-Tailwind) ── */
+:root {
+  --hero-gradient: linear-gradient(135deg, var(--color-brand-900) 0%, var(--color-bg-surface) 60%, var(--color-bg-elevated) 100%);
+  --progress-track: var(--color-bg-elevated);
+  --contrib-empty: var(--color-bg-surface);
+
+  /* Coco mascot palette (dark mode) */
+  --coco-top: var(--color-brand-400);
+  --coco-spine: var(--color-brand-500);
+  --coco-mid: var(--color-brand-600);
+  --coco-bottom: var(--color-brand-700);
+  --coco-interior: var(--color-brand-900);
+  --coco-highlight: var(--color-brand-300);
+  --coco-gold: var(--color-accent-400);
+  --coco-eye-l: var(--color-brand-300);
+  --coco-eye-r: var(--color-brand-400);
+  --coco-smile: #FFF;
+  --coco-arm: var(--color-brand-400);
+  --coco-feet: var(--color-brand-500);
+  --coco-flash: var(--color-brand-300);
+  --coco-sleep-eye: var(--color-text-muted);
+  --coco-sleep-z: var(--color-text-muted);
+  --coco-dot: var(--color-brand-400);
+  --coco-particle1: var(--color-brand-300);
+  --coco-particle2: var(--color-accent-400);
+  --coco-particle3: var(--color-brand-400);
+  --coco-smile-opacity: 0.85;
+
+  /* Brand glow effects */
+  --brand-glow-sm: oklch(0.67 0.14 168 / 0.1);
+  --brand-glow-md: oklch(0.67 0.14 168 / 0.15);
+  --brand-glow-lg: oklch(0.67 0.14 168 / 0.12);
+}
+
+/* ── Light Mode Overrides ── */
+.light-mode {
+  --color-bg-primary: #FFFFFF;
+  --color-bg-surface: #FAFAFA;
+  --color-bg-elevated: #F4F4F5;
+  --color-bg-hover: #F0F0F1;
+
+  --color-border-default: #E4E4E7;
+  --color-border-bright: #D4D4D8;
+
+  --color-text-primary: #18181B;
+  --color-text-secondary: #52525B;
+  --color-text-muted: #A1A1AA;
+
+  --color-badge-gold: var(--color-accent-600);
+  --color-badge-silver: #71717A;
+  --color-badge-bronze: var(--color-accent-700);
+
+  --hero-gradient: linear-gradient(135deg, var(--color-brand-50) 0%, #FFFFFF 60%, var(--color-bg-elevated) 100%);
+  --progress-track: var(--color-border-default);
+  --contrib-empty: var(--color-bg-hover);
+
+  /* Coco light mode overrides */
+  --coco-top: var(--color-brand-600);
+  --coco-spine: var(--color-brand-700);
+  --coco-mid: var(--color-brand-800);
+  --coco-bottom: var(--color-brand-900);
+  --coco-interior: var(--color-brand-950);
+  --coco-highlight: var(--color-brand-800);
+  --coco-gold: var(--color-accent-600);
+  --coco-eye-l: var(--color-bg-primary);
+  --coco-eye-r: var(--color-bg-elevated);
+  --coco-smile: var(--color-bg-primary);
+  --coco-arm: var(--color-brand-600);
+  --coco-feet: var(--color-brand-700);
+  --coco-flash: var(--color-brand-800);
+  --coco-sleep-eye: var(--color-text-muted);
+  --coco-sleep-z: var(--color-text-muted);
+  --coco-dot: var(--color-brand-600);
+  --coco-particle1: var(--color-brand-600);
+  --coco-particle2: var(--color-accent-600);
+  --coco-particle3: var(--color-brand-700);
+  --coco-smile-opacity: 0.9;
+
+  --brand-glow-sm: oklch(0.67 0.14 168 / 0.08);
+  --brand-glow-md: oklch(0.67 0.14 168 / 0.12);
+  --brand-glow-lg: oklch(0.67 0.14 168 / 0.1);
+}
+
+.light-mode,
+.light-mode * {
+  color-scheme: light;
+}
+
+.light-mode ::-webkit-scrollbar-track { background: var(--color-bg-surface); }
+.light-mode ::-webkit-scrollbar-thumb { background: var(--color-border-bright); }
+.light-mode ::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+
+/* Subtle elevation shadows for light mode surfaces */
+.light-mode .bg-bg-surface {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.light-mode .bg-bg-elevated {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Misc Animations ── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.gold-shimmer {
+  background: linear-gradient(90deg, transparent 0%, oklch(0.80 0.18 90 / 0.15) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}

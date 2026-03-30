@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coco V4 — 4-Bit Characters</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-300: #7AE8CB;
+    --green-400: #5DDBB8;
+    --green-500: #33C69F;
+    --green-600: #2AA886;
+    --green-700: #1E7F65;
+    --green-900: #0F3D31;
+    --bg-primary: #0D0D12;
+    --bg-surface: #16161E;
+    --bg-elevated: #1E1E2A;
+    --border-default: #2A2A3A;
+    --border-bright: #3A3A4F;
+    --text-primary: #E8E8ED;
+    --text-secondary: #9898A8;
+    --text-muted: #5E5E72;
+    --gold: #FFD700;
+    --pink: #FF6B9D;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  .header { text-align: center; margin-bottom: 20px; }
+  .header h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 22px;
+    color: var(--green-500);
+    margin-bottom: 12px;
+  }
+  .header p { font-size: 15px; color: var(--text-secondary); max-width: 660px; margin: 0 auto; line-height: 1.6; }
+  .section-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    margin: 48px auto 24px;
+    max-width: 1050px;
+    border-left: 3px solid var(--green-700);
+    padding-left: 12px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 1050px;
+    margin: 0 auto;
+  }
+  .grid.two { grid-template-columns: repeat(2, 1fr); max-width: 540px; }
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green-500), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .card:hover {
+    border-color: var(--green-700);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(51,198,159,0.06);
+  }
+  .card:hover::before { opacity: 1; }
+  .card-number {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+  }
+  .card-tag {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 600;
+  }
+  .tag-finalist { background: var(--green-900); color: var(--green-400); }
+  .tag-new { background: #2A1A4A; color: #B088F9; }
+
+  /* Icon sizes for finalists */
+  .icon-row {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 0 auto 12px;
+  }
+  .icon-size { text-align: center; }
+  .icon-size .label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .icon-128 { width: 128px; height: 128px; }
+  .icon-64 { width: 64px; height: 64px; }
+  .icon-48 { width: 48px; height: 48px; }
+  .icon-32 { width: 32px; height: 32px; }
+  .icon-16 { width: 16px; height: 16px; }
+  .icon-128, .icon-64, .icon-48, .icon-32, .icon-16 { image-rendering: pixelated; }
+
+  .pixel-canvas {
+    width: 120px;
+    height: 120px;
+    margin: 16px auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  svg.coco { width: 120px; height: 120px; image-rendering: pixelated; }
+  .card-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: var(--green-400);
+    margin-bottom: 6px;
+  }
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 14px;
+    min-height: 50px;
+  }
+  .traits { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+  .trait {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+  }
+  .trait.green { border-color: var(--green-700); color: var(--green-400); }
+  .trait.gold { border-color: #665200; color: var(--gold); }
+  .trait.purple { border-color: #4A2A7A; color: #B088F9; }
+  .trait.pink { border-color: #7A2A4A; color: var(--pink); }
+
+  /* ====== ANIMATIONS ====== */
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+  @keyframes float { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-4px) rotate(1deg)} }
+  @keyframes pulse-glow { 0%,100%{filter:drop-shadow(0 0 3px rgba(51,198,159,0.2))} 50%{filter:drop-shadow(0 0 10px rgba(51,198,159,0.5))} }
+  @keyframes wobble { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(3deg)} 75%{transform:rotate(-3deg)} }
+  @keyframes hop { 0%,100%{transform:translateY(0) scale(1)} 30%{transform:translateY(-6px) scale(1.02)} 60%{transform:translateY(-2px) scale(0.99)} }
+  @keyframes sway { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(2deg)} 75%{transform:rotate(-2deg)} }
+  .bounce { animation: bounce 2s ease-in-out infinite; }
+  .float { animation: float 3s ease-in-out infinite; }
+  .pulse { animation: pulse-glow 2s ease-in-out infinite; }
+  .wobble { animation: wobble 2.5s ease-in-out infinite; }
+  .hop { animation: hop 2.2s ease-in-out infinite; }
+  .sway { animation: sway 3s ease-in-out infinite; }
+
+  .footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-default);
+  }
+  .footer p { font-size: 12px; color: var(--text-muted); line-height: 1.8; max-width: 700px; margin: 0 auto; }
+  .footer .note { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--green-700); margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Coco V4</h1>
+  <p>4-bit era. Stripped to the absolute minimum — 7x7 and 8x8 grids. Every pixel counts. Two finalists shown as icons at multiple sizes, plus 8 new contenders.</p>
+</div>
+
+<!-- ====== FINALISTS AS ICONS ====== -->
+<div class="section-label">Finalists — Icon Renders</div>
+<div class="grid two">
+
+  <!-- C-BLOCK COCO — 4-bit -->
+  <div class="card">
+    <span class="card-number">01</span>
+    <span class="card-tag tag-finalist">FINALIST</span>
+    <div style="margin-top:16px">
+      <div class="icon-row">
+        <div class="icon-size">
+          <svg class="icon-128" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+            <!-- Golden cap -->
+            <rect x="2" y="0" width="4" height="1" fill="#FFD700" opacity="0.7"/>
+            <!-- C shape -->
+            <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+            <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+            <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+            <!-- Top bar extends -->
+            <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+            <!-- Bottom bar extends -->
+            <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+            <!-- Scanning eye dots — natural look-around: center, right, center, left, center, blink -->
+            <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+              <animate attributeName="x" values="3;3;4;5;5;5;4;3;2;2;2;3;3;3" dur="4s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="1;1;1;1;1;1;1;1;1;1;0;0;1;1" dur="4s" repeatCount="indefinite"/>
+            </rect>
+            <rect x="4" y="2" width="1" height="1" fill="#5DDBB8">
+              <animate attributeName="x" values="4;4;5;6;6;6;5;4;3;3;3;4;4;4" dur="4s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="1;1;1;1;1;1;1;1;1;1;0;0;1;1" dur="4s" repeatCount="indefinite"/>
+            </rect>
+            <!-- Smile -->
+            <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+            <!-- Arm -->
+            <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+            <!-- Feet -->
+            <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+            <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+          </svg>
+          <div class="label">128px</div>
+        </div>
+        <div class="icon-size">
+          <svg class="icon-64" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="0" width="4" height="1" fill="#FFD700" opacity="0.7"/>
+            <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+            <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+            <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+            <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+            <rect x="3" y="4" width="3" height="1" fill="#0F3D31" opacity="0.3"/>
+            <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+              <animate attributeName="x" values="3;3;4;5;5;5;4;3;2;2;2;3;3;3" dur="4s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="1;1;1;1;1;1;1;1;1;1;0;0;1;1" dur="4s" repeatCount="indefinite"/>
+            </rect>
+            <rect x="4" y="2" width="1" height="1" fill="#5DDBB8">
+              <animate attributeName="x" values="4;4;5;6;6;6;5;4;3;3;3;4;4;4" dur="4s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="1;1;1;1;1;1;1;1;1;1;0;0;1;1" dur="4s" repeatCount="indefinite"/>
+            </rect>
+            <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+            <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+            <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+            <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+          </svg>
+          <div class="label">64px</div>
+        </div>
+        <div class="icon-size">
+          <svg class="icon-48" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+            <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+            <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+            <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+            <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+              <animate attributeName="x" values="3;3;4;5;5;5;4;3;2;2;2;3;3;3" dur="4s" repeatCount="indefinite"/>
+            </rect>
+            <rect x="4" y="2" width="1" height="1" fill="#5DDBB8">
+              <animate attributeName="x" values="4;4;5;6;6;6;5;4;3;3;3;4;4;4" dur="4s" repeatCount="indefinite"/>
+            </rect>
+            <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+            <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+          </svg>
+          <div class="label">48px</div>
+        </div>
+        <div class="icon-size">
+          <svg class="icon-32" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+            <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+            <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+            <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+            <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+              <animate attributeName="x" values="3;3;4;5;5;5;4;3;2;2;2;3;3;3" dur="4s" repeatCount="indefinite"/>
+            </rect>
+            <rect x="4" y="2" width="1" height="1" fill="#5DDBB8">
+              <animate attributeName="x" values="4;4;5;6;6;6;5;4;3;3;3;4;4;4" dur="4s" repeatCount="indefinite"/>
+            </rect>
+            <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+            <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+          </svg>
+          <div class="label">32px</div>
+        </div>
+        <div class="icon-size">
+          <svg class="icon-16" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="0" width="4" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="1" width="2" height="1" fill="#33C69F"/>
+            <rect x="1" y="2" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="1" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="2" height="1" fill="#2AA886"/>
+            <rect x="2" y="5" width="4" height="1" fill="#1E7F65"/>
+            <rect x="3" y="1" width="3" height="1" fill="#2AA886"/>
+            <rect x="3" y="2" width="1" height="1" fill="#7AE8CB"/>
+            <rect x="4" y="2" width="1" height="1" fill="#5DDBB8"/>
+          </svg>
+          <div class="label">16px</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-title">C-Block Coco</div>
+    <div class="card-subtitle">The Conveyor Original</div>
+    <p class="card-desc">8x8 grid. The eyes look center, drift right, pause, drift left, pause, blink, then reset. Natural and curious — like Coco is scanning a document.</p>
+    <div class="traits">
+      <span class="trait green">4-Bit</span>
+      <span class="trait gold">Natural Eyes</span>
+      <span class="trait green">8x8 Grid</span>
+    </div>
+  </div>
+
+  <!-- CUBE COCO — 4-bit -->
+  <div class="card">
+    <span class="card-number">02</span>
+    <span class="card-tag tag-finalist">FINALIST</span>
+    <div style="margin-top:16px">
+      <div class="icon-row">
+        <div class="icon-size">
+          <svg class="icon-128 sway" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+            <!-- Gold antenna -->
+            <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+            <!-- Square body -->
+            <rect x="1" y="1" width="5" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+            <!-- Eyes -->
+            <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+            <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+            <!-- Smile -->
+            <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+            <!-- Arms -->
+            <rect x="0" y="3" width="1" height="1" fill="#5DDBB8"/>
+            <rect x="6" y="3" width="1" height="1" fill="#5DDBB8"/>
+            <!-- Feet -->
+            <rect x="1" y="5" width="1" height="1" fill="#1E7F65"/>
+            <rect x="5" y="5" width="1" height="1" fill="#1E7F65"/>
+          </svg>
+          <div class="label">128px</div>
+        </div>
+        <div class="icon-size">
+          <svg class="icon-64 sway" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+            <rect x="1" y="1" width="5" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+            <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+            <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+            <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+            <rect x="0" y="3" width="1" height="1" fill="#5DDBB8"/>
+            <rect x="6" y="3" width="1" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="5" width="1" height="1" fill="#1E7F65"/>
+            <rect x="5" y="5" width="1" height="1" fill="#1E7F65"/>
+          </svg>
+          <div class="label">64px</div>
+        </div>
+        <div class="icon-size">
+          <svg class="icon-48 sway" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+            <rect x="1" y="1" width="5" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+            <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+            <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+            <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+            <rect x="0" y="3" width="1" height="1" fill="#5DDBB8"/>
+            <rect x="6" y="3" width="1" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="5" width="1" height="1" fill="#1E7F65"/>
+            <rect x="5" y="5" width="1" height="1" fill="#1E7F65"/>
+          </svg>
+          <div class="label">48px</div>
+        </div>
+        <div class="icon-size">
+          <svg class="icon-32 sway" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+            <rect x="1" y="1" width="5" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+            <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+            <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+            <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+            <rect x="0" y="3" width="1" height="1" fill="#5DDBB8"/>
+            <rect x="6" y="3" width="1" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="5" width="1" height="1" fill="#1E7F65"/>
+            <rect x="5" y="5" width="1" height="1" fill="#1E7F65"/>
+          </svg>
+          <div class="label">32px</div>
+        </div>
+        <div class="icon-size">
+          <svg class="icon-16" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+            <rect x="1" y="1" width="5" height="1" fill="#5DDBB8"/>
+            <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+            <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+            <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+            <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+            <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+          </svg>
+          <div class="label">16px</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-title">Cube Coco</div>
+    <div class="card-subtitle">The Simple Square</div>
+    <p class="card-desc">7x7 grid. Pure pixel perfection — antenna, eyes, smile, arms, feet. Nothing extra. Still reads at 16px. Gentle sway idle.</p>
+    <div class="traits">
+      <span class="trait green">4-Bit</span>
+      <span class="trait gold">Antenna</span>
+      <span class="trait green">7x7 Grid</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====== 8 NEW CONTENDERS ====== -->
+<div class="section-label">New Contenders — 4-Bit Era</div>
+<div class="grid">
+
+  <!-- 03 SHIELD COCO — 4-bit -->
+  <div class="card">
+    <span class="card-number">03</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas bounce">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shield shape — tapers -->
+        <rect x="1" y="0" width="5" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#2AA886"/>
+        <rect x="2" y="4" width="3" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="3" height="1" fill="#1E7F65"/>
+        <!-- Eyes -->
+        <rect x="2" y="1" width="1" height="1" fill="#FFF"/>
+        <rect x="4" y="1" width="1" height="1" fill="#FFF"/>
+        <!-- Smile -->
+        <rect x="2" y="3" width="3" height="1" fill="#FFF"/>
+        <!-- Blush -->
+        <rect x="1" y="2" width="1" height="1" fill="#FF6B9D" opacity="0.3"/>
+        <rect x="5" y="2" width="1" height="1" fill="#FF6B9D" opacity="0.3"/>
+        <!-- Arms -->
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="6" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="4" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Shield Coco</div>
+    <div class="card-subtitle">The Guardian</div>
+    <p class="card-desc">Classic shield silhouette tapers to a point. Blushing cheeks for warmth. The most security-forward shape in the set.</p>
+    <div class="traits">
+      <span class="trait green">Shield</span>
+      <span class="trait pink">Blush</span>
+      <span class="trait">Protective</span>
+    </div>
+  </div>
+
+  <!-- 04 LOCK COCO — 4-bit -->
+  <div class="card">
+    <span class="card-number">04</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas float">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shackle -->
+        <rect x="2" y="0" width="3" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="5" y="1" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Body -->
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+        <rect x="1" y="5" width="5" height="1" fill="#1E7F65"/>
+        <!-- Eyes -->
+        <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+        <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+        <!-- Keyhole mouth -->
+        <rect x="3" y="4" width="1" height="1" fill="#FFD700"/>
+        <rect x="3" y="5" width="1" height="1" fill="#FFD700"/>
+        <!-- Arms -->
+        <rect x="0" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="6" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="1" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Lock Coco</div>
+    <div class="card-subtitle">The Padlock</div>
+    <p class="card-desc">U-shaped shackle on top, chunky body, gold keyhole as the mouth. Floaty and friendly. Unmistakably "security."</p>
+    <div class="traits">
+      <span class="trait gold">Keyhole</span>
+      <span class="trait green">Chunky</span>
+      <span class="trait">Secure</span>
+    </div>
+  </div>
+
+  <!-- 05 GHOST COCO — 4-bit -->
+  <div class="card">
+    <span class="card-number">05</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas float" style="animation-duration:3.2s">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Rounded top -->
+        <rect x="2" y="0" width="3" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+        <!-- Wavy tail -->
+        <rect x="1" y="5" width="2" height="1" fill="#1E7F65"/>
+        <rect x="4" y="5" width="2" height="1" fill="#1E7F65"/>
+        <rect x="3" y="6" width="1" height="1" fill="#1E7F65"/>
+        <!-- Big eyes -->
+        <rect x="2" y="1" width="1" height="2" fill="#FFF"/>
+        <rect x="4" y="1" width="1" height="2" fill="#FFF"/>
+        <rect x="2" y="2" width="1" height="1" fill="#0D0D12"/>
+        <rect x="4" y="2" width="1" height="1" fill="#0D0D12"/>
+        <!-- Mouth (little o) -->
+        <rect x="3" y="4" width="1" height="1" fill="#0F3D31"/>
+        <!-- Blush -->
+        <rect x="1" y="3" width="1" height="1" fill="#FF6B9D" opacity="0.25"/>
+        <rect x="5" y="3" width="1" height="1" fill="#FF6B9D" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="card-title">Ghost Coco</div>
+    <div class="card-subtitle">The Friendly Phantom</div>
+    <p class="card-desc">Cute ghost with big eyes and a wavy tail. "Always watching over your trust." Maximum cute factor, floats naturally.</p>
+    <div class="traits">
+      <span class="trait pink">Cute</span>
+      <span class="trait green">Floaty</span>
+      <span class="trait">Watchful</span>
+    </div>
+  </div>
+
+  <!-- 06 BELL COCO — 4-bit -->
+  <div class="card">
+    <span class="card-number">06</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas wobble">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Bell top -->
+        <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+        <rect x="2" y="1" width="3" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+        <!-- Bell rim (wider) -->
+        <rect x="0" y="5" width="7" height="1" fill="#1E7F65"/>
+        <!-- Clapper -->
+        <rect x="3" y="6" width="1" height="1" fill="#FFD700"/>
+        <!-- Eyes -->
+        <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+        <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+        <!-- Smile -->
+        <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+        <!-- Notification dot -->
+        <rect x="5" y="1" width="1" height="1" fill="#EF4444">
+          <animate attributeName="opacity" values="1;1;0.3;1" dur="2s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <div class="card-title">Bell Coco</div>
+    <div class="card-subtitle">The Notification</div>
+    <p class="card-desc">A bell shape with a gold clapper and a pulsing red notification dot. "You've got trust updates!" Wobbles like a ringing bell. Perfect for alerts.</p>
+    <div class="traits">
+      <span class="trait green">Bell Shape</span>
+      <span class="trait gold">Clapper</span>
+      <span class="trait">Alerting</span>
+    </div>
+  </div>
+
+  <!-- 07 SPROUT COCO — 4-bit -->
+  <div class="card">
+    <span class="card-number">07</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas hop" style="animation-duration:2.4s">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Sprout leaves -->
+        <rect x="3" y="0" width="1" height="1" fill="#7AE8CB"/>
+        <rect x="4" y="0" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Stem -->
+        <rect x="3" y="1" width="1" height="1" fill="#2AA886"/>
+        <!-- Bean body -->
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="3" height="1" fill="#1E7F65"/>
+        <!-- Eyes (happy squints) -->
+        <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+        <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+        <!-- Big smile -->
+        <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+        <!-- Blush -->
+        <rect x="1" y="3" width="1" height="1" fill="#FF6B9D" opacity="0.3"/>
+        <rect x="5" y="3" width="1" height="1" fill="#FF6B9D" opacity="0.3"/>
+        <!-- Arms -->
+        <rect x="0" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="6" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="4" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Sprout Coco</div>
+    <div class="card-subtitle">The Seedling</div>
+    <p class="card-desc">A little bean with a sprout growing from its head — "trust grows here." The most wholesome option. Blushing cheeks, bouncy hop.</p>
+    <div class="traits">
+      <span class="trait green">Growth</span>
+      <span class="trait pink">Wholesome</span>
+      <span class="trait">Nurturing</span>
+    </div>
+  </div>
+
+  <!-- 08 KEY COCO — 4-bit -->
+  <div class="card">
+    <span class="card-number">08</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas sway">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Key head (round-ish) -->
+        <rect x="2" y="0" width="3" height="1" fill="#FFD700"/>
+        <rect x="1" y="1" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="2" y="3" width="3" height="1" fill="#2AA886"/>
+        <!-- Key shaft -->
+        <rect x="3" y="4" width="1" height="1" fill="#2AA886"/>
+        <rect x="3" y="5" width="1" height="1" fill="#1E7F65"/>
+        <!-- Key teeth -->
+        <rect x="4" y="5" width="1" height="1" fill="#1E7F65"/>
+        <rect x="4" y="4" width="1" height="1" fill="#2AA886"/>
+        <!-- Eyes -->
+        <rect x="2" y="1" width="1" height="1" fill="#FFF"/>
+        <rect x="4" y="1" width="1" height="1" fill="#FFF"/>
+        <!-- Smile -->
+        <rect x="2" y="2" width="3" height="1" fill="#FFF"/>
+        <!-- Key hole in center -->
+        <rect x="3" y="2" width="1" height="1" fill="#0F3D31"/>
+        <!-- Arms -->
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="6" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="2" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="4" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Key Coco</div>
+    <div class="card-subtitle">The Access Key</div>
+    <p class="card-desc">A key shape — round head with a shaft and teeth below. Gold crown. "I unlock trust." Pairs naturally with Lock Coco.</p>
+    <div class="traits">
+      <span class="trait gold">Gold Crown</span>
+      <span class="trait green">Access</span>
+      <span class="trait">Unlock</span>
+    </div>
+  </div>
+
+  <!-- 09 BADGE COCO — 4-bit -->
+  <div class="card">
+    <span class="card-number">09</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas bounce" style="animation-duration:2.2s">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Badge circle body -->
+        <rect x="2" y="0" width="3" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="1" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#2AA886"/>
+        <rect x="2" y="4" width="3" height="1" fill="#2AA886"/>
+        <!-- Ribbon tails -->
+        <rect x="1" y="5" width="2" height="1" fill="#1E7F65"/>
+        <rect x="4" y="5" width="2" height="1" fill="#1E7F65"/>
+        <rect x="0" y="6" width="2" height="1" fill="#0F3D31"/>
+        <rect x="5" y="6" width="2" height="1" fill="#0F3D31"/>
+        <!-- Eyes -->
+        <rect x="2" y="1" width="1" height="1" fill="#FFF"/>
+        <rect x="4" y="1" width="1" height="1" fill="#FFF"/>
+        <!-- Star -->
+        <rect x="3" y="2" width="1" height="1" fill="#FFD700"/>
+        <!-- Smile -->
+        <rect x="2" y="3" width="3" height="1" fill="#FFF"/>
+      </svg>
+    </div>
+    <div class="card-title">Badge Coco</div>
+    <div class="card-subtitle">The Achievement</div>
+    <p class="card-desc">Coco IS a badge — round body with ribbon tails hanging down. Gold star on the chest. Directly embodies the rewards system.</p>
+    <div class="traits">
+      <span class="trait gold">Star</span>
+      <span class="trait green">Ribbons</span>
+      <span class="trait">Rewards</span>
+    </div>
+  </div>
+
+  <!-- 10 BOT COCO — 4-bit (reverted, simplified) -->
+  <div class="card">
+    <span class="card-number">10</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas pulse">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <rect x="3" y="0" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#7AE8CB;#33C69F;#7AE8CB" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Head (wider) -->
+        <rect x="1" y="1" width="5" height="1" fill="#2AA886"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#2AA886"/>
+        <!-- Screen eyes — glowing -->
+        <rect x="2" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="opacity" values="1;1;0.3;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="opacity" values="1;1;0.3;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Body (narrower) -->
+        <rect x="2" y="4" width="3" height="1" fill="#33C69F"/>
+        <rect x="2" y="5" width="3" height="1" fill="#2AA886"/>
+        <!-- Belt dot -->
+        <rect x="3" y="5" width="1" height="1" fill="#0F3D31"/>
+        <!-- Arms -->
+        <rect x="0" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="5" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <!-- Treads -->
+        <rect x="2" y="6" width="1" height="1" fill="#1E7F65"/>
+        <rect x="4" y="6" width="1" height="1" fill="#1E7F65"/>
+      </svg>
+    </div>
+    <div class="card-title">Bot Coco</div>
+    <div class="card-subtitle">The Robot</div>
+    <p class="card-desc">Stripped to essentials: boxy head with flickering screen eyes, compact body with a belt dot, treads. Pulsing antenna. Pure 4-bit robot.</p>
+    <div class="traits">
+      <span class="trait green">Screen Eyes</span>
+      <span class="trait green">Pulsing</span>
+      <span class="trait">Techy</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>
+    C-Block and Cube are your two finalists — shown as icons from 128px down to 16px. Pick your favorites from the 8 new contenders to fill out the roster, or mix elements between them. All characters use 7x7 or 8x8 grids for true 4-bit rendering.
+  </p>
+  <p class="note">COCO V4 — 4-BIT ERA — CONVEYOR TRUST CENTER VISION — MARCH 2026</p>
+</div>
+
+</body>
+</html>

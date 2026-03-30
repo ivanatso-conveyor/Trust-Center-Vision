@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coco V5 — Conveyor Belt Editions</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-300:#7AE8CB;--green-400:#5DDBB8;--green-500:#33C69F;--green-600:#2AA886;
+    --green-700:#1E7F65;--green-900:#0F3D31;--bg-primary:#0D0D12;--bg-surface:#16161E;
+    --bg-elevated:#1E1E2A;--border-default:#2A2A3A;--border-bright:#3A3A4F;
+    --text-primary:#E8E8ED;--text-secondary:#9898A8;--text-muted:#5E5E72;
+    --gold:#FFD700;--pink:#FF6B9D;--red:#EF4444;--blue:#60A5FA;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',system-ui,sans-serif;min-height:100vh;padding:40px 20px}
+  .header{text-align:center;margin-bottom:20px}
+  .header h1{font-family:'Press Start 2P',monospace;font-size:22px;color:var(--green-500);margin-bottom:12px}
+  .header p{font-size:15px;color:var(--text-secondary);max-width:700px;margin:0 auto;line-height:1.6}
+  .section-label{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--text-muted);letter-spacing:3px;margin:48px auto 24px;max-width:1050px;border-left:3px solid var(--green-700);padding-left:12px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:1050px;margin:0 auto}
+  .grid.two{grid-template-columns:repeat(2,1fr);max-width:540px}
+  .card{background:var(--bg-surface);border:1px solid var(--border-default);border-radius:16px;padding:24px;text-align:center;transition:all 0.3s ease;position:relative}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green-500),transparent);opacity:0;transition:opacity 0.3s ease}
+  .card:hover{border-color:var(--green-700);transform:translateY(-3px);box-shadow:0 8px 30px rgba(51,198,159,0.06)}
+  .card:hover::before{opacity:1}
+  .card-number{position:absolute;top:12px;left:12px;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--text-muted)}
+  .card-tag{position:absolute;top:12px;right:12px;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600}
+  .tag-base{background:var(--green-900);color:var(--green-400)}
+  .tag-new{background:#2A1A4A;color:#B088F9}
+  .tag-cube{background:#1A2A4A;color:var(--blue)}
+  .tag-bot{background:#2A1A2A;color:var(--pink)}
+  .pixel-canvas{width:120px;height:120px;margin:16px auto 20px;display:flex;align-items:center;justify-content:center}
+  svg.coco{width:120px;height:120px;image-rendering:pixelated}
+  .card-title{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--green-400);margin-bottom:6px}
+  .card-subtitle{font-size:13px;color:var(--text-secondary);font-weight:600;margin-bottom:12px}
+  .card-desc{font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:14px;min-height:50px}
+  .traits{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+  .trait{font-size:10px;padding:3px 8px;border-radius:99px;background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border-default)}
+  .trait.green{border-color:var(--green-700);color:var(--green-400)}
+  .trait.gold{border-color:#665200;color:var(--gold)}
+  .trait.purple{border-color:#4A2A7A;color:#B088F9}
+  .trait.pink{border-color:#7A2A4A;color:var(--pink)}
+  .trait.blue{border-color:#2A4A7A;color:var(--blue)}
+
+  @keyframes pulse-glow{0%,100%{filter:drop-shadow(0 0 3px rgba(51,198,159,0.2))}50%{filter:drop-shadow(0 0 10px rgba(51,198,159,0.5))}}
+  @keyframes sway{0%,100%{transform:rotate(0deg)}25%{transform:rotate(2deg)}75%{transform:rotate(-2deg)}}
+  .pulse{animation:pulse-glow 2s ease-in-out infinite}
+  .sway{animation:sway 3s ease-in-out infinite}
+
+  .footer{text-align:center;margin-top:50px;padding-top:30px;border-top:1px solid var(--border-default)}
+  .footer p{font-size:12px;color:var(--text-muted);line-height:1.8;max-width:700px;margin:0 auto}
+  .footer .note{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--green-700);margin-top:12px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Coco V5</h1>
+  <p>Bot Coco &amp; Cube Coco as the base. 8 new conveyor-themed contenders, each with a unique character animation — typing, searching, waving, stamping, scanning, loading, sorting, and rolling.</p>
+</div>
+
+<!-- ====== BASE DESIGNS ====== -->
+<div class="section-label">Base Designs</div>
+<div class="grid two">
+
+  <!-- BOT COCO — base -->
+  <div class="card">
+    <span class="card-number">01</span>
+    <span class="card-tag tag-base">BASE</span>
+    <div class="pixel-canvas pulse">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="0" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#7AE8CB;#33C69F;#7AE8CB" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="1" width="5" height="1" fill="#2AA886"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#2AA886"/>
+        <rect x="2" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="opacity" values="1;1;0.3;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="opacity" values="1;1;0.3;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="4" width="3" height="1" fill="#33C69F"/>
+        <rect x="2" y="5" width="3" height="1" fill="#2AA886"/>
+        <rect x="3" y="5" width="1" height="1" fill="#0F3D31"/>
+        <rect x="0" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="5" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="6" width="1" height="1" fill="#1E7F65"/>
+        <rect x="4" y="6" width="1" height="1" fill="#1E7F65"/>
+      </svg>
+    </div>
+    <div class="card-title">Bot Coco</div>
+    <div class="card-subtitle">The Robot — Base</div>
+    <p class="card-desc">Wide head, screen eyes, narrow body, treads. The mechanical base design.</p>
+    <div class="traits">
+      <span class="trait pink">Bot Base</span>
+      <span class="trait green">Screen Eyes</span>
+    </div>
+  </div>
+
+  <!-- CUBE COCO — base -->
+  <div class="card">
+    <span class="card-number">02</span>
+    <span class="card-tag tag-base">BASE</span>
+    <div class="pixel-canvas sway">
+      <svg class="coco" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+        <rect x="1" y="1" width="5" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+        <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+        <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+        <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+        <rect x="0" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="6" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="5" width="1" height="1" fill="#1E7F65"/>
+        <rect x="5" y="5" width="1" height="1" fill="#1E7F65"/>
+      </svg>
+    </div>
+    <div class="card-title">Cube Coco</div>
+    <div class="card-subtitle">The Square — Base</div>
+    <p class="card-desc">Antenna, square body, dot eyes, smile, stick arms. The simple base design.</p>
+    <div class="traits">
+      <span class="trait blue">Cube Base</span>
+      <span class="trait gold">Antenna</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====== 8 NEW CONVEYOR-THEMED CONTENDERS ====== -->
+<div class="section-label">Conveyor Belt Editions — 8 Contenders</div>
+<div class="grid">
+
+  <!-- 03 TYPER COCO (Cube variant) — arms pump up/down like typing -->
+  <div class="card">
+    <span class="card-number">03</span>
+    <span class="card-tag tag-cube">CUBE+</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <rect x="4" y="0" width="1" height="1" fill="#FFD700"/>
+        <!-- Body -->
+        <rect x="2" y="1" width="5" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="2" y="3" width="5" height="1" fill="#33C69F"/>
+        <rect x="2" y="4" width="5" height="1" fill="#2AA886"/>
+        <!-- Eyes — focused downward (looking at keyboard) -->
+        <rect x="3" y="3" width="1" height="1" fill="#FFF"/>
+        <rect x="5" y="3" width="1" height="1" fill="#FFF"/>
+        <!-- Concentrating mouth (small) -->
+        <rect x="4" y="4" width="1" height="1" fill="#FFF"/>
+        <!-- Left arm — typing (pumps up/down) -->
+        <rect x="0" y="4" width="2" height="1" fill="#5DDBB8">
+          <animate attributeName="y" values="4;5;4;4;5;4" dur="0.8s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Right arm — typing (offset rhythm) -->
+        <rect x="7" y="5" width="2" height="1" fill="#5DDBB8">
+          <animate attributeName="y" values="5;4;5;5;4;5" dur="0.8s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Keyboard / conveyor surface -->
+        <rect x="0" y="6" width="9" height="1" fill="#1E7F65"/>
+        <rect x="1" y="6" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="1;0.5;1" dur="0.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="6" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="0.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="6" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="1;0.5;1" dur="0.4s" repeatCount="indefinite" begin="0.2s"/>
+        </rect>
+        <rect x="7" y="6" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="0.4s" repeatCount="indefinite" begin="0.2s"/>
+        </rect>
+        <!-- Feet -->
+        <rect x="2" y="7" width="1" height="1" fill="#33C69F"/>
+        <rect x="6" y="7" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Typer Coco</div>
+    <div class="card-subtitle">The Questionnaire Filler</div>
+    <p class="card-desc">Arms pump up and down on a conveyor-belt keyboard. Keys flash as Coco auto-fills questionnaires. Focused eyes looking down at the work.</p>
+    <div class="traits">
+      <span class="trait blue">Cube Variant</span>
+      <span class="trait green">Typing</span>
+      <span class="trait gold">Auto-Fill</span>
+    </div>
+  </div>
+
+  <!-- 04 SEARCH COCO (Bot variant) — eye scans like a searchlight -->
+  <div class="card">
+    <span class="card-number">04</span>
+    <span class="card-tag tag-bot">BOT+</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <rect x="4" y="0" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#7AE8CB;#33C69F;#7AE8CB" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Wide head -->
+        <rect x="1" y="1" width="6" height="1" fill="#2AA886"/>
+        <rect x="1" y="2" width="6" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="6" height="1" fill="#2AA886"/>
+        <!-- Screen inset -->
+        <rect x="2" y="2" width="4" height="1" fill="#0F3D31" opacity="0.5"/>
+        <!-- Left eye (normal) -->
+        <rect x="2" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <!-- Right eye — magnifying glass, bigger and scans -->
+        <rect x="5" y="2" width="1" height="1" fill="#FFF"/>
+        <rect x="5" y="1" width="1" height="1" fill="#FFF" opacity="0.3"/>
+        <rect x="6" y="3" width="1" height="1" fill="#FFF" opacity="0.3"/>
+        <!-- Scanning beam from magnifying eye -->
+        <rect x="6" y="4" width="1" height="1" fill="#7AE8CB" opacity="0.4">
+          <animate attributeName="opacity" values="0;0.6;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="5" width="1" height="1" fill="#7AE8CB" opacity="0.2">
+          <animate attributeName="opacity" values="0;0.4;0" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+        </rect>
+        <!-- Body -->
+        <rect x="2" y="4" width="4" height="1" fill="#33C69F"/>
+        <rect x="2" y="5" width="4" height="1" fill="#2AA886"/>
+        <!-- Belt dots moving across body -->
+        <rect x="2" y="5" width="1" height="1" fill="#0F3D31">
+          <animate attributeName="x" values="2;3;4;5;2" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Arms -->
+        <rect x="0" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="6" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <!-- Treads -->
+        <rect x="2" y="6" width="2" height="1" fill="#1E7F65"/>
+        <rect x="4" y="6" width="2" height="1" fill="#1E7F65"/>
+      </svg>
+    </div>
+    <div class="card-title">Search Coco</div>
+    <div class="card-subtitle">The Document Finder</div>
+    <p class="card-desc">One normal eye, one magnifying-glass eye with a scanning beam. Finds the right docs on the conveyor belt. A dot travels across the belt body.</p>
+    <div class="traits">
+      <span class="trait pink">Bot Variant</span>
+      <span class="trait green">Searching</span>
+      <span class="trait">Magnifier</span>
+    </div>
+  </div>
+
+  <!-- 05 WAVE COCO (Cube variant) — one arm waves hello -->
+  <div class="card">
+    <span class="card-number">05</span>
+    <span class="card-tag tag-cube">CUBE+</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <rect x="4" y="0" width="1" height="1" fill="#FFD700"/>
+        <!-- Body -->
+        <rect x="2" y="1" width="5" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="2" y="3" width="5" height="1" fill="#33C69F"/>
+        <rect x="2" y="4" width="5" height="1" fill="#2AA886"/>
+        <!-- Eyes — happy, welcoming -->
+        <rect x="3" y="2" width="1" height="1" fill="#FFF"/>
+        <rect x="5" y="2" width="1" height="1" fill="#FFF"/>
+        <!-- Big smile -->
+        <rect x="3" y="4" width="3" height="1" fill="#FFF"/>
+        <!-- Left arm (static) -->
+        <rect x="0" y="3" width="2" height="1" fill="#5DDBB8"/>
+        <!-- Right arm — WAVING (goes up-out, up-high, up-out, down) -->
+        <rect x="7" y="1" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="y" values="3;2;1;0;1;2;3;3" dur="1.6s" repeatCount="indefinite"/>
+          <animate attributeName="x" values="7;7;7;7;7;7;7;7" dur="1.6s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Sparkle near waving hand -->
+        <rect x="7" y="0" width="1" height="1" fill="#FFD700" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0.8;0;0;0;0" dur="1.6s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Conveyor belt surface beneath -->
+        <rect x="0" y="6" width="8" height="1" fill="#1E7F65"/>
+        <!-- Package sliding on belt -->
+        <rect x="0" y="5" width="1" height="1" fill="#2AA886">
+          <animate attributeName="x" values="0;2;4;6;8" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Feet -->
+        <rect x="2" y="5" width="1" height="1" fill="#33C69F"/>
+        <rect x="6" y="5" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Wave Coco</div>
+    <div class="card-subtitle">The Greeter</div>
+    <p class="card-desc">One arm waves hello while packages slide by on a conveyor belt below. A gold sparkle appears at the peak of the wave. The Trust Center welcome mat.</p>
+    <div class="traits">
+      <span class="trait blue">Cube Variant</span>
+      <span class="trait green">Waving</span>
+      <span class="trait gold">Sparkle</span>
+    </div>
+  </div>
+
+  <!-- 06 STAMP COCO (Bot variant) — arm stamps down repeatedly -->
+  <div class="card">
+    <span class="card-number">06</span>
+    <span class="card-tag tag-bot">BOT+</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 9 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <rect x="3" y="0" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#7AE8CB;#33C69F;#7AE8CB" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Wide head -->
+        <rect x="1" y="1" width="5" height="1" fill="#2AA886"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#2AA886"/>
+        <!-- Screen eyes -->
+        <rect x="2" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <rect x="4" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <!-- Body -->
+        <rect x="2" y="4" width="3" height="1" fill="#33C69F"/>
+        <rect x="2" y="5" width="3" height="1" fill="#2AA886"/>
+        <!-- Left arm (static) -->
+        <rect x="0" y="4" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Right arm — STAMPING down -->
+        <rect x="6" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="y" values="2;2;4;4;2;2" dur="1.4s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Stamp head -->
+        <rect x="6" y="3" width="2" height="1" fill="#1E7F65">
+          <animate attributeName="y" values="3;3;5;5;3;3" dur="1.4s" repeatCount="indefinite"/>
+        </rect>
+        <!-- "APPROVED" flash on stamp contact -->
+        <rect x="6" y="6" width="2" height="1" fill="#FFD700" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.9;0.5;0;0" dur="1.4s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Document on conveyor -->
+        <rect x="6" y="6" width="2" height="1" fill="#E8E8ED" opacity="0.5"/>
+        <!-- Conveyor belt -->
+        <rect x="0" y="7" width="9" height="1" fill="#1E7F65"/>
+        <!-- Belt dots -->
+        <rect x="1" y="7" width="1" height="1" fill="#2AA886">
+          <animate attributeName="x" values="1;3;5;7;1" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Treads -->
+        <rect x="2" y="6" width="1" height="1" fill="#1E7F65"/>
+        <rect x="4" y="6" width="1" height="1" fill="#1E7F65"/>
+      </svg>
+    </div>
+    <div class="card-title">Stamp Coco</div>
+    <div class="card-subtitle">The Approver</div>
+    <p class="card-desc">Arm slams a stamp down on documents rolling by on a conveyor belt. A gold "APPROVED" flash on impact. The compliance gatekeeper.</p>
+    <div class="traits">
+      <span class="trait pink">Bot Variant</span>
+      <span class="trait green">Stamping</span>
+      <span class="trait gold">Approved</span>
+    </div>
+  </div>
+
+  <!-- 07 LOOK COCO (Cube variant) — eyes track back and forth naturally -->
+  <div class="card">
+    <span class="card-number">07</span>
+    <span class="card-tag tag-cube">CUBE+</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+        <!-- Body -->
+        <rect x="1" y="1" width="5" height="1" fill="#5DDBB8"/>
+        <rect x="1" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="5" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="5" height="1" fill="#2AA886"/>
+        <!-- Eyes — LOOKING around (both shift together, with pauses) -->
+        <!-- Left eye -->
+        <rect x="2" y="2" width="1" height="1" fill="#FFF">
+          <animate attributeName="x" values="2;2;2;3;3;3;2;2;2;1;1;1;2;2" dur="5s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="2;2;2;2;2;3;3;3;2;2;2;2;2;2" dur="5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Right eye -->
+        <rect x="4" y="2" width="1" height="1" fill="#FFF">
+          <animate attributeName="x" values="4;4;4;5;5;5;4;4;4;3;3;3;4;4" dur="5s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="2;2;2;2;2;3;3;3;2;2;2;2;2;2" dur="5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Smile -->
+        <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+        <!-- Arms holding a clipboard -->
+        <rect x="0" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="0" y="4" width="1" height="1" fill="#E8E8ED"/>
+        <rect x="6" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Conveyor belt -->
+        <rect x="0" y="6" width="7" height="1" fill="#1E7F65"/>
+        <!-- Items on belt flowing past -->
+        <rect x="0" y="5" width="1" height="1" fill="#2AA886" opacity="0.6">
+          <animate attributeName="x" values="0;2;4;6" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="5" width="1" height="1" fill="#2AA886" opacity="0.6">
+          <animate attributeName="x" values="3;5;7;2" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Feet on belt -->
+        <rect x="1" y="5" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="5" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Look Coco</div>
+    <div class="card-subtitle">The Inspector</div>
+    <p class="card-desc">Eyes look center, right, down, left — inspecting items on the conveyor belt. Holds a clipboard. The quality-control officer of trust documents.</p>
+    <div class="traits">
+      <span class="trait blue">Cube Variant</span>
+      <span class="trait green">Looking</span>
+      <span class="trait">Clipboard</span>
+    </div>
+  </div>
+
+  <!-- 08 LOADER COCO (Bot variant) — carries box, bobs under weight -->
+  <div class="card">
+    <span class="card-number">08</span>
+    <span class="card-tag tag-bot">BOT+</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 7 9" xmlns="http://www.w3.org/2000/svg">
+        <!-- Box on top of head — bobbing -->
+        <rect x="1" y="0" width="3" height="1" fill="#2AA886">
+          <animate attributeName="y" values="0;0;1;0;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="1" width="3" height="1" fill="#1E7F65">
+          <animate attributeName="y" values="1;1;2;1;1" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Conveyor label on box -->
+        <rect x="2" y="0" width="1" height="1" fill="#FFD700" opacity="0.5">
+          <animate attributeName="y" values="0;0;1;0;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Head — bobs down slightly under weight -->
+        <rect x="1" y="2" width="5" height="1" fill="#2AA886">
+          <animate attributeName="y" values="2;2;3;2;2" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="5" height="1" fill="#33C69F">
+          <animate attributeName="y" values="3;3;4;3;3" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="4" width="5" height="1" fill="#2AA886">
+          <animate attributeName="y" values="4;4;5;4;4" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Screen eyes (move with head) -->
+        <rect x="2" y="3" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="y" values="3;3;4;3;3" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="3" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="y" values="3;3;4;3;3" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Body -->
+        <rect x="2" y="5" width="3" height="1" fill="#33C69F"/>
+        <rect x="2" y="6" width="3" height="1" fill="#2AA886"/>
+        <!-- Arms — reaching up to hold box -->
+        <rect x="0" y="3" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="y" values="3;3;4;3;3" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="y" values="2;2;3;2;2" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="4" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="y" values="4;4;5;4;4" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Treads -->
+        <rect x="2" y="7" width="1" height="1" fill="#1E7F65"/>
+        <rect x="4" y="7" width="1" height="1" fill="#1E7F65"/>
+      </svg>
+    </div>
+    <div class="card-title">Loader Coco</div>
+    <div class="card-subtitle">The Package Carrier</div>
+    <p class="card-desc">Carries a package on its head and bobs under the weight. One arm reaches up to steady the load. Moving trust documents from A to B on the conveyor.</p>
+    <div class="traits">
+      <span class="trait pink">Bot Variant</span>
+      <span class="trait green">Loading</span>
+      <span class="trait gold">Package</span>
+    </div>
+  </div>
+
+  <!-- 09 ROLLER COCO (Bot variant) — conveyor rollers as body, items flow -->
+  <div class="card">
+    <span class="card-number">09</span>
+    <span class="card-tag tag-bot">BOT+</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 9 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <rect x="4" y="0" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#7AE8CB;#33C69F;#7AE8CB" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Head -->
+        <rect x="2" y="1" width="5" height="1" fill="#2AA886"/>
+        <rect x="2" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="2" y="3" width="5" height="1" fill="#2AA886"/>
+        <!-- Screen eyes -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <rect x="5" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <!-- Body IS a conveyor belt (rollers) -->
+        <rect x="1" y="4" width="7" height="1" fill="#33C69F"/>
+        <rect x="1" y="5" width="7" height="1" fill="#2AA886"/>
+        <!-- Roller dots (spinning) -->
+        <rect x="1" y="5" width="1" height="1" fill="#0F3D31">
+          <animate attributeName="opacity" values="1;0.3;1" dur="0.6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="5" width="1" height="1" fill="#0F3D31">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="0.6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="5" width="1" height="1" fill="#0F3D31">
+          <animate attributeName="opacity" values="1;0.3;1" dur="0.6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="5" width="1" height="1" fill="#0F3D31">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="0.6s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Document sliding across belt-body -->
+        <rect x="0" y="4" width="1" height="1" fill="#E8E8ED">
+          <animate attributeName="x" values="0;2;4;6;8" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Arms (sides of belt) -->
+        <rect x="0" y="4" width="1" height="2" fill="#5DDBB8"/>
+        <rect x="8" y="4" width="1" height="2" fill="#5DDBB8"/>
+        <!-- Treads -->
+        <rect x="2" y="6" width="2" height="1" fill="#1E7F65"/>
+        <rect x="5" y="6" width="2" height="1" fill="#1E7F65"/>
+      </svg>
+    </div>
+    <div class="card-title">Roller Coco</div>
+    <div class="card-subtitle">The Living Belt</div>
+    <p class="card-desc">Coco's body IS a conveyor belt — roller dots spin and documents slide across. The most literal "Conveyor" character. Head rides on top of the belt body.</p>
+    <div class="traits">
+      <span class="trait pink">Bot Variant</span>
+      <span class="trait green">Rolling</span>
+      <span class="trait green">Belt Body</span>
+    </div>
+  </div>
+
+  <!-- 10 SORT COCO (Cube variant) — items appear and get sorted left/right -->
+  <div class="card">
+    <span class="card-number">10</span>
+    <span class="card-tag tag-cube">CUBE+</span>
+    <div class="pixel-canvas">
+      <svg class="coco" viewBox="0 0 9 8" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <rect x="4" y="0" width="1" height="1" fill="#FFD700"/>
+        <!-- Body -->
+        <rect x="2" y="1" width="5" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="2" width="5" height="1" fill="#33C69F"/>
+        <rect x="2" y="3" width="5" height="1" fill="#33C69F"/>
+        <rect x="2" y="4" width="5" height="1" fill="#2AA886"/>
+        <!-- Eyes — looking at incoming item -->
+        <rect x="3" y="2" width="1" height="1" fill="#FFF"/>
+        <rect x="5" y="2" width="1" height="1" fill="#FFF"/>
+        <!-- Deciding mouth -->
+        <rect x="4" y="4" width="1" height="1" fill="#FFF"/>
+        <!-- Left arm — pushes item left (alternates) -->
+        <rect x="0" y="3" width="2" height="1" fill="#5DDBB8">
+          <animate attributeName="x" values="0;0;0;0;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Right arm — pushes item right (alternates) -->
+        <rect x="7" y="3" width="2" height="1" fill="#5DDBB8">
+          <animate attributeName="x" values="7;7;7;7;7" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Incoming item from top -->
+        <rect x="4" y="1" width="1" height="1" fill="#7AE8CB" opacity="0.7">
+          <animate attributeName="y" values="0;1;2;3;4;5" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="x" values="4;4;4;4;1;0" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.7;0.7;0.7;0.7;0.5;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Second item (offset) -->
+        <rect x="4" y="0" width="1" height="1" fill="#5DDBB8" opacity="0">
+          <animate attributeName="y" values="0;1;2;3;4;5" dur="2s" repeatCount="indefinite" begin="1s"/>
+          <animate attributeName="x" values="4;4;4;4;7;8" dur="2s" repeatCount="indefinite" begin="1s"/>
+          <animate attributeName="opacity" values="0.7;0.7;0.7;0.7;0.5;0" dur="2s" repeatCount="indefinite" begin="1s"/>
+        </rect>
+        <!-- Conveyor belt -->
+        <rect x="0" y="6" width="9" height="1" fill="#1E7F65"/>
+        <!-- Sorted piles -->
+        <rect x="0" y="5" width="1" height="1" fill="#7AE8CB" opacity="0.3"/>
+        <rect x="8" y="5" width="1" height="1" fill="#5DDBB8" opacity="0.3"/>
+        <!-- Feet -->
+        <rect x="3" y="5" width="1" height="1" fill="#33C69F"/>
+        <rect x="5" y="5" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Sort Coco</div>
+    <div class="card-subtitle">The Organizer</div>
+    <p class="card-desc">Items drop in from the top and Coco sorts them left or right — approved vs. needs review. The conveyor's quality sorter. Items alternate paths.</p>
+    <div class="traits">
+      <span class="trait blue">Cube Variant</span>
+      <span class="trait green">Sorting</span>
+      <span class="trait purple">Organizer</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>
+    All 8 contenders are built from the Bot (wide head, screen eyes, treads) or Cube (square, antenna, dot eyes) base. Each has a unique action animation tied to the conveyor belt metaphor — from auto-filling questionnaires to sorting trust documents. Pick your favorites to complete the Coco roster.
+  </p>
+  <p class="note">COCO V5 — CONVEYOR BELT EDITIONS — MARCH 2026</p>
+</div>
+
+</body>
+</html>

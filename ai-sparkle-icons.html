@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Sparkle Icons — Pixel Art Variations</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0D0D12;
+    color: #E8E8ED;
+    font-family: 'Inter', system-ui, sans-serif;
+    padding: 40px;
+  }
+  h1 { font-size: 24px; margin-bottom: 8px; }
+  .subtitle { color: #9898A8; font-size: 14px; margin-bottom: 40px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    max-width: 1200px;
+  }
+  .card {
+    background: #16161E;
+    border: 1px solid #2A2A3A;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .card:hover { border-color: #33C69F; }
+  .card-number {
+    color: #33C69F;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+  .icon-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+  }
+  .card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #E8E8ED;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: #9898A8;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .sizes {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #2A2A3A;
+    width: 100%;
+    justify-content: center;
+  }
+  .size-label {
+    font-size: 10px;
+    color: #5E5E72;
+  }
+  /* Context demo */
+  .context-row {
+    margin-top: 48px;
+    max-width: 1200px;
+  }
+  .context-row h2 { font-size: 18px; margin-bottom: 16px; }
+  .nav-demo {
+    background: #16161E;
+    border: 1px solid #2A2A3A;
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #9898A8;
+    font-size: 13px;
+  }
+  .nav-item.active { color: #33C69F; }
+  .nav-icon { display: flex; align-items: center; }
+</style>
+</head>
+<body>
+
+<h1>AI Sparkle Icons — Pixel Art Variations</h1>
+<p class="subtitle">8 variations in Coco's 4-bit/8-bit style. All use Conveyor Green palette with subtle animation. Shown at 64px (large), plus 24px, 16px, and 12px previews.</p>
+
+<div class="grid">
+
+  <!-- #1: Classic 4-Point Sparkle -->
+  <div class="card">
+    <span class="card-number">#1</span>
+    <div class="icon-display">
+      <svg width="64" height="64" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+        <!-- Center bright pixel -->
+        <rect x="3" y="3" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- 4 pointed rays -->
+        <rect x="3" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="3" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- 4 diagonal dim pixels -->
+        <rect x="2" y="2" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="2" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="4" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="4" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Tip pixels -->
+        <rect x="3" y="0" width="1" height="1" fill="#2AA886" opacity="0.6">
+          <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="6" width="1" height="1" fill="#2AA886" opacity="0.6">
+          <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="0" y="3" width="1" height="1" fill="#2AA886" opacity="0.6">
+          <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="3" width="1" height="1" fill="#2AA886" opacity="0.6">
+          <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <span class="card-name">Classic Sparkle</span>
+    <span class="card-desc">Traditional 4-point star with tapered rays. Breathes in and out.</span>
+    <div class="sizes">
+      <svg width="24" height="24" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="3" y="3" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="1" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="5" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/></rect><rect x="1" y="3" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/></rect><rect x="5" y="3" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/></rect><rect x="2" y="2" width="1" height="1" fill="#1E7F65"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></rect><rect x="4" y="2" width="1" height="1" fill="#1E7F65"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></rect><rect x="2" y="4" width="1" height="1" fill="#1E7F65"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></rect><rect x="4" y="4" width="1" height="1" fill="#1E7F65"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="0" width="1" height="1" fill="#2AA886" opacity="0.6"><animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="6" width="1" height="1" fill="#2AA886" opacity="0.6"><animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/></rect><rect x="0" y="3" width="1" height="1" fill="#2AA886" opacity="0.6"><animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/></rect><rect x="6" y="3" width="1" height="1" fill="#2AA886" opacity="0.6"><animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24</span>
+      <svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="3" y="3" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="1" width="1" height="1" fill="#33C69F"/><rect x="3" y="5" width="1" height="1" fill="#33C69F"/><rect x="1" y="3" width="1" height="1" fill="#33C69F"/><rect x="5" y="3" width="1" height="1" fill="#33C69F"/><rect x="2" y="2" width="1" height="1" fill="#1E7F65"/><rect x="4" y="2" width="1" height="1" fill="#1E7F65"/><rect x="2" y="4" width="1" height="1" fill="#1E7F65"/><rect x="4" y="4" width="1" height="1" fill="#1E7F65"/></svg>
+      <span class="size-label">16</span>
+      <svg width="12" height="12" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="3" y="3" width="1" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="1" height="1" fill="#33C69F"/><rect x="3" y="5" width="1" height="1" fill="#33C69F"/><rect x="1" y="3" width="1" height="1" fill="#33C69F"/><rect x="5" y="3" width="1" height="1" fill="#33C69F"/><rect x="2" y="2" width="1" height="1" fill="#1E7F65"/><rect x="4" y="2" width="1" height="1" fill="#1E7F65"/><rect x="2" y="4" width="1" height="1" fill="#1E7F65"/><rect x="4" y="4" width="1" height="1" fill="#1E7F65"/></svg>
+      <span class="size-label">12</span>
+    </div>
+  </div>
+
+  <!-- #2: Diamond Sparkle -->
+  <div class="card">
+    <span class="card-number">#2</span>
+    <div class="icon-display">
+      <svg width="64" height="64" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+        <!-- Diamond shape - tall and narrow like ✦ -->
+        <rect x="3" y="0" width="1" height="1" fill="#2AA886" opacity="0.7">
+          <animate attributeName="opacity" values="0.7;0.2;0.7" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="1;0.5;1" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="2" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="4" y="2" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Center row -->
+        <rect x="1" y="3" width="1" height="1" fill="#2AA886" opacity="0.7">
+          <animate attributeName="opacity" values="0.7;0.2;0.7" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="3" y="3" width="1" height="1" fill="#FFFFFF">
+          <animate attributeName="fill" values="#FFFFFF;#7AE8CB;#FFFFFF" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="5" y="3" width="1" height="1" fill="#2AA886" opacity="0.7">
+          <animate attributeName="opacity" values="0.7;0.2;0.7" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Bottom half -->
+        <rect x="2" y="4" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="4" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="4" y="4" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="1;0.5;1" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="6" width="1" height="1" fill="#2AA886" opacity="0.7">
+          <animate attributeName="opacity" values="0.7;0.2;0.7" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <span class="card-name">Diamond Sparkle</span>
+    <span class="card-desc">Filled diamond shape like ✦. White-hot center fades to green edges.</span>
+    <div class="sizes">
+      <svg width="24" height="24" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="3" y="0" width="1" height="1" fill="#2AA886" opacity="0.7"/><rect x="3" y="1" width="1" height="1" fill="#33C69F"/><rect x="2" y="2" width="1" height="1" fill="#33C69F" opacity="0.8"/><rect x="3" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="1" height="1" fill="#33C69F" opacity="0.8"/><rect x="1" y="3" width="1" height="1" fill="#2AA886" opacity="0.7"/><rect x="2" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="3" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="1.8s" repeatCount="indefinite"/></rect><rect x="4" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="5" y="3" width="1" height="1" fill="#2AA886" opacity="0.7"/><rect x="2" y="4" width="1" height="1" fill="#33C69F" opacity="0.8"/><rect x="3" y="4" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="4" width="1" height="1" fill="#33C69F" opacity="0.8"/><rect x="3" y="5" width="1" height="1" fill="#33C69F"/><rect x="3" y="6" width="1" height="1" fill="#2AA886" opacity="0.7"/></svg>
+      <span class="size-label">24</span>
+      <svg width="16" height="16" viewBox="0 0 5 5" style="image-rendering:pixelated"><rect x="2" y="0" width="1" height="1" fill="#33C69F"/><rect x="1" y="1" width="1" height="1" fill="#33C69F"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="1" width="1" height="1" fill="#33C69F"/><rect x="0" y="2" width="1" height="1" fill="#2AA886"/><rect x="1" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="1.8s" repeatCount="indefinite"/></rect><rect x="3" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="1" height="1" fill="#2AA886"/><rect x="1" y="3" width="1" height="1" fill="#33C69F"/><rect x="2" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="3" width="1" height="1" fill="#33C69F"/><rect x="2" y="4" width="1" height="1" fill="#33C69F"/></svg>
+      <span class="size-label">16</span>
+      <svg width="12" height="12" viewBox="0 0 5 5" style="image-rendering:pixelated"><rect x="2" y="0" width="1" height="1" fill="#33C69F"/><rect x="1" y="1" width="1" height="1" fill="#33C69F"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="1" width="1" height="1" fill="#33C69F"/><rect x="0" y="2" width="1" height="1" fill="#2AA886"/><rect x="1" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="1" height="1" fill="#FFF"/><rect x="3" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="1" height="1" fill="#2AA886"/><rect x="1" y="3" width="1" height="1" fill="#33C69F"/><rect x="2" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="3" width="1" height="1" fill="#33C69F"/><rect x="2" y="4" width="1" height="1" fill="#33C69F"/></svg>
+      <span class="size-label">12</span>
+    </div>
+  </div>
+
+  <!-- #3: Rotating Tri-Sparkle -->
+  <div class="card">
+    <span class="card-number">#3</span>
+    <div class="icon-display">
+      <svg width="64" height="64" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+        <!-- Three sparkle points that twinkle in sequence -->
+        <!-- Large sparkle (center-left) -->
+        <rect x="2" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB;#7AE8CB" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.8;1;0.3;0.8" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="2" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.8;1;0.3;0.8" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="2" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.8;1;0.3;0.8" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="3" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.8;1;0.3;0.8" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Medium sparkle (right) -->
+        <rect x="5" y="3" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="fill" values="#5DDBB8;#5DDBB8;#FFFFFF;#5DDBB8" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="2" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.3;0.8;1;0.3" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="3" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.3;0.8;1;0.3" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="3" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.3;0.8;1;0.3" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="4" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.3;0.8;1;0.3" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Small sparkle (bottom) -->
+        <rect x="3" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="fill" values="#33C69F;#33C69F;#33C69F;#FFFFFF" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="4" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0.3;0.3;0.8;0.3" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="5" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0.3;0.3;0.8;0.3" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <span class="card-name">Tri-Twinkle</span>
+    <span class="card-desc">Three sparkles that twinkle in sequence — big, medium, small. Like stars winking.</span>
+    <div class="sizes">
+      <svg width="24" height="24" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB;#7AE8CB" dur="2.4s" repeatCount="indefinite"/></rect><rect x="2" y="1" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.8;1;0.3;0.8" dur="2.4s" repeatCount="indefinite"/></rect><rect x="1" y="2" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.8;1;0.3;0.8" dur="2.4s" repeatCount="indefinite"/></rect><rect x="3" y="2" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.8;1;0.3;0.8" dur="2.4s" repeatCount="indefinite"/></rect><rect x="2" y="3" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.8;1;0.3;0.8" dur="2.4s" repeatCount="indefinite"/></rect><rect x="5" y="3" width="1" height="1" fill="#5DDBB8"><animate attributeName="fill" values="#5DDBB8;#5DDBB8;#FFF;#5DDBB8" dur="2.4s" repeatCount="indefinite"/></rect><rect x="5" y="2" width="1" height="1" fill="#2AA886"><animate attributeName="opacity" values="0.3;0.8;1;0.3" dur="2.4s" repeatCount="indefinite"/></rect><rect x="4" y="3" width="1" height="1" fill="#2AA886"><animate attributeName="opacity" values="0.3;0.8;1;0.3" dur="2.4s" repeatCount="indefinite"/></rect><rect x="6" y="3" width="1" height="1" fill="#2AA886"><animate attributeName="opacity" values="0.3;0.8;1;0.3" dur="2.4s" repeatCount="indefinite"/></rect><rect x="5" y="4" width="1" height="1" fill="#2AA886"><animate attributeName="opacity" values="0.3;0.8;1;0.3" dur="2.4s" repeatCount="indefinite"/></rect><rect x="3" y="5" width="1" height="1" fill="#33C69F"><animate attributeName="fill" values="#33C69F;#33C69F;#33C69F;#FFF" dur="2.4s" repeatCount="indefinite"/></rect><rect x="3" y="4" width="1" height="1" fill="#1E7F65"><animate attributeName="opacity" values="0.3;0.3;0.8;0.3" dur="2.4s" repeatCount="indefinite"/></rect><rect x="2" y="5" width="1" height="1" fill="#1E7F65"><animate attributeName="opacity" values="0.3;0.3;0.8;0.3" dur="2.4s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24</span>
+      <svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB;#7AE8CB" dur="2.4s" repeatCount="indefinite"/></rect><rect x="2" y="1" width="1" height="1" fill="#33C69F"/><rect x="1" y="2" width="1" height="1" fill="#33C69F"/><rect x="3" y="2" width="1" height="1" fill="#33C69F"/><rect x="2" y="3" width="1" height="1" fill="#33C69F"/><rect x="5" y="3" width="1" height="1" fill="#5DDBB8"><animate attributeName="fill" values="#5DDBB8;#5DDBB8;#FFF;#5DDBB8" dur="2.4s" repeatCount="indefinite"/></rect><rect x="5" y="2" width="1" height="1" fill="#2AA886"/><rect x="4" y="3" width="1" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#33C69F"><animate attributeName="fill" values="#33C69F;#33C69F;#33C69F;#FFF" dur="2.4s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">16</span>
+      <svg width="12" height="12" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="5" y="3" width="1" height="1" fill="#5DDBB8"><animate attributeName="fill" values="#5DDBB8;#FFF;#5DDBB8" dur="2s" begin="0.7s" repeatCount="indefinite"/></rect><rect x="3" y="5" width="1" height="1" fill="#33C69F"><animate attributeName="fill" values="#33C69F;#FFF;#33C69F" dur="2s" begin="1.4s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">12</span>
+    </div>
+  </div>
+
+  <!-- #4: Starburst -->
+  <div class="card">
+    <span class="card-number">#4</span>
+    <div class="icon-display">
+      <svg width="64" height="64" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+        <!-- 8-point starburst — cardinal + diagonal rays from center -->
+        <rect x="3" y="3" width="1" height="1" fill="#FFFFFF">
+          <animate attributeName="fill" values="#FFFFFF;#7AE8CB;#FFFFFF" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Cardinal rays -->
+        <rect x="3" y="1" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="5" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="3" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Diagonal rays (shorter) -->
+        <rect x="2" y="2" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="2" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="4" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="4" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Inner ring glow -->
+        <rect x="3" y="2" width="1" height="1" fill="#33C69F" opacity="0.4">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="3" width="1" height="1" fill="#33C69F" opacity="0.4">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="3" width="1" height="1" fill="#33C69F" opacity="0.4">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="4" width="1" height="1" fill="#33C69F" opacity="0.4">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <span class="card-name">Starburst</span>
+    <span class="card-desc">8-point burst with alternating cardinal/diagonal pulse. Breathes like a living star.</span>
+    <div class="sizes">
+      <svg width="24" height="24" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="3" y="3" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2.5s" repeatCount="indefinite"/></rect><rect x="3" y="1" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/></rect><rect x="3" y="5" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/></rect><rect x="1" y="3" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/></rect><rect x="5" y="3" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/></rect><rect x="2" y="2" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/></rect><rect x="4" y="2" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/></rect><rect x="2" y="4" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/></rect><rect x="4" y="4" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24</span>
+      <svg width="16" height="16" viewBox="0 0 5 5" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2.5s" repeatCount="indefinite"/></rect><rect x="2" y="0" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="4" width="1" height="1" fill="#5DDBB8"/><rect x="0" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="1" y="1" width="1" height="1" fill="#33C69F"/><rect x="3" y="1" width="1" height="1" fill="#33C69F"/><rect x="1" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#33C69F"/></svg>
+      <span class="size-label">16</span>
+      <svg width="12" height="12" viewBox="0 0 5 5" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#FFF"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="1" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="1" y="1" width="1" height="1" fill="#33C69F" opacity="0.6"/><rect x="3" y="1" width="1" height="1" fill="#33C69F" opacity="0.6"/><rect x="1" y="3" width="1" height="1" fill="#33C69F" opacity="0.6"/><rect x="3" y="3" width="1" height="1" fill="#33C69F" opacity="0.6"/></svg>
+      <span class="size-label">12</span>
+    </div>
+  </div>
+
+  <!-- #5: Wand Spark -->
+  <div class="card">
+    <span class="card-number">#5</span>
+    <div class="icon-display">
+      <svg width="64" height="64" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+        <!-- Diagonal wand trail with sparkle at tip -->
+        <!-- Wand body (diagonal) -->
+        <rect x="5" y="5" width="1" height="1" fill="#1E7F65"/>
+        <rect x="4" y="4" width="1" height="1" fill="#2AA886"/>
+        <rect x="3" y="3" width="1" height="1" fill="#33C69F"/>
+        <!-- Sparkle at tip -->
+        <rect x="2" y="2" width="1" height="1" fill="#FFFFFF">
+          <animate attributeName="fill" values="#FFFFFF;#7AE8CB;#FFFFFF" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Spark rays from tip -->
+        <rect x="2" y="0" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="0" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="1" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="opacity" values="0.6;1;0.6" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="0" y="0" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.3;0.7;0.3" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Side sparks -->
+        <rect x="4" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.7;0" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="4" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.7;0" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Scattered particles -->
+        <rect x="0" y="4" width="1" height="1" fill="#FFD700" opacity="0">
+          <animate attributeName="opacity" values="0;0.5;0" dur="2.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="0" width="1" height="1" fill="#FFD700" opacity="0">
+          <animate attributeName="opacity" values="0;0.5;0" dur="2.4s" begin="0.8s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <span class="card-name">Wand Spark</span>
+    <span class="card-desc">Magic wand with a bright sparkle tip. Gold particles drift outward.</span>
+    <div class="sizes">
+      <svg width="24" height="24" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="5" y="5" width="1" height="1" fill="#1E7F65"/><rect x="4" y="4" width="1" height="1" fill="#2AA886"/><rect x="3" y="3" width="1" height="1" fill="#33C69F"/><rect x="2" y="2" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="1.5s" repeatCount="indefinite"/></rect><rect x="2" y="0" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/></rect><rect x="0" y="2" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/></rect><rect x="1" y="1" width="1" height="1" fill="#7AE8CB"><animate attributeName="opacity" values="0.6;1;0.6" dur="1.5s" repeatCount="indefinite"/></rect><rect x="0" y="0" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.3;0.7;0.3" dur="1.5s" repeatCount="indefinite"/></rect><rect x="4" y="1" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0;0.7;0" dur="1.5s" repeatCount="indefinite"/></rect><rect x="1" y="4" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0;0.7;0" dur="1.5s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24</span>
+      <svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="5" y="5" width="1" height="1" fill="#1E7F65"/><rect x="4" y="4" width="1" height="1" fill="#2AA886"/><rect x="3" y="3" width="1" height="1" fill="#33C69F"/><rect x="2" y="2" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="1.5s" repeatCount="indefinite"/></rect><rect x="1" y="1" width="1" height="1" fill="#7AE8CB"/><rect x="0" y="0" width="1" height="1" fill="#33C69F" opacity="0.5"/></svg>
+      <span class="size-label">16</span>
+      <svg width="12" height="12" viewBox="0 0 5 5" style="image-rendering:pixelated"><rect x="4" y="4" width="1" height="1" fill="#1E7F65"/><rect x="3" y="3" width="1" height="1" fill="#2AA886"/><rect x="2" y="2" width="1" height="1" fill="#33C69F"/><rect x="1" y="1" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="1.5s" repeatCount="indefinite"/></rect><rect x="0" y="0" width="1" height="1" fill="#7AE8CB" opacity="0.6"/></svg>
+      <span class="size-label">12</span>
+    </div>
+  </div>
+
+  <!-- #6: Pulse Ring -->
+  <div class="card">
+    <span class="card-number">#6</span>
+    <div class="icon-display">
+      <svg width="64" height="64" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+        <!-- Center dot -->
+        <rect x="3" y="3" width="1" height="1" fill="#FFFFFF">
+          <animate attributeName="fill" values="#FFFFFF;#7AE8CB;#FFFFFF" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Inner ring (always visible) -->
+        <rect x="2" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="3" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="4" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="4" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="4" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="3" y="4" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="4" y="4" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Outer ring (pulses) -->
+        <rect x="1" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="3" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Cardinal outer tips -->
+        <rect x="3" y="0" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0;0.5;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="0" y="3" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0;0.5;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="3" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0;0.5;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="6" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0;0.5;0" dur="2s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <span class="card-name">Pulse Ring</span>
+    <span class="card-desc">Concentric rings pulse outward from a bright center. Radar/sonar feel.</span>
+    <div class="sizes">
+      <svg width="24" height="24" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="3" y="3" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2s" repeatCount="indefinite"/></rect><rect x="2" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="4" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="4" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="4" width="1" height="1" fill="#5DDBB8"/><rect x="1" y="1" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/></rect><rect x="5" y="1" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/></rect><rect x="1" y="5" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/></rect><rect x="5" y="5" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0;0.8;0" dur="2s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24</span>
+      <svg width="16" height="16" viewBox="0 0 5 5" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2s" repeatCount="indefinite"/></rect><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="1" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="1" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="3" width="1" height="1" fill="#5DDBB8"/></svg>
+      <span class="size-label">16</span>
+      <svg width="12" height="12" viewBox="0 0 5 5" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#FFF"/><rect x="1" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="3" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="3" width="1" height="1" fill="#5DDBB8"/></svg>
+      <span class="size-label">12</span>
+    </div>
+  </div>
+
+  <!-- #7: Asymmetric Sparkle (like the ✨ emoji) -->
+  <div class="card">
+    <span class="card-number">#7</span>
+    <div class="icon-display">
+      <svg width="64" height="64" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+        <!-- Main 4-point sparkle (asymmetric — taller than wide, like ✨) -->
+        <!-- Vertical axis (long) -->
+        <rect x="2" y="0" width="1" height="1" fill="#1E7F65">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="2" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="3" width="1" height="1" fill="#FFFFFF">
+          <animate attributeName="fill" values="#FFFFFF;#7AE8CB;#FFFFFF" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="4" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Horizontal axis (short) -->
+        <rect x="1" y="3" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="3" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Small companion sparkle (top right) -->
+        <rect x="5" y="1" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="0" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="1" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="1" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="2" width="1" height="1" fill="#2AA886">
+          <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <span class="card-name">Emoji Sparkle</span>
+    <span class="card-desc">Matches the ✨ emoji shape — tall main sparkle with a small companion. Staggered twinkle.</span>
+    <div class="sizes">
+      <svg width="24" height="24" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="2" y="0" width="1" height="1" fill="#1E7F65" opacity="0.5"/><rect x="2" y="1" width="1" height="1" fill="#33C69F"/><rect x="2" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="3" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2s" repeatCount="indefinite"/></rect><rect x="2" y="4" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="5" width="1" height="1" fill="#33C69F"/><rect x="1" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#33C69F"/><rect x="5" y="1" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB" dur="2s" begin="0.5s" repeatCount="indefinite"/></rect><rect x="4" y="1" width="1" height="1" fill="#2AA886" opacity="0.7"/><rect x="6" y="1" width="1" height="1" fill="#2AA886" opacity="0.7"/><rect x="5" y="0" width="1" height="1" fill="#2AA886" opacity="0.5"/><rect x="5" y="2" width="1" height="1" fill="#2AA886" opacity="0.5"/></svg>
+      <span class="size-label">24</span>
+      <svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="2" y="1" width="1" height="1" fill="#33C69F"/><rect x="2" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="3" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2s" repeatCount="indefinite"/></rect><rect x="2" y="4" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="5" width="1" height="1" fill="#33C69F"/><rect x="1" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#33C69F"/><rect x="5" y="1" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB" dur="2s" begin="0.5s" repeatCount="indefinite"/></rect><rect x="4" y="1" width="1" height="1" fill="#2AA886"/><rect x="5" y="0" width="1" height="1" fill="#2AA886" opacity="0.5"/></svg>
+      <span class="size-label">16</span>
+      <svg width="12" height="12" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="3" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2s" repeatCount="indefinite"/></rect><rect x="2" y="4" width="1" height="1" fill="#5DDBB8"/><rect x="1" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#33C69F"/><rect x="5" y="1" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB" dur="2s" begin="0.5s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">12</span>
+    </div>
+  </div>
+
+  <!-- #8: Neuron Spark -->
+  <div class="card">
+    <span class="card-number">#8</span>
+    <div class="icon-display">
+      <svg width="64" height="64" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+        <!-- Center node -->
+        <rect x="3" y="3" width="1" height="1" fill="#FFFFFF">
+          <animate attributeName="fill" values="#FFFFFF;#7AE8CB;#FFFFFF" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- 4 connection lines outward (neural network feel) -->
+        <!-- Top-left branch -->
+        <rect x="2" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.1;0.8;0.1" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="0" y="0" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Top-right branch -->
+        <rect x="4" y="2" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="0.6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="1" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.1;0.8;0.1" dur="2.5s" begin="0.6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="0" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" begin="0.6s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Bottom-left branch -->
+        <rect x="2" y="4" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="1.2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.1;0.8;0.1" dur="2.5s" begin="1.2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="0" y="6" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" begin="1.2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Bottom-right branch -->
+        <rect x="4" y="4" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="5" width="1" height="1" fill="#33C69F">
+          <animate attributeName="opacity" values="0.1;0.8;0.1" dur="2.5s" begin="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="6" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" begin="1.8s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+    <span class="card-name">Neural Spark</span>
+    <span class="card-desc">Center node fires outward along 4 neural paths in sequence. Signals travel from core to endpoints.</span>
+    <div class="sizes">
+      <svg width="24" height="24" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="3" y="3" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2.5s" repeatCount="indefinite"/></rect><rect x="2" y="2" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite"/></rect><rect x="1" y="1" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.1;0.8;0.1" dur="2.5s" repeatCount="indefinite"/></rect><rect x="0" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" repeatCount="indefinite"/></rect><rect x="4" y="2" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="0.6s" repeatCount="indefinite"/></rect><rect x="5" y="1" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.1;0.8;0.1" dur="2.5s" begin="0.6s" repeatCount="indefinite"/></rect><rect x="6" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" begin="0.6s" repeatCount="indefinite"/></rect><rect x="2" y="4" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="1.2s" repeatCount="indefinite"/></rect><rect x="1" y="5" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.1;0.8;0.1" dur="2.5s" begin="1.2s" repeatCount="indefinite"/></rect><rect x="0" y="6" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" begin="1.2s" repeatCount="indefinite"/></rect><rect x="4" y="4" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="1.8s" repeatCount="indefinite"/></rect><rect x="5" y="5" width="1" height="1" fill="#33C69F"><animate attributeName="opacity" values="0.1;0.8;0.1" dur="2.5s" begin="1.8s" repeatCount="indefinite"/></rect><rect x="6" y="6" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" begin="1.8s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24</span>
+      <svg width="16" height="16" viewBox="0 0 5 5" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2.5s" repeatCount="indefinite"/></rect><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite"/></rect><rect x="0" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" repeatCount="indefinite"/></rect><rect x="3" y="1" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="0.6s" repeatCount="indefinite"/></rect><rect x="4" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" begin="0.6s" repeatCount="indefinite"/></rect><rect x="1" y="3" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="1.2s" repeatCount="indefinite"/></rect><rect x="0" y="4" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" begin="1.2s" repeatCount="indefinite"/></rect><rect x="3" y="3" width="1" height="1" fill="#5DDBB8"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="1.8s" repeatCount="indefinite"/></rect><rect x="4" y="4" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#1E7F65;#7AE8CB;#1E7F65" dur="2.5s" begin="1.8s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">16</span>
+      <svg width="12" height="12" viewBox="0 0 5 5" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#FFF"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="0" y="0" width="1" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="0" width="1" height="1" fill="#7AE8CB"/><rect x="1" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="0" y="4" width="1" height="1" fill="#7AE8CB"/><rect x="3" y="3" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="4" width="1" height="1" fill="#7AE8CB"/></svg>
+      <span class="size-label">12</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Context demo: how these look in a nav bar -->
+<div class="context-row">
+  <h2>In Context — Nav Bar Preview</h2>
+  <p class="subtitle" style="margin-bottom: 16px;">How each icon looks at 16px next to text in a dark nav bar.</p>
+  <div class="nav-demo">
+    <div class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="3" y="3" width="1" height="1" fill="#9898A8"/><rect x="2" y="4" width="1" height="1" fill="#9898A8"/><rect x="4" y="4" width="1" height="1" fill="#9898A8"/><rect x="1" y="5" width="1" height="1" fill="#9898A8"/><rect x="5" y="5" width="1" height="1" fill="#9898A8"/><rect x="2" y="2" width="3" height="2" fill="#9898A8" rx="0"/><rect x="3" y="1" width="1" height="1" fill="#9898A8"/></svg></span> Home</div>
+    <div class="nav-item active">
+      <span class="nav-icon">
+        <!-- Using #7 Emoji Sparkle at 16px -->
+        <svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="2" y="1" width="1" height="1" fill="#33C69F"/><rect x="2" y="2" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="3" width="1" height="1" fill="#FFF"><animate attributeName="fill" values="#FFF;#7AE8CB;#FFF" dur="2s" repeatCount="indefinite"/></rect><rect x="2" y="4" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="5" width="1" height="1" fill="#33C69F"/><rect x="1" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#33C69F"/><rect x="5" y="1" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB" dur="2s" begin="0.5s" repeatCount="indefinite"/></rect><rect x="4" y="1" width="1" height="1" fill="#2AA886"/><rect x="5" y="0" width="1" height="1" fill="#2AA886" opacity="0.5"/></svg>
+      </span> Ask Coco
+    </div>
+    <div class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="1" y="1" width="5" height="5" fill="none" stroke="#9898A8" stroke-width="0.6"/><rect x="1" y="1" width="5" height="1.5" fill="#9898A8"/></svg></span> Documents</div>
+  </div>
+
+  <div class="nav-demo" style="margin-top: 12px;">
+    <div class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="3" y="3" width="1" height="1" fill="#9898A8"/><rect x="2" y="4" width="1" height="1" fill="#9898A8"/><rect x="4" y="4" width="1" height="1" fill="#9898A8"/><rect x="1" y="5" width="1" height="1" fill="#9898A8"/><rect x="5" y="5" width="1" height="1" fill="#9898A8"/><rect x="2" y="2" width="3" height="2" fill="#9898A8" rx="0"/><rect x="3" y="1" width="1" height="1" fill="#9898A8"/></svg></span> Home</div>
+    <div class="nav-item active">
+      <span class="nav-icon">
+        <!-- Using #3 Tri-Twinkle at 16px -->
+        <svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="2" y="2" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFF;#7AE8CB;#7AE8CB" dur="2.4s" repeatCount="indefinite"/></rect><rect x="2" y="1" width="1" height="1" fill="#33C69F"/><rect x="1" y="2" width="1" height="1" fill="#33C69F"/><rect x="3" y="2" width="1" height="1" fill="#33C69F"/><rect x="2" y="3" width="1" height="1" fill="#33C69F"/><rect x="5" y="3" width="1" height="1" fill="#5DDBB8"><animate attributeName="fill" values="#5DDBB8;#5DDBB8;#FFF;#5DDBB8" dur="2.4s" repeatCount="indefinite"/></rect><rect x="5" y="2" width="1" height="1" fill="#2AA886"/><rect x="4" y="3" width="1" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#33C69F"><animate attributeName="fill" values="#33C69F;#33C69F;#33C69F;#FFF" dur="2.4s" repeatCount="indefinite"/></rect></svg>
+      </span> Ask Coco
+    </div>
+    <div class="nav-item"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 7 7" style="image-rendering:pixelated"><rect x="1" y="1" width="5" height="5" fill="none" stroke="#9898A8" stroke-width="0.6"/><rect x="1" y="1" width="5" height="1.5" fill="#9898A8"/></svg></span> Documents</div>
+  </div>
+</div>
+
+</body>
+</html>

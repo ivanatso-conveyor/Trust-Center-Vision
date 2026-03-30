@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coco V3 — Final Candidates</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-300: #7AE8CB;
+    --green-400: #5DDBB8;
+    --green-500: #33C69F;
+    --green-600: #2AA886;
+    --green-700: #1E7F65;
+    --green-900: #0F3D31;
+    --bg-primary: #0D0D12;
+    --bg-surface: #16161E;
+    --bg-elevated: #1E1E2A;
+    --border-default: #2A2A3A;
+    --border-bright: #3A3A4F;
+    --text-primary: #E8E8ED;
+    --text-secondary: #9898A8;
+    --text-muted: #5E5E72;
+    --gold: #FFD700;
+    --pink: #FF6B9D;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  .header { text-align: center; margin-bottom: 20px; }
+  .header h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 22px;
+    color: var(--green-500);
+    margin-bottom: 12px;
+  }
+  .header p { font-size: 15px; color: var(--text-secondary); max-width: 660px; margin: 0 auto; line-height: 1.6; }
+  .section-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    margin: 48px auto 24px;
+    max-width: 1050px;
+    border-left: 3px solid var(--green-700);
+    padding-left: 12px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 1050px;
+    margin: 0 auto;
+  }
+  .grid.three { grid-template-columns: repeat(3, 1fr); }
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green-500), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .card:hover {
+    border-color: var(--green-700);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(51,198,159,0.06);
+  }
+  .card:hover::before { opacity: 1; }
+  .card-number {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+  }
+  .card-tag {
+    position: absolute;
+    top: 12px; right: 12px;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 600;
+  }
+  .tag-iterated { background: var(--green-900); color: var(--green-400); }
+  .tag-new { background: #2A1A4A; color: #B088F9; }
+  .pixel-canvas {
+    width: 120px;
+    height: 120px;
+    margin: 16px auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  svg.coco { width: 120px; height: 120px; image-rendering: pixelated; }
+  .card-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: var(--green-400);
+    margin-bottom: 6px;
+  }
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 14px;
+    min-height: 60px;
+  }
+  .traits { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+  .trait {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+  }
+  .trait.green { border-color: var(--green-700); color: var(--green-400); }
+  .trait.gold { border-color: #665200; color: var(--gold); }
+  .trait.purple { border-color: #4A2A7A; color: #B088F9; }
+
+  /* ====== ANIMATIONS ====== */
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+  @keyframes float { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-4px) rotate(1deg)} }
+  @keyframes pulse-glow { 0%,100%{filter:drop-shadow(0 0 3px rgba(51,198,159,0.2))} 50%{filter:drop-shadow(0 0 10px rgba(51,198,159,0.5))} }
+  @keyframes wobble { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(3deg)} 75%{transform:rotate(-3deg)} }
+  @keyframes hop { 0%,100%{transform:translateY(0) scale(1)} 30%{transform:translateY(-6px) scale(1.02)} 60%{transform:translateY(-2px) scale(0.99)} }
+  @keyframes sway { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(2deg)} 75%{transform:rotate(-2deg)} }
+  .bounce { animation: bounce 2s ease-in-out infinite; }
+  .float { animation: float 3s ease-in-out infinite; }
+  .pulse { animation: pulse-glow 2s ease-in-out infinite; }
+  .wobble { animation: wobble 2.5s ease-in-out infinite; }
+  .hop { animation: hop 2.2s ease-in-out infinite; }
+  .sway { animation: sway 3s ease-in-out infinite; }
+
+  .footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-default);
+  }
+  .footer p { font-size: 12px; color: var(--text-muted); line-height: 1.8; max-width: 700px; margin: 0 auto; }
+  .footer .note { font-family: 'Press Start 2P', monospace; font-size: 9px; color: var(--green-700); margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Coco V3</h1>
+  <p>3 iterated finalists + 4 new contenders for the 4th slot. All characters use the 10x10 pixel grid for true 8-bit clarity.</p>
+</div>
+
+<!-- ====== ITERATED FINALISTS ====== -->
+<div class="section-label">Iterated Finalists</div>
+<div class="grid three">
+
+  <!-- 01 C-BLOCK COCO v3 — scanning eye dots, no static white eyes -->
+  <div class="card">
+    <span class="card-number">01</span>
+    <span class="card-tag tag-iterated">ITERATED</span>
+    <div class="pixel-canvas bounce" style="animation-duration:1.8s">
+      <svg class="coco" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+        <!-- Golden cap -->
+        <rect x="3" y="0" width="5" height="1" fill="#FFD700" opacity="0.7"/>
+        <!-- C shape body -->
+        <rect x="3" y="0" width="5" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="1" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="2" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="2" height="1" fill="#33C69F"/>
+        <rect x="2" y="5" width="2" height="1" fill="#2AA886"/>
+        <rect x="3" y="6" width="5" height="1" fill="#2AA886"/>
+        <!-- Top bar extends -->
+        <rect x="4" y="1" width="4" height="1" fill="#2AA886"/>
+        <!-- Bottom bar extends -->
+        <rect x="4" y="5" width="4" height="1" fill="#1E7F65"/>
+        <!-- Smile on the inner curve -->
+        <rect x="2" y="4" width="1" height="1" fill="#FFF"/>
+        <!-- Animated scanning eye dots through the C opening (no static white eyes) -->
+        <rect x="4" y="3" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="x" values="4;5;6;7;8;7;6;5;4" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="3" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="x" values="6;7;8;7;6;5;4;5;6" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Arms -->
+        <rect x="0" y="3" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="8" y="1" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="3" y="7" width="1" height="1" fill="#33C69F"/>
+        <rect x="6" y="7" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">C-Block Coco</div>
+    <div class="card-subtitle">The Conveyor Original</div>
+    <p class="card-desc">The Conveyor "C" brought to life. Static white eyes removed — now two glowing dots scan back and forth through the C opening like data on a conveyor belt.</p>
+    <div class="traits">
+      <span class="trait green">Brand Native</span>
+      <span class="trait gold">Scanning Eyes</span>
+      <span class="trait green">Belt = Eyes</span>
+    </div>
+  </div>
+
+  <!-- 02 CUBE COCO v3 -->
+  <div class="card">
+    <span class="card-number">02</span>
+    <span class="card-tag tag-iterated">ITERATED</span>
+    <div class="pixel-canvas sway">
+      <svg class="coco" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+        <!-- Gold antenna -->
+        <rect x="5" y="0" width="1" height="1" fill="#FFD700"/>
+        <!-- Square body -->
+        <rect x="2" y="1" width="6" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="2" width="6" height="1" fill="#33C69F"/>
+        <rect x="2" y="3" width="6" height="1" fill="#33C69F"/>
+        <rect x="2" y="4" width="6" height="1" fill="#33C69F"/>
+        <rect x="2" y="5" width="6" height="1" fill="#2AA886"/>
+        <rect x="2" y="6" width="6" height="1" fill="#1E7F65"/>
+        <!-- Eyes -->
+        <rect x="3" y="3" width="1" height="1" fill="#FFF"/>
+        <rect x="6" y="3" width="1" height="1" fill="#FFF"/>
+        <!-- Smile -->
+        <rect x="4" y="5" width="2" height="1" fill="#FFF"/>
+        <!-- Arms -->
+        <rect x="0" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="8" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="3" y="7" width="1" height="1" fill="#33C69F"/>
+        <rect x="6" y="7" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Cube Coco</div>
+    <div class="card-subtitle">The Simple Square</div>
+    <p class="card-desc">Pure and iconic. A perfect square body with dot eyes, a line smile, stick arms, and a gold antenna. The most minimal and scalable option. Gentle idle sway.</p>
+    <div class="traits">
+      <span class="trait green">Minimal</span>
+      <span class="trait gold">Antenna</span>
+      <span class="trait">Classic 8-bit</span>
+    </div>
+  </div>
+
+  <!-- 03 BOT COCO v3 — reverted to 8-bit, between V1 and V2 -->
+  <div class="card">
+    <span class="card-number">03</span>
+    <span class="card-tag tag-iterated">ITERATED</span>
+    <div class="pixel-canvas pulse">
+      <svg class="coco" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna with pulsing tip -->
+        <rect x="5" y="0" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="fill" values="#7AE8CB;#33C69F;#7AE8CB" dur="1.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Head — wider than cube (8 wide vs 6) -->
+        <rect x="1" y="1" width="8" height="1" fill="#2AA886"/>
+        <rect x="1" y="2" width="8" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="8" height="1" fill="#2AA886"/>
+        <!-- Screen face inset (darker band across eyes) -->
+        <rect x="2" y="2" width="6" height="1" fill="#0F3D31" opacity="0.5"/>
+        <!-- Screen eyes — glowing green rectangles -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="opacity" values="1;1;0.3;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="2" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="opacity" values="1;1;0.3;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Body — narrower, distinct from head -->
+        <rect x="3" y="4" width="4" height="1" fill="#33C69F"/>
+        <rect x="3" y="5" width="4" height="1" fill="#2AA886"/>
+        <!-- Belt detail dots -->
+        <rect x="4" y="5" width="1" height="1" fill="#0F3D31"/>
+        <rect x="6" y="5" width="1" height="1" fill="#0F3D31"/>
+        <!-- Arms — slightly longer than cube, with elbows -->
+        <rect x="1" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="0" y="5" width="1" height="1" fill="#5DDBB8"/>
+        <rect x="7" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="9" y="5" width="1" height="1" fill="#5DDBB8"/>
+        <!-- Treads (wider than cube feet) -->
+        <rect x="2" y="6" width="2" height="1" fill="#1E7F65"/>
+        <rect x="6" y="6" width="2" height="1" fill="#1E7F65"/>
+        <!-- Small thruster glow under treads -->
+        <rect x="3" y="7" width="1" height="1" fill="#5DDBB8" opacity="0.4">
+          <animate attributeName="opacity" values="0.2;0.6;0.2" dur="1s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="7" width="1" height="1" fill="#5DDBB8" opacity="0.4">
+          <animate attributeName="opacity" values="0.2;0.6;0.2" dur="1s" repeatCount="indefinite" begin="0.5s"/>
+        </rect>
+      </svg>
+    </div>
+    <div class="card-title">Bot Coco</div>
+    <div class="card-subtitle">The Conveyor Robot</div>
+    <p class="card-desc">Wider head than Cube with a dark screen inset and flickering green eyes. Jointed arms with elbows, belt detail, chunky treads with subtle thruster glow. Clearly a robot, still 8-bit.</p>
+    <div class="traits">
+      <span class="trait green">Screen Face</span>
+      <span class="trait green">Treads</span>
+      <span class="trait green">Elbow Arms</span>
+    </div>
+  </div>
+</div>
+
+<!-- ====== NEW CONTENDERS FOR 4TH SLOT ====== -->
+<div class="section-label">New Contenders — Pick the 4th</div>
+<div class="grid">
+
+  <!-- 04 COMPASS COCO -->
+  <div class="card">
+    <span class="card-number">04</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas wobble">
+      <svg class="coco" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+        <!-- Gold N marker on top -->
+        <rect x="4" y="0" width="2" height="1" fill="#FFD700"/>
+        <!-- Round-ish body (approximated with pixels) -->
+        <rect x="3" y="1" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="2" width="6" height="1" fill="#33C69F"/>
+        <rect x="2" y="3" width="6" height="1" fill="#33C69F"/>
+        <rect x="2" y="4" width="6" height="1" fill="#33C69F"/>
+        <rect x="3" y="5" width="4" height="1" fill="#2AA886"/>
+        <!-- Compass needle — red/white pixel line through center -->
+        <rect x="5" y="2" width="1" height="1" fill="#EF4444">
+          <animate attributeName="x" values="5;4;5;6;5" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="4" width="1" height="1" fill="#E8E8ED">
+          <animate attributeName="x" values="4;5;4;3;4" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Center dot -->
+        <rect x="4" y="3" width="2" height="1" fill="#0F3D31"/>
+        <!-- Eyes -->
+        <rect x="3" y="2" width="1" height="1" fill="#FFF"/>
+        <rect x="6" y="2" width="1" height="1" fill="#FFF"/>
+        <!-- Smile -->
+        <rect x="4" y="5" width="2" height="1" fill="#FFF"/>
+        <!-- Arms -->
+        <rect x="0" y="3" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="8" y="3" width="2" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="3" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="6" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Compass Coco</div>
+    <div class="card-subtitle">The Trust Navigator</div>
+    <p class="card-desc">A compass body with a wobbling needle through the center. Gold north marker on top. "I'll guide you to what you need." The circular shape stands out from the squares.</p>
+    <div class="traits">
+      <span class="trait green">Circular</span>
+      <span class="trait gold">Navigator</span>
+      <span class="trait">Unique Shape</span>
+    </div>
+  </div>
+
+  <!-- 05 SIGNAL COCO -->
+  <div class="card">
+    <span class="card-number">05</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas float" style="animation-duration:2.6s">
+      <svg class="coco" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna (signal source) -->
+        <rect x="5" y="0" width="1" height="1" fill="#7AE8CB"/>
+        <!-- Signal wave pixels emanating from antenna -->
+        <rect x="3" y="0" width="1" height="1" fill="#5DDBB8" opacity="0.3">
+          <animate attributeName="opacity" values="0;0.6;0" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="0" width="1" height="1" fill="#5DDBB8" opacity="0.3">
+          <animate attributeName="opacity" values="0;0.6;0" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="0" width="1" height="1" fill="#33C69F" opacity="0.2">
+          <animate attributeName="opacity" values="0;0.4;0" dur="1.8s" repeatCount="indefinite" begin="0.3s"/>
+        </rect>
+        <rect x="8" y="0" width="1" height="1" fill="#33C69F" opacity="0.2">
+          <animate attributeName="opacity" values="0;0.4;0" dur="1.8s" repeatCount="indefinite" begin="0.3s"/>
+        </rect>
+        <!-- Head/body -->
+        <rect x="3" y="1" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="2" y="2" width="6" height="1" fill="#33C69F"/>
+        <rect x="2" y="3" width="6" height="1" fill="#33C69F"/>
+        <rect x="2" y="4" width="6" height="1" fill="#33C69F"/>
+        <rect x="2" y="5" width="6" height="1" fill="#2AA886"/>
+        <rect x="2" y="6" width="6" height="1" fill="#1E7F65"/>
+        <!-- Eyes -->
+        <rect x="3" y="3" width="1" height="1" fill="#FFF"/>
+        <rect x="6" y="3" width="1" height="1" fill="#FFF"/>
+        <!-- Happy mouth -->
+        <rect x="4" y="5" width="2" height="1" fill="#FFF"/>
+        <!-- Arms -->
+        <rect x="0" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="8" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="3" y="7" width="1" height="1" fill="#33C69F"/>
+        <rect x="6" y="7" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Signal Coco</div>
+    <div class="card-subtitle">The Broadcaster</div>
+    <p class="card-desc">A body with a signal antenna broadcasting pulsing pixel waves outward. "I'm always listening, always connected." The wave pixels fade in and out rhythmically. Eye-catching and communicates active AI.</p>
+    <div class="traits">
+      <span class="trait green">Pixel Waves</span>
+      <span class="trait green">Connected</span>
+      <span class="trait">Eye-Catching</span>
+    </div>
+  </div>
+
+  <!-- 06 ATOM COCO -->
+  <div class="card">
+    <span class="card-number">06</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas bounce" style="animation-duration:2.4s">
+      <svg class="coco" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+        <!-- Orbit ring pixels (behind body - diagonal dots) -->
+        <rect x="1" y="1" width="1" height="1" fill="#33C69F" opacity="0.3"/>
+        <rect x="8" y="1" width="1" height="1" fill="#33C69F" opacity="0.3"/>
+        <rect x="0" y="4" width="1" height="1" fill="#33C69F" opacity="0.3"/>
+        <rect x="9" y="4" width="1" height="1" fill="#33C69F" opacity="0.3"/>
+        <rect x="1" y="6" width="1" height="1" fill="#33C69F" opacity="0.3"/>
+        <rect x="8" y="6" width="1" height="1" fill="#33C69F" opacity="0.3"/>
+        <!-- Orbiting electron dots -->
+        <rect x="1" y="1" width="1" height="1" fill="#7AE8CB">
+          <animate attributeName="x" values="1;4;8;9;8;4;1;0;1" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="1;0;1;4;6;7;6;4;1" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="8" y="6" width="1" height="1" fill="#5DDBB8">
+          <animate attributeName="x" values="8;4;1;0;1;4;8;9;8" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="6;7;6;4;1;0;1;4;6" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Core body (nucleus) -->
+        <rect x="3" y="2" width="4" height="1" fill="#5DDBB8"/>
+        <rect x="3" y="3" width="4" height="1" fill="#33C69F"/>
+        <rect x="3" y="4" width="4" height="1" fill="#33C69F"/>
+        <rect x="3" y="5" width="4" height="1" fill="#2AA886"/>
+        <!-- Eyes -->
+        <rect x="4" y="3" width="1" height="1" fill="#FFF"/>
+        <rect x="6" y="3" width="1" height="1" fill="#FFF"/>
+        <!-- Smile -->
+        <rect x="4" y="5" width="2" height="1" fill="#FFF"/>
+        <!-- Arms -->
+        <rect x="1" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="7" y="4" width="2" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="3" y="6" width="1" height="1" fill="#33C69F"/>
+        <rect x="6" y="6" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Atom Coco</div>
+    <div class="card-subtitle">The Core</div>
+    <p class="card-desc">A compact nucleus body with two orbiting pixel electrons tracing paths around it. "Trust at the atomic level." The orbital animation is mesmerizing and communicates depth and intelligence.</p>
+    <div class="traits">
+      <span class="trait green">Orbiting</span>
+      <span class="trait purple">Science</span>
+      <span class="trait">Mesmerizing</span>
+    </div>
+  </div>
+
+  <!-- 07 HELMET COCO -->
+  <div class="card">
+    <span class="card-number">07</span>
+    <span class="card-tag tag-new">NEW</span>
+    <div class="pixel-canvas bounce" style="animation-duration:2.6s">
+      <svg class="coco" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+        <!-- Helmet dome top -->
+        <rect x="3" y="0" width="4" height="1" fill="#2AA886"/>
+        <!-- Helmet body -->
+        <rect x="2" y="1" width="6" height="1" fill="#33C69F"/>
+        <rect x="1" y="2" width="8" height="1" fill="#33C69F"/>
+        <rect x="1" y="3" width="8" height="1" fill="#33C69F"/>
+        <rect x="1" y="4" width="8" height="1" fill="#2AA886"/>
+        <rect x="2" y="5" width="6" height="1" fill="#1E7F65"/>
+        <!-- Visor band (dark) -->
+        <rect x="2" y="2" width="6" height="2" fill="#0F3D31" opacity="0.6"/>
+        <!-- Eyes inside visor — glowing -->
+        <rect x="3" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <rect x="6" y="2" width="1" height="1" fill="#7AE8CB"/>
+        <!-- Visor scan pixel -->
+        <rect x="2" y="3" width="1" height="1" fill="#5DDBB8" opacity="0.5">
+          <animate attributeName="x" values="2;3;4;5;6;7;6;5;4;3;2" dur="2.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.3;0.5;0.8;0.5;0.3" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Chin vent / smile -->
+        <rect x="4" y="4" width="2" height="1" fill="#5DDBB8" opacity="0.4"/>
+        <!-- Side armor -->
+        <rect x="1" y="3" width="1" height="1" fill="#1E7F65"/>
+        <rect x="8" y="3" width="1" height="1" fill="#1E7F65"/>
+        <!-- Body below helmet -->
+        <rect x="3" y="6" width="4" height="1" fill="#2AA886"/>
+        <!-- Arms -->
+        <rect x="1" y="6" width="2" height="1" fill="#5DDBB8"/>
+        <rect x="7" y="6" width="2" height="1" fill="#5DDBB8"/>
+        <!-- Feet -->
+        <rect x="3" y="7" width="1" height="1" fill="#33C69F"/>
+        <rect x="6" y="7" width="1" height="1" fill="#33C69F"/>
+      </svg>
+    </div>
+    <div class="card-title">Helmet Coco</div>
+    <div class="card-subtitle">The Security Guard</div>
+    <p class="card-desc">A security helmet with glowing eyes behind a dark visor band. A scan pixel sweeps back and forth across the visor. Side armor details. "I'm suited up and watching." The most protective-looking option.</p>
+    <div class="traits">
+      <span class="trait green">Visor Scan</span>
+      <span class="trait green">Armored</span>
+      <span class="trait">Protective</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>
+    The 3 finalists (C-Block, Cube, Bot) are locked in. Pick one of the 4 new contenders to complete the set — or mix elements between them. All characters use the 10x10 pixel grid for true 8-bit rendering at any size.
+  </p>
+  <p class="note">COCO V3 — CONVEYOR TRUST CENTER VISION — MARCH 2026</p>
+</div>
+
+</body>
+</html>
