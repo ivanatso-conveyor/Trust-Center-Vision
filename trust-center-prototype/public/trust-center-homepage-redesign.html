@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Center Homepage — Redesign Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0D0D12;
+    --bg-surface: #16161E;
+    --bg-elevated: #1E1E2A;
+    --bg-hover: #252536;
+    --border-default: #2A2A3A;
+    --border-bright: #3A3A4F;
+    --text-primary: #E8E8ED;
+    --text-secondary: #9898A8;
+    --text-muted: #5E5E72;
+    --brand-50: #E8FAF4;
+    --brand-100: #C0F0DE;
+    --brand-200: #7AE8CB;
+    --brand-300: #5DDBB8;
+    --brand-400: #22B8CF;
+    --brand-500: #1898B0;
+    --brand-600: #107888;
+    --brand-700: #0A5868;
+    --brand-800: #063848;
+    --accent-400: #F0C040;
+    --radius: 12px;
+    --radius-lg: 16px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg-primary); color: var(--text-primary); font-family: 'Inter', system-ui, sans-serif; }
+
+  /* ===== LAYOUT ===== */
+  .layout { display: flex; height: 100vh; }
+  .sidebar { width: 56px; background: var(--bg-surface); border-right: 1px solid var(--border-default); display: flex; flex-direction: column; align-items: center; padding: 16px 0; gap: 20px; flex-shrink: 0; }
+  .sidebar .logo { width: 32px; height: 32px; border-radius: 8px; background: #122E32; display: flex; align-items: center; justify-content: center; }
+  .sidebar .nav-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
+  .sidebar .nav-icon:hover { background: var(--bg-hover); color: var(--text-secondary); }
+  .sidebar .nav-icon.active { background: var(--brand-700); color: var(--brand-300); }
+  .main { flex: 1; overflow-y: auto; }
+  .right-panel { width: 320px; border-left: 1px solid var(--border-default); background: var(--bg-surface); flex-shrink: 0; }
+  .right-panel-header { padding: 12px 16px; border-bottom: 1px solid var(--border-default); display: flex; align-items: center; gap: 8px; }
+  .right-panel-header .coco-icon { width: 24px; height: 24px; border-radius: 6px; background: var(--brand-700); display: flex; align-items: center; justify-content: center; font-size: 10px; }
+  .right-panel-tabs { display: flex; border-bottom: 1px solid var(--border-default); }
+  .right-panel-tabs button { flex: 1; padding: 10px; font-size: 11px; font-weight: 600; background: none; border: none; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; }
+  .right-panel-tabs button.active { color: var(--brand-400); border-bottom-color: var(--brand-400); }
+
+  /* ===== SEARCH BAR (persistent top) ===== */
+  .search-bar-container { position: sticky; top: 0; z-index: 20; background: var(--bg-primary); border-bottom: 1px solid var(--border-default); padding: 12px 24px; display: flex; align-items: center; gap: 12px; }
+  .product-filter { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-default); font-size: 12px; font-weight: 500; color: var(--text-secondary); cursor: pointer; white-space: nowrap; }
+  .product-filter:hover { border-color: var(--border-bright); }
+  .product-filter svg { width: 14px; height: 14px; color: var(--brand-400); }
+  .search-input-wrap { flex: 1; position: relative; }
+  .search-input { width: 100%; padding: 8px 16px 8px 36px; border-radius: 8px; background: var(--bg-elevated); border: 1px solid var(--border-default); color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.15s; }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-input:focus { border-color: var(--brand-600); }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+  .search-kbd { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--text-muted); background: var(--bg-primary); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-default); }
+
+  /* ===== SEARCH RESULTS OVERLAY ===== */
+  .search-overlay { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--bg-elevated); border: 1px solid var(--border-bright); border-radius: var(--radius); box-shadow: 0 16px 48px rgba(0,0,0,0.5); z-index: 30; max-height: 420px; overflow-y: auto; }
+  .search-overlay.visible { display: block; }
+  .search-overlay .section-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 12px 16px 6px; }
+  .search-result { display: flex; align-items: center; gap: 10px; padding: 8px 16px; cursor: pointer; transition: background 0.1s; }
+  .search-result:hover { background: var(--bg-hover); }
+  .search-result .icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .search-result .icon.doc { background: rgba(34,184,207,0.12); color: var(--brand-400); }
+  .search-result .icon.faq { background: rgba(93,219,184,0.12); color: var(--brand-300); }
+  .search-result .icon.cert { background: rgba(240,192,64,0.12); color: var(--accent-400); }
+  .search-result .meta { flex: 1; min-width: 0; }
+  .search-result .meta .title { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-result .meta .sub { font-size: 11px; color: var(--text-muted); }
+  .search-result .add-btn { font-size: 11px; color: var(--brand-400); font-weight: 500; opacity: 0; transition: opacity 0.15s; white-space: nowrap; }
+  .search-result:hover .add-btn { opacity: 1; }
+  .search-ai-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-top: 1px solid var(--border-default); cursor: pointer; }
+  .search-ai-row:hover { background: var(--bg-hover); }
+  .search-ai-row .sparkle { color: var(--brand-400); }
+  .search-ai-row .text { font-size: 12px; color: var(--text-secondary); }
+
+  /* ===== CONTENT ===== */
+  .content { max-width: 900px; margin: 0 auto; padding: 24px 32px 64px; }
+
+  /* Certifications strip */
+  .certs-strip { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; padding: 16px 20px; background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); }
+  .cert-badge { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+  .cert-badge .icon-circle { width: 44px; height: 44px; border-radius: 50%; background: var(--bg-elevated); border: 2px solid var(--border-default); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--brand-300); transition: all 0.15s; }
+  .cert-badge:hover .icon-circle { border-color: var(--brand-500); background: rgba(34,184,207,0.08); }
+  .cert-badge .label { font-size: 10px; font-weight: 500; color: var(--text-muted); }
+  .cert-badge .date { font-size: 9px; color: var(--text-muted); opacity: 0.6; }
+  .certs-strip .certs-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); writing-mode: vertical-lr; transform: rotate(180deg); margin-right: 4px; }
+  .certs-strip .divider { width: 1px; height: 48px; background: var(--border-default); margin: 0 4px; }
+
+  /* Documents + Knowledge side by side */
+  .twin-section { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .section-card { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; }
+  .section-card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--border-default); }
+  .section-card-header h3 { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .section-card-header .count { font-size: 11px; font-weight: 600; color: var(--brand-400); background: rgba(34,184,207,0.12); padding: 2px 8px; border-radius: 99px; }
+  .section-card-header .see-all { font-size: 11px; color: var(--text-muted); cursor: pointer; text-decoration: none; }
+  .section-card-header .see-all:hover { color: var(--text-secondary); }
+
+  /* Document rows */
+  .doc-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border-default); transition: background 0.1s; cursor: pointer; }
+  .doc-row:last-child { border-bottom: none; }
+  .doc-row:hover { background: var(--bg-hover); }
+  .doc-row .file-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+  .doc-row .file-icon.pdf { background: rgba(239,68,68,0.12); color: #EF4444; }
+  .doc-row .file-icon.xlsx { background: rgba(34,197,94,0.12); color: #22C55E; }
+  .doc-row .info { flex: 1; min-width: 0; }
+  .doc-row .info .name { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .doc-row .info .detail { font-size: 11px; color: var(--text-muted); }
+  .doc-row .lock { color: var(--text-muted); font-size: 12px; }
+  .doc-row .actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+  .doc-row:hover .actions { opacity: 1; }
+  .doc-row .actions button { font-size: 10px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-default); background: var(--bg-elevated); color: var(--text-secondary); cursor: pointer; white-space: nowrap; }
+  .doc-row .actions button:hover { border-color: var(--brand-500); color: var(--brand-400); }
+  .doc-row .actions button.primary { background: var(--brand-700); border-color: var(--brand-600); color: var(--brand-300); }
+
+  /* KB categories grid */
+  .kb-grid { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .kb-cat { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-default); border-right: 1px solid var(--border-default); cursor: pointer; transition: background 0.1s; }
+  .kb-cat:nth-child(2n) { border-right: none; }
+  .kb-cat:nth-last-child(-n+2) { border-bottom: none; }
+  .kb-cat:hover { background: var(--bg-hover); }
+  .kb-cat .cat-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--brand-400); flex-shrink: 0; }
+  .kb-cat .cat-info { flex: 1; }
+  .kb-cat .cat-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .kb-cat .cat-count { font-size: 10px; color: var(--text-muted); }
+  .kb-cat .arrow { color: var(--text-muted); font-size: 12px; opacity: 0; transition: opacity 0.15s; }
+  .kb-cat:hover .arrow { opacity: 1; }
+
+  /* Subprocessors + Updates row */
+  .info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .info-card { background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 16px; }
+  .info-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .info-card .count { font-size: 11px; font-weight: 600; color: var(--brand-400); background: rgba(34,184,207,0.12); padding: 2px 8px; border-radius: 99px; }
+  .sub-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 12px; color: var(--text-secondary); }
+  .sub-row .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-500); }
+  .sub-row .purpose { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+
+  .update-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border-default); }
+  .update-item:last-child { border-bottom: none; }
+  .update-item .badge { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .update-item .badge.new { background: rgba(34,197,94,0.15); color: #22C55E; }
+  .update-item .badge.updated { background: rgba(34,184,207,0.12); color: var(--brand-400); }
+  .update-item .text { font-size: 12px; color: var(--text-secondary); }
+  .update-item .date { font-size: 10px; color: var(--text-muted); }
+
+  /* Quick links */
+  .quick-links { display: flex; gap: 10px; margin-bottom: 28px; }
+  .quick-link { flex: 1; display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-radius: var(--radius); background: var(--bg-surface); border: 1px solid var(--border-default); cursor: pointer; transition: all 0.15s; }
+  .quick-link:hover { border-color: var(--brand-600); background: rgba(34,184,207,0.04); }
+  .quick-link .ql-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--brand-400); }
+  .quick-link .ql-text { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+  .quick-link .ql-sub { font-size: 10px; color: var(--text-muted); }
+
+  /* Product line pills */
+  .product-pills { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .product-pills .label { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-right: 4px; }
+  .product-pill { padding: 5px 12px; border-radius: 99px; font-size: 11px; font-weight: 500; border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+  .product-pill:hover { border-color: var(--border-bright); }
+  .product-pill.active { background: var(--brand-700); border-color: var(--brand-500); color: var(--brand-200); }
+
+  /* Section heading */
+  .section-heading { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- LEFT SIDEBAR (mimic existing) -->
+  <nav class="sidebar">
+    <div class="logo">
+      <svg width="20" height="20" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="8" fill="#122E32"/><path d="M8 26C8 26 12 10 20 10C28 10 32 26 32 26" stroke="#22B8CF" stroke-width="3.5" stroke-linecap="round" fill="none"/><circle cx="20" cy="22" r="3" fill="#80E0E8"/></svg>
+    </div>
+    <div class="nav-icon active" title="Home">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+    </div>
+    <div class="nav-icon" title="Coco Agent">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="nav-icon" title="Scorecard">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <!-- STICKY SEARCH BAR -->
+    <div class="search-bar-container">
+      <button class="product-filter" onclick="toggleProductDropdown()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        All Products
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="search-input-wrap">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" type="text" placeholder="Search documents, FAQs, certifications..." onfocus="showSearch()" oninput="filterSearch(this.value)" />
+        <span class="search-kbd">⌘K</span>
+
+        <!-- SEARCH RESULTS OVERLAY -->
+        <div class="search-overlay" id="searchOverlay">
+          <div class="section-label">Documents</div>
+          <div class="search-result" data-type="doc">
+            <div class="icon doc">PDF</div>
+            <div class="meta"><div class="title">SOC 2 Type II Report</div><div class="sub">Updated Mar 2026 · PDF</div></div>
+            <span class="add-btn">+ Add</span>
+          </div>
+          <div class="search-result" data-type="doc">
+            <div class="icon doc">PDF</div>
+            <div class="meta"><div class="title">ISO 27001 Certificate</div><div class="sub">Updated Jan 2026 · PDF</div></div>
+            <span class="add-btn">+ Add</span>
+          </div>
+          <div class="search-result" data-type="doc">
+            <div class="icon doc">PDF</div>
+            <div class="meta"><div class="title">Data Processing Addendum</div><div class="sub">Updated Feb 2026 · PDF</div></div>
+            <span class="add-btn">+ Add</span>
+          </div>
+
+          <div class="section-label">Knowledge Base</div>
+          <div class="search-result" data-type="faq">
+            <div class="icon faq">KB</div>
+            <div class="meta"><div class="title">How does Arcline manage user access controls?</div><div class="sub">Access Management · 3 sources</div></div>
+          </div>
+          <div class="search-result" data-type="faq">
+            <div class="icon faq">KB</div>
+            <div class="meta"><div class="title">Where is customer data stored and processed?</div><div class="sub">Data Privacy · 2 sources</div></div>
+          </div>
+
+          <div class="section-label">Certifications</div>
+          <div class="search-result" data-type="cert">
+            <div class="icon cert">◉</div>
+            <div class="meta"><div class="title">SOC 2 Type II</div><div class="sub">Valid through Dec 2026</div></div>
+          </div>
+
+          <div class="search-ai-row">
+            <span class="sparkle">✦</span>
+            <span class="text">Ask Coco anything about Arcline's security posture…</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="content">
+
+      <!-- Product line pills -->
+      <div class="product-pills">
+        <span class="label">Reviewing:</span>
+        <button class="product-pill active" onclick="selectPill(this)">All Products</button>
+        <button class="product-pill" onclick="selectPill(this)">Arcline Flow</button>
+        <button class="product-pill" onclick="selectPill(this)">Arcline Connect</button>
+        <button class="product-pill" onclick="selectPill(this)">Arcline API</button>
+        <button class="product-pill" onclick="selectPill(this)">Arcline Analytics</button>
+      </div>
+
+      <!-- Certifications strip -->
+      <div class="certs-strip">
+        <span class="certs-title">CERTS</span>
+        <div class="cert-badge">
+          <div class="icon-circle">SOC2</div>
+          <span class="label">SOC 2 II</span>
+          <span class="date">Mar 2026</span>
+        </div>
+        <div class="cert-badge">
+          <div class="icon-circle">ISO</div>
+          <span class="label">ISO 27001</span>
+          <span class="date">Jan 2026</span>
+        </div>
+        <div class="cert-badge">
+          <div class="icon-circle">GDPR</div>
+          <span class="label">GDPR</span>
+          <span class="date">Active</span>
+        </div>
+        <div class="cert-badge">
+          <div class="icon-circle">HIPAA</div>
+          <span class="label">HIPAA</span>
+          <span class="date">Active</span>
+        </div>
+        <div class="cert-badge">
+          <div class="icon-circle">SOC3</div>
+          <span class="label">SOC 3</span>
+          <span class="date">Mar 2026</span>
+        </div>
+        <div class="divider"></div>
+        <div class="cert-badge">
+          <div class="icon-circle">CSA</div>
+          <span class="label">CSA STAR</span>
+          <span class="date">Feb 2026</span>
+        </div>
+      </div>
+
+      <!-- Quick links row -->
+      <div class="quick-links">
+        <div class="quick-link">
+          <div class="ql-icon">📄</div>
+          <div>
+            <div class="ql-text">Privacy Policy</div>
+            <div class="ql-sub">Quick link</div>
+          </div>
+        </div>
+        <div class="quick-link">
+          <div class="ql-icon">📋</div>
+          <div>
+            <div class="ql-text">Data Processing Agreement</div>
+            <div class="ql-sub">Quick link</div>
+          </div>
+        </div>
+        <div class="quick-link">
+          <div class="ql-icon">🛡️</div>
+          <div>
+            <div class="ql-text">Report a Vulnerability</div>
+            <div class="ql-sub">security@arcline.io</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS + KNOWLEDGE BASE side by side -->
+      <div class="twin-section">
+        <!-- Documents -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <h3>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Documents
+              <span class="count">42</span>
+            </h3>
+            <a class="see-all" href="#">See all →</a>
+          </div>
+          <div class="doc-row">
+            <div class="file-icon pdf">PDF</div>
+            <div class="info">
+              <div class="name">SOC 2 Type II Report</div>
+              <div class="detail">Updated Mar 2026</div>
+            </div>
+            <span class="lock">🔒</span>
+            <div class="actions">
+              <button class="primary">+ Add</button>
+            </div>
+          </div>
+          <div class="doc-row">
+            <div class="file-icon pdf">PDF</div>
+            <div class="info">
+              <div class="name">ISO 27001 Certificate</div>
+              <div class="detail">Updated Jan 2026</div>
+            </div>
+            <div class="actions">
+              <button class="primary">+ Add</button>
+            </div>
+          </div>
+          <div class="doc-row">
+            <div class="file-icon pdf">PDF</div>
+            <div class="info">
+              <div class="name">Data Processing Addendum</div>
+              <div class="detail">Updated Feb 2026</div>
+            </div>
+            <div class="actions">
+              <button class="primary">+ Add</button>
+            </div>
+          </div>
+          <div class="doc-row">
+            <div class="file-icon xlsx">XLSX</div>
+            <div class="info">
+              <div class="name">Vendor Risk Assessment</div>
+              <div class="detail">Updated Mar 2026</div>
+            </div>
+            <div class="actions">
+              <button class="primary">+ Add</button>
+            </div>
+          </div>
+          <div class="doc-row">
+            <div class="file-icon pdf">PDF</div>
+            <div class="info">
+              <div class="name">Penetration Test Summary</div>
+              <div class="detail">Updated Feb 2026</div>
+            </div>
+            <span class="lock">🔒</span>
+            <div class="actions">
+              <button class="primary">+ Add</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Knowledge Base -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <h3>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+              Knowledge Base
+              <span class="count">128</span>
+            </h3>
+            <a class="see-all" href="#">See all →</a>
+          </div>
+          <div class="kb-grid">
+            <div class="kb-cat">
+              <div class="cat-icon">🔐</div>
+              <div class="cat-info">
+                <div class="cat-name">Access Management</div>
+                <div class="cat-count">7 answers</div>
+              </div>
+              <span class="arrow">→</span>
+            </div>
+            <div class="kb-cat">
+              <div class="cat-icon">🛡️</div>
+              <div class="cat-info">
+                <div class="cat-name">Application Security</div>
+                <div class="cat-count">15 answers</div>
+              </div>
+              <span class="arrow">→</span>
+            </div>
+            <div class="kb-cat">
+              <div class="cat-icon">🔏</div>
+              <div class="cat-info">
+                <div class="cat-name">Data Privacy</div>
+                <div class="cat-count">12 answers</div>
+              </div>
+              <span class="arrow">→</span>
+            </div>
+            <div class="kb-cat">
+              <div class="cat-icon">🏗️</div>
+              <div class="cat-info">
+                <div class="cat-name">Infrastructure</div>
+                <div class="cat-count">9 answers</div>
+              </div>
+              <span class="arrow">→</span>
+            </div>
+            <div class="kb-cat">
+              <div class="cat-icon">🚨</div>
+              <div class="cat-info">
+                <div class="cat-name">Incident Response</div>
+                <div class="cat-count">6 answers</div>
+              </div>
+              <span class="arrow">→</span>
+            </div>
+            <div class="kb-cat">
+              <div class="cat-icon">☁️</div>
+              <div class="cat-info">
+                <div class="cat-name">Cloud Security</div>
+                <div class="cat-count">10 answers</div>
+              </div>
+              <span class="arrow">→</span>
+            </div>
+            <div class="kb-cat">
+              <div class="cat-icon">👥</div>
+              <div class="cat-info">
+                <div class="cat-name">Personnel Security</div>
+                <div class="cat-count">8 answers</div>
+              </div>
+              <span class="arrow">→</span>
+            </div>
+            <div class="kb-cat">
+              <div class="cat-icon">📊</div>
+              <div class="cat-info">
+                <div class="cat-name">Vendor Management</div>
+                <div class="cat-count">5 answers</div>
+              </div>
+              <span class="arrow">→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subprocessors + Recent Updates -->
+      <div class="info-row">
+        <div class="info-card">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Subprocessors
+            <span class="count">24</span>
+          </h3>
+          <div class="sub-row"><span class="dot"></span> Amazon Web Services <span class="purpose">Infrastructure</span></div>
+          <div class="sub-row"><span class="dot"></span> Datadog <span class="purpose">Monitoring</span></div>
+          <div class="sub-row"><span class="dot"></span> Snowflake <span class="purpose">Data Warehouse</span></div>
+          <div class="sub-row"><span class="dot"></span> Okta <span class="purpose">Identity</span></div>
+          <div style="text-align:center;padding-top:8px"><a class="see-all" href="#" style="font-size:11px;color:var(--text-muted);text-decoration:none">View all 24 →</a></div>
+        </div>
+
+        <div class="info-card">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Recent Updates
+          </h3>
+          <div class="update-item">
+            <span class="badge new">New</span>
+            <div>
+              <div class="text">SOC 2 Type II report refreshed</div>
+              <div class="date">Mar 15, 2026</div>
+            </div>
+          </div>
+          <div class="update-item">
+            <span class="badge updated">Updated</span>
+            <div>
+              <div class="text">Vendor Risk Assessment template v3</div>
+              <div class="date">Mar 8, 2026</div>
+            </div>
+          </div>
+          <div class="update-item">
+            <span class="badge new">New</span>
+            <div>
+              <div class="text">Penetration Test Summary added</div>
+              <div class="date">Feb 28, 2026</div>
+            </div>
+          </div>
+          <div class="update-item">
+            <span class="badge updated">Updated</span>
+            <div>
+              <div class="text">Data Processing Addendum revised</div>
+              <div class="date">Feb 12, 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL (Coco sidebar) -->
+  <div class="right-panel">
+    <div class="right-panel-header">
+      <div class="coco-icon">🤖</div>
+      <span style="font-size:13px;font-weight:600">Coco</span>
+      <span style="font-size:11px;color:var(--text-muted);margin-left:4px">· Ready</span>
+    </div>
+    <div class="right-panel-tabs">
+      <button class="active">To-Do</button>
+      <button>Collection</button>
+      <button>Sessions</button>
+    </div>
+    <div style="padding:40px 20px;text-align:center;color:var(--text-muted)">
+      <div style="font-size:32px;margin-bottom:12px">📋</div>
+      <div style="font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:4px">No active review</div>
+      <div style="font-size:11px;line-height:1.5">Start a questionnaire or interact with the agent to see your review checklist</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Search overlay toggle
+  function showSearch() {
+    document.getElementById('searchOverlay').classList.add('visible');
+  }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-input-wrap')) {
+      document.getElementById('searchOverlay').classList.remove('visible');
+    }
+  });
+
+  function filterSearch(val) {
+    const overlay = document.getElementById('searchOverlay');
+    if (val.length > 0) overlay.classList.add('visible');
+    // Simple visual filter
+    overlay.querySelectorAll('.search-result').forEach(r => {
+      const text = r.querySelector('.title').textContent.toLowerCase();
+      r.style.display = text.includes(val.toLowerCase()) || val === '' ? 'flex' : 'none';
+    });
+  }
+
+  // Product pill selection
+  function selectPill(el) {
+    document.querySelectorAll('.product-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // Keyboard shortcut for search
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      document.querySelector('.search-input').focus();
+    }
+  });
+</script>
+
+</body>
+</html>

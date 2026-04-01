@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Achievement Badges — Pixel Art Explorations</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0D0D12;
+    color: #E8E8ED;
+    font-family: 'Inter', system-ui, sans-serif;
+    padding: 40px;
+  }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  .subtitle { color: #9898A8; font-size: 14px; margin-bottom: 40px; }
+  h2 { font-size: 18px; margin-bottom: 16px; color: #7AE8CB; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 1100px;
+    margin-bottom: 48px;
+  }
+  .card {
+    background: #16161E;
+    border: 1px solid #2A2A3A;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .card:hover { border-color: #33C69F; }
+  .card-label {
+    color: #33C69F;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+  .icon-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+  }
+  .card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #E8E8ED;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: #9898A8;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .sizes {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #2A2A3A;
+    width: 100%;
+    justify-content: center;
+  }
+  .size-label {
+    font-size: 10px;
+    color: #5E5E72;
+  }
+  .size-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  /* Context row */
+  .context-section {
+    margin-top: 48px;
+    max-width: 1100px;
+  }
+  .context-section h2 { margin-bottom: 16px; }
+  .achievement-row {
+    background: #16161E;
+    border: 1px solid #2A2A3A;
+    border-radius: 16px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+  }
+  .achievement-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .achievement-cell .label {
+    font-size: 10px;
+    color: #9898A8;
+    text-align: center;
+  }
+  .achievement-cell .value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #E8E8ED;
+  }
+  .tier-gold { color: #FFD700; font-size: 10px; font-weight: 600; }
+  .tier-silver { color: #C0C0C0; font-size: 10px; font-weight: 600; }
+  /* Scorecard mock */
+  .scorecard-mock {
+    background: #16161E;
+    border: 1px solid #2A2A3A;
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 24px;
+    max-width: 780px;
+  }
+  .scorecard-mock h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .mock-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .mock-card {
+    background: #0D0D12;
+    border: 1px solid #2A2A3A;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mock-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(13,13,18,0.6);
+    border: 1px solid rgba(42,42,58,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .mock-card-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .mock-card-text .title {
+    font-size: 10px;
+    color: #9898A8;
+  }
+  .mock-card-text .stat {
+    font-size: 18px;
+    font-weight: 700;
+    color: #E8E8ED;
+  }
+  .mock-card-text .desc {
+    font-size: 10px;
+    color: #5E5E72;
+  }
+</style>
+</head>
+<body>
+
+<h1>Achievement Badges — Pixel Art Explorations</h1>
+<p class="subtitle">6 badges in Coco's 4-bit visual style · Conveyor Green palette · 8×8 grid · animated</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- BADGE 1: RESPONSE TIME — Lightning bolt / stopwatch -->
+<!-- ═══════════════════════════════════════════════════ -->
+
+<div class="grid">
+
+<!-- 1. Response Time -->
+<div class="card">
+  <span class="card-label">01 · Response Time</span>
+  <div class="icon-hero">
+    <svg width="80" height="80" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+      <!-- Lightning bolt shape -->
+      <rect x="4" y="0" width="2" height="1" fill="#7AE8CB"/>
+      <rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/>
+      <rect x="2" y="2" width="3" height="1" fill="#33C69F"/>
+      <!-- Wide flash bar -->
+      <rect x="1" y="3" width="5" height="1" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB;#7AE8CB" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="3" y="4" width="2" height="1" fill="#33C69F"/>
+      <rect x="2" y="5" width="2" height="1" fill="#5DDBB8"/>
+      <rect x="1" y="6" width="2" height="1" fill="#2AA886"/>
+      <!-- Speed lines -->
+      <rect x="0" y="2" width="1" height="1" fill="#1E7F65" opacity="0.5">
+        <animate attributeName="opacity" values="0.5;0;0.5" dur="1.2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="7" y="4" width="1" height="1" fill="#1E7F65" opacity="0.5">
+        <animate attributeName="opacity" values="0;0.5;0" dur="1.2s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  </div>
+  <span class="card-name">Lightning Bolt</span>
+  <span class="card-desc">Zigzag bolt with a flash pulse on the center bar. Speed-line pixels flicker on the edges.</span>
+  <div class="sizes">
+    <div class="size-item">
+      <svg width="16" height="16" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="4" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="3" height="1" fill="#33C69F"/><rect x="1" y="3" width="5" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="4" width="2" height="1" fill="#33C69F"/><rect x="2" y="5" width="2" height="1" fill="#5DDBB8"/><rect x="1" y="6" width="2" height="1" fill="#2AA886"/><rect x="0" y="2" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0.5;0;0.5" dur="1.2s" repeatCount="indefinite"/></rect><rect x="7" y="4" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0;0.5;0" dur="1.2s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">16px</span>
+    </div>
+    <div class="size-item">
+      <svg width="24" height="24" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="4" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="3" height="1" fill="#33C69F"/><rect x="1" y="3" width="5" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="4" width="2" height="1" fill="#33C69F"/><rect x="2" y="5" width="2" height="1" fill="#5DDBB8"/><rect x="1" y="6" width="2" height="1" fill="#2AA886"/><rect x="0" y="2" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0.5;0;0.5" dur="1.2s" repeatCount="indefinite"/></rect><rect x="7" y="4" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0;0.5;0" dur="1.2s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24px</span>
+    </div>
+    <div class="size-item">
+      <svg width="40" height="40" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="4" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="3" height="1" fill="#33C69F"/><rect x="1" y="3" width="5" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="4" width="2" height="1" fill="#33C69F"/><rect x="2" y="5" width="2" height="1" fill="#5DDBB8"/><rect x="1" y="6" width="2" height="1" fill="#2AA886"/><rect x="0" y="2" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0.5;0;0.5" dur="1.2s" repeatCount="indefinite"/></rect><rect x="7" y="4" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0;0.5;0" dur="1.2s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">40px</span>
+    </div>
+    <div class="size-item">
+      <svg width="64" height="64" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="4" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="3" height="1" fill="#33C69F"/><rect x="1" y="3" width="5" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="4" width="2" height="1" fill="#33C69F"/><rect x="2" y="5" width="2" height="1" fill="#5DDBB8"/><rect x="1" y="6" width="2" height="1" fill="#2AA886"/><rect x="0" y="2" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0.5;0;0.5" dur="1.2s" repeatCount="indefinite"/></rect><rect x="7" y="4" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0;0.5;0" dur="1.2s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">64px</span>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Content Accuracy -->
+<div class="card">
+  <span class="card-label">02 · Content Accuracy</span>
+  <div class="icon-hero">
+    <svg width="80" height="80" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+      <!-- Bullseye target — concentric rings -->
+      <!-- Outer ring -->
+      <rect x="2" y="0" width="4" height="1" fill="#1E7F65"/>
+      <rect x="0" y="2" width="1" height="4" fill="#1E7F65"/>
+      <rect x="7" y="2" width="1" height="4" fill="#1E7F65"/>
+      <rect x="2" y="7" width="4" height="1" fill="#1E7F65"/>
+      <rect x="1" y="1" width="1" height="1" fill="#1E7F65"/>
+      <rect x="6" y="1" width="1" height="1" fill="#1E7F65"/>
+      <rect x="1" y="6" width="1" height="1" fill="#1E7F65"/>
+      <rect x="6" y="6" width="1" height="1" fill="#1E7F65"/>
+      <!-- Middle ring -->
+      <rect x="3" y="2" width="2" height="1" fill="#2AA886"/>
+      <rect x="2" y="3" width="1" height="2" fill="#2AA886"/>
+      <rect x="5" y="3" width="1" height="2" fill="#2AA886"/>
+      <rect x="3" y="5" width="2" height="1" fill="#2AA886"/>
+      <!-- Inner bullseye — pulsing bright center -->
+      <rect x="3" y="3" width="2" height="2" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2.4s" repeatCount="indefinite"/>
+      </rect>
+      <!-- Hit sparkle top-right -->
+      <rect x="6" y="0" width="1" height="1" fill="#5DDBB8" opacity="0">
+        <animate attributeName="opacity" values="0;0;1;0" dur="3s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="7" y="1" width="1" height="1" fill="#5DDBB8" opacity="0">
+        <animate attributeName="opacity" values="0;0;0.6;0" dur="3s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  </div>
+  <span class="card-name">Bullseye Target</span>
+  <span class="card-desc">Concentric target rings converging on a pulsing bright center. Hit sparkle flickers at top-right.</span>
+  <div class="sizes">
+    <div class="size-item">
+      <svg width="16" height="16" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#1E7F65"/><rect x="0" y="2" width="1" height="4" fill="#1E7F65"/><rect x="7" y="2" width="1" height="4" fill="#1E7F65"/><rect x="2" y="7" width="4" height="1" fill="#1E7F65"/><rect x="1" y="1" width="1" height="1" fill="#1E7F65"/><rect x="6" y="1" width="1" height="1" fill="#1E7F65"/><rect x="1" y="6" width="1" height="1" fill="#1E7F65"/><rect x="6" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="2" width="2" height="1" fill="#2AA886"/><rect x="2" y="3" width="1" height="2" fill="#2AA886"/><rect x="5" y="3" width="1" height="2" fill="#2AA886"/><rect x="3" y="5" width="2" height="1" fill="#2AA886"/><rect x="3" y="3" width="2" height="2" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2.4s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">16px</span>
+    </div>
+    <div class="size-item">
+      <svg width="24" height="24" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#1E7F65"/><rect x="0" y="2" width="1" height="4" fill="#1E7F65"/><rect x="7" y="2" width="1" height="4" fill="#1E7F65"/><rect x="2" y="7" width="4" height="1" fill="#1E7F65"/><rect x="1" y="1" width="1" height="1" fill="#1E7F65"/><rect x="6" y="1" width="1" height="1" fill="#1E7F65"/><rect x="1" y="6" width="1" height="1" fill="#1E7F65"/><rect x="6" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="2" width="2" height="1" fill="#2AA886"/><rect x="2" y="3" width="1" height="2" fill="#2AA886"/><rect x="5" y="3" width="1" height="2" fill="#2AA886"/><rect x="3" y="5" width="2" height="1" fill="#2AA886"/><rect x="3" y="3" width="2" height="2" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2.4s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24px</span>
+    </div>
+    <div class="size-item">
+      <svg width="40" height="40" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#1E7F65"/><rect x="0" y="2" width="1" height="4" fill="#1E7F65"/><rect x="7" y="2" width="1" height="4" fill="#1E7F65"/><rect x="2" y="7" width="4" height="1" fill="#1E7F65"/><rect x="1" y="1" width="1" height="1" fill="#1E7F65"/><rect x="6" y="1" width="1" height="1" fill="#1E7F65"/><rect x="1" y="6" width="1" height="1" fill="#1E7F65"/><rect x="6" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="2" width="2" height="1" fill="#2AA886"/><rect x="2" y="3" width="1" height="2" fill="#2AA886"/><rect x="5" y="3" width="1" height="2" fill="#2AA886"/><rect x="3" y="5" width="2" height="1" fill="#2AA886"/><rect x="3" y="3" width="2" height="2" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2.4s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">40px</span>
+    </div>
+    <div class="size-item">
+      <svg width="64" height="64" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#1E7F65"/><rect x="0" y="2" width="1" height="4" fill="#1E7F65"/><rect x="7" y="2" width="1" height="4" fill="#1E7F65"/><rect x="2" y="7" width="4" height="1" fill="#1E7F65"/><rect x="1" y="1" width="1" height="1" fill="#1E7F65"/><rect x="6" y="1" width="1" height="1" fill="#1E7F65"/><rect x="1" y="6" width="1" height="1" fill="#1E7F65"/><rect x="6" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="2" width="2" height="1" fill="#2AA886"/><rect x="2" y="3" width="1" height="2" fill="#2AA886"/><rect x="5" y="3" width="1" height="2" fill="#2AA886"/><rect x="3" y="5" width="2" height="1" fill="#2AA886"/><rect x="3" y="3" width="2" height="2" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2.4s" repeatCount="indefinite"/></rect><rect x="6" y="0" width="1" height="1" fill="#5DDBB8" opacity="0"><animate attributeName="opacity" values="0;0;1;0" dur="3s" repeatCount="indefinite"/></rect><rect x="7" y="1" width="1" height="1" fill="#5DDBB8" opacity="0"><animate attributeName="opacity" values="0;0;0.6;0" dur="3s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">64px</span>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Questions Answered — Question Mark -->
+<div class="card">
+  <span class="card-label">03 · Questions Answered</span>
+  <div class="icon-hero">
+    <svg width="80" height="80" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+      <!-- Question mark shape -->
+      <!-- Top curve -->
+      <rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/>
+      <rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <!-- Right descender -->
+      <rect x="5" y="2" width="2" height="1" fill="#33C69F"/>
+      <!-- Curl inward -->
+      <rect x="4" y="3" width="1" height="1" fill="#33C69F"/>
+      <rect x="3" y="4" width="1" height="1" fill="#2AA886"/>
+      <!-- Stem -->
+      <rect x="3" y="5" width="1" height="1" fill="#2AA886"/>
+      <!-- Dot — pulsing -->
+      <rect x="3" y="7" width="1" height="1" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <!-- Sparkle hint -->
+      <rect x="7" y="0" width="1" height="1" fill="#5DDBB8" opacity="0">
+        <animate attributeName="opacity" values="0;0;0.8;0" dur="3s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  </div>
+  <span class="card-name">Question Mark</span>
+  <span class="card-desc">Classic ? glyph with a pulsing dot at the bottom. Sparkle hint flickers at the top corner.</span>
+  <div class="sizes">
+    <div class="size-item">
+      <svg width="16" height="16" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="5" y="2" width="2" height="1" fill="#33C69F"/><rect x="4" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="4" width="1" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#2AA886"/><rect x="3" y="7" width="1" height="1" fill="#7AE8CB"/></svg>
+      <span class="size-label">16px</span>
+    </div>
+    <div class="size-item">
+      <svg width="24" height="24" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="5" y="2" width="2" height="1" fill="#33C69F"/><rect x="4" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="4" width="1" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#2AA886"/><rect x="3" y="7" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24px</span>
+    </div>
+    <div class="size-item">
+      <svg width="40" height="40" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="5" y="2" width="2" height="1" fill="#33C69F"/><rect x="4" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="4" width="1" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#2AA886"/><rect x="3" y="7" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="7" y="0" width="1" height="1" fill="#5DDBB8" opacity="0"><animate attributeName="opacity" values="0;0;0.8;0" dur="3s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">40px</span>
+    </div>
+    <div class="size-item">
+      <svg width="64" height="64" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="5" y="2" width="2" height="1" fill="#33C69F"/><rect x="4" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="4" width="1" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#2AA886"/><rect x="3" y="7" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="7" y="0" width="1" height="1" fill="#5DDBB8" opacity="0"><animate attributeName="opacity" values="0;0;0.8;0" dur="3s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">64px</span>
+    </div>
+  </div>
+</div>
+
+<!-- 4. Visitor Engagement — Person Waving -->
+<div class="card">
+  <span class="card-label">04 · Visitor Engagement</span>
+  <div class="icon-hero">
+    <svg width="80" height="80" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+      <!-- Person waving -->
+      <!-- Head -->
+      <rect x="3" y="0" width="2" height="1" fill="#7AE8CB"/>
+      <rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/>
+      <!-- Right arm — sparkle pixel angled up from shoulder -->
+      <rect x="6" y="1" width="1" height="1" fill="#5DDBB8">
+        <animate attributeName="fill" values="#5DDBB8;#FFFFFF;#5DDBB8;#5DDBB8" dur="1.6s" repeatCount="indefinite"/>
+      </rect>
+      <!-- Shoulders + left arm -->
+      <rect x="1" y="2" width="1" height="1" fill="#2AA886"/>
+      <rect x="2" y="2" width="4" height="1" fill="#33C69F"/>
+      <!-- Torso -->
+      <rect x="3" y="3" width="2" height="1" fill="#33C69F"/>
+      <rect x="3" y="4" width="2" height="1" fill="#2AA886"/>
+      <!-- Legs (straight down) -->
+      <rect x="3" y="5" width="1" height="1" fill="#1E7F65"/>
+      <rect x="4" y="5" width="1" height="1" fill="#1E7F65"/>
+      <rect x="3" y="6" width="1" height="1" fill="#1E7F65"/>
+      <rect x="4" y="6" width="1" height="1" fill="#1E7F65"/>
+      <!-- Feet -->
+      <rect x="3" y="7" width="1" height="1" fill="#0F3D31"/>
+      <rect x="4" y="7" width="1" height="1" fill="#0F3D31"/>
+    </svg>
+  </div>
+  <span class="card-name">Person Waving</span>
+  <span class="card-desc">Friendly pixel figure with one arm raised in a wave. Hand animates up and flashes bright.</span>
+  <div class="sizes">
+    <div class="size-item">
+      <svg width="16" height="16" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="3" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="2" y="2" width="4" height="1" fill="#33C69F"/><rect x="3" y="3" width="2" height="1" fill="#33C69F"/><rect x="3" y="4" width="2" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="4" y="5" width="1" height="1" fill="#1E7F65"/><rect x="3" y="6" width="1" height="1" fill="#1E7F65"/><rect x="4" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="7" width="1" height="1" fill="#0F3D31"/><rect x="4" y="7" width="1" height="1" fill="#0F3D31"/></svg>
+      <span class="size-label">16px</span>
+    </div>
+    <div class="size-item">
+      <svg width="24" height="24" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="3" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"><animate attributeName="fill" values="#5DDBB8;#FFFFFF;#5DDBB8;#5DDBB8" dur="1.6s" repeatCount="indefinite"/></rect><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="2" y="2" width="4" height="1" fill="#33C69F"/><rect x="3" y="3" width="2" height="1" fill="#33C69F"/><rect x="3" y="4" width="2" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="4" y="5" width="1" height="1" fill="#1E7F65"/><rect x="3" y="6" width="1" height="1" fill="#1E7F65"/><rect x="4" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="7" width="1" height="1" fill="#0F3D31"/><rect x="4" y="7" width="1" height="1" fill="#0F3D31"/></svg>
+      <span class="size-label">24px</span>
+    </div>
+    <div class="size-item">
+      <svg width="40" height="40" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="3" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"><animate attributeName="fill" values="#5DDBB8;#FFFFFF;#5DDBB8;#5DDBB8" dur="1.6s" repeatCount="indefinite"/></rect><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="2" y="2" width="4" height="1" fill="#33C69F"/><rect x="3" y="3" width="2" height="1" fill="#33C69F"/><rect x="3" y="4" width="2" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="4" y="5" width="1" height="1" fill="#1E7F65"/><rect x="3" y="6" width="1" height="1" fill="#1E7F65"/><rect x="4" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="7" width="1" height="1" fill="#0F3D31"/><rect x="4" y="7" width="1" height="1" fill="#0F3D31"/></svg>
+      <span class="size-label">40px</span>
+    </div>
+    <div class="size-item">
+      <svg width="64" height="64" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="3" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"><animate attributeName="fill" values="#5DDBB8;#FFFFFF;#5DDBB8;#5DDBB8" dur="1.6s" repeatCount="indefinite"/></rect><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="2" y="2" width="4" height="1" fill="#33C69F"/><rect x="3" y="3" width="2" height="1" fill="#33C69F"/><rect x="3" y="4" width="2" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="4" y="5" width="1" height="1" fill="#1E7F65"/><rect x="3" y="6" width="1" height="1" fill="#1E7F65"/><rect x="4" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="7" width="1" height="1" fill="#0F3D31"/><rect x="4" y="7" width="1" height="1" fill="#0F3D31"/></svg>
+      <span class="size-label">64px</span>
+    </div>
+  </div>
+</div>
+
+<!-- 5. Content Freshness — Clear Seedling Sprout -->
+<div class="card">
+  <span class="card-label">05 · Content Freshness</span>
+  <div class="icon-hero">
+    <svg width="80" height="80" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+      <!-- Seedling sprout — two small leaves on a thin stem over soil -->
+      <!-- Right leaf tip (bright, pulses) -->
+      <rect x="5" y="0" width="1" height="1" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="3s" repeatCount="indefinite"/>
+      </rect>
+      <!-- Right leaf -->
+      <rect x="5" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="4" y="2" width="2" height="1" fill="#33C69F"/>
+      <!-- Left leaf -->
+      <rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="2" y="2" width="1" height="1" fill="#33C69F"/>
+      <rect x="1" y="2" width="1" height="1" fill="#2AA886"/>
+      <!-- Stem (thin, 1px wide) -->
+      <rect x="3" y="2" width="1" height="1" fill="#33C69F"/>
+      <rect x="3" y="3" width="1" height="1" fill="#2AA886"/>
+      <rect x="3" y="4" width="1" height="1" fill="#1E7F65"/>
+      <rect x="3" y="5" width="1" height="1" fill="#1E7F65"/>
+      <!-- Soil mound -->
+      <rect x="2" y="6" width="3" height="1" fill="#0F3D31"/>
+      <!-- Ground line -->
+      <rect x="1" y="7" width="6" height="1" fill="#0F3D31" opacity="0.6"/>
+      <!-- Dew sparkle -->
+      <rect x="6" y="1" width="1" height="1" fill="#7AE8CB" opacity="0">
+        <animate attributeName="opacity" values="0;0;0.9;0.9;0" dur="3.5s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  </div>
+  <span class="card-name">Seedling Sprout</span>
+  <span class="card-desc">Tiny two-leaf seedling on a thin stem over soil. Leaf tip pulses bright, dew sparkle flickers.</span>
+  <div class="sizes">
+    <div class="size-item">
+      <svg width="16" height="16" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="5" y="0" width="1" height="1" fill="#7AE8CB"/><rect x="5" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="2" height="1" fill="#33C69F"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="1" height="1" fill="#33C69F"/><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="3" y="2" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#2AA886"/><rect x="3" y="4" width="1" height="1" fill="#1E7F65"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="2" y="6" width="3" height="1" fill="#0F3D31"/><rect x="1" y="7" width="6" height="1" fill="#0F3D31" opacity="0.6"/></svg>
+      <span class="size-label">16px</span>
+    </div>
+    <div class="size-item">
+      <svg width="24" height="24" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="5" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="3s" repeatCount="indefinite"/></rect><rect x="5" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="2" height="1" fill="#33C69F"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="1" height="1" fill="#33C69F"/><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="3" y="2" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#2AA886"/><rect x="3" y="4" width="1" height="1" fill="#1E7F65"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="2" y="6" width="3" height="1" fill="#0F3D31"/><rect x="1" y="7" width="6" height="1" fill="#0F3D31" opacity="0.6"/><rect x="6" y="1" width="1" height="1" fill="#7AE8CB" opacity="0"><animate attributeName="opacity" values="0;0;0.9;0.9;0" dur="3.5s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">24px</span>
+    </div>
+    <div class="size-item">
+      <svg width="40" height="40" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="5" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="3s" repeatCount="indefinite"/></rect><rect x="5" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="2" height="1" fill="#33C69F"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="1" height="1" fill="#33C69F"/><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="3" y="2" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#2AA886"/><rect x="3" y="4" width="1" height="1" fill="#1E7F65"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="2" y="6" width="3" height="1" fill="#0F3D31"/><rect x="1" y="7" width="6" height="1" fill="#0F3D31" opacity="0.6"/><rect x="6" y="1" width="1" height="1" fill="#7AE8CB" opacity="0"><animate attributeName="opacity" values="0;0;0.9;0.9;0" dur="3.5s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">40px</span>
+    </div>
+    <div class="size-item">
+      <svg width="64" height="64" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="5" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="3s" repeatCount="indefinite"/></rect><rect x="5" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="2" height="1" fill="#33C69F"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="1" height="1" fill="#33C69F"/><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="3" y="2" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#2AA886"/><rect x="3" y="4" width="1" height="1" fill="#1E7F65"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="2" y="6" width="3" height="1" fill="#0F3D31"/><rect x="1" y="7" width="6" height="1" fill="#0F3D31" opacity="0.6"/><rect x="6" y="1" width="1" height="1" fill="#7AE8CB" opacity="0"><animate attributeName="opacity" values="0;0;0.9;0.9;0" dur="3.5s" repeatCount="indefinite"/></rect></svg>
+      <span class="size-label">64px</span>
+    </div>
+  </div>
+</div>
+
+<!-- 6. Update Frequency — Rounded Refresh Arrows -->
+<div class="card">
+  <span class="card-label">06 · Update Frequency</span>
+  <div class="icon-hero">
+    <svg width="80" height="80" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style="image-rendering: pixelated;">
+      <!-- Rounded circular arrows — two semicircular arcs with arrowheads -->
+      <!-- Top arc (clockwise, arrow pointing right) -->
+      <rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/>
+      <rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <!-- Top arrowhead → -->
+      <rect x="7" y="0" width="1" height="1" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="7" y="1" width="1" height="1" fill="#5DDBB8" opacity="0.6"/>
+      <!-- Right side -->
+      <rect x="7" y="2" width="1" height="1" fill="#33C69F"/>
+      <rect x="7" y="3" width="1" height="1" fill="#2AA886"/>
+      <!-- Bottom arc (counter-clockwise, arrow pointing left) -->
+      <rect x="2" y="7" width="4" height="1" fill="#2AA886"/>
+      <rect x="6" y="6" width="1" height="1" fill="#33C69F"/>
+      <rect x="1" y="6" width="1" height="1" fill="#33C69F"/>
+      <!-- Bottom arrowhead ← -->
+      <rect x="0" y="7" width="1" height="1" fill="#33C69F">
+        <animate attributeName="fill" values="#33C69F;#7AE8CB;#33C69F" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="0" y="6" width="1" height="1" fill="#2AA886" opacity="0.6"/>
+      <!-- Left side -->
+      <rect x="0" y="4" width="1" height="1" fill="#2AA886"/>
+      <rect x="0" y="5" width="1" height="1" fill="#33C69F"/>
+      <!-- No center block — differentiates from bullseye (02) -->
+    </svg>
+  </div>
+  <span class="card-name">Refresh Cycle</span>
+  <span class="card-desc">Two rounded arcs forming a circle with pulsing arrowheads. Center block throbs for update frequency.</span>
+  <div class="sizes">
+    <div class="size-item">
+      <svg width="16" height="16" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="7" y="0" width="1" height="1" fill="#7AE8CB"/><rect x="7" y="2" width="1" height="1" fill="#33C69F"/><rect x="7" y="3" width="1" height="1" fill="#2AA886"/><rect x="2" y="7" width="4" height="1" fill="#2AA886"/><rect x="6" y="6" width="1" height="1" fill="#33C69F"/><rect x="1" y="6" width="1" height="1" fill="#33C69F"/><rect x="0" y="7" width="1" height="1" fill="#33C69F"/><rect x="0" y="4" width="1" height="1" fill="#2AA886"/><rect x="0" y="5" width="1" height="1" fill="#33C69F"/></svg>
+      <span class="size-label">16px</span>
+    </div>
+    <div class="size-item">
+      <svg width="24" height="24" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="7" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="7" y="1" width="1" height="1" fill="#5DDBB8" opacity="0.6"/><rect x="7" y="2" width="1" height="1" fill="#33C69F"/><rect x="7" y="3" width="1" height="1" fill="#2AA886"/><rect x="2" y="7" width="4" height="1" fill="#2AA886"/><rect x="6" y="6" width="1" height="1" fill="#33C69F"/><rect x="1" y="6" width="1" height="1" fill="#33C69F"/><rect x="0" y="7" width="1" height="1" fill="#33C69F"><animate attributeName="fill" values="#33C69F;#7AE8CB;#33C69F" dur="2s" repeatCount="indefinite"/></rect><rect x="0" y="6" width="1" height="1" fill="#2AA886" opacity="0.6"/><rect x="0" y="4" width="1" height="1" fill="#2AA886"/><rect x="0" y="5" width="1" height="1" fill="#33C69F"/></svg>
+      <span class="size-label">24px</span>
+    </div>
+    <div class="size-item">
+      <svg width="40" height="40" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="7" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="7" y="1" width="1" height="1" fill="#5DDBB8" opacity="0.6"/><rect x="7" y="2" width="1" height="1" fill="#33C69F"/><rect x="7" y="3" width="1" height="1" fill="#2AA886"/><rect x="2" y="7" width="4" height="1" fill="#2AA886"/><rect x="6" y="6" width="1" height="1" fill="#33C69F"/><rect x="1" y="6" width="1" height="1" fill="#33C69F"/><rect x="0" y="7" width="1" height="1" fill="#33C69F"><animate attributeName="fill" values="#33C69F;#7AE8CB;#33C69F" dur="2s" repeatCount="indefinite"/></rect><rect x="0" y="6" width="1" height="1" fill="#2AA886" opacity="0.6"/><rect x="0" y="4" width="1" height="1" fill="#2AA886"/><rect x="0" y="5" width="1" height="1" fill="#33C69F"/></svg>
+      <span class="size-label">40px</span>
+    </div>
+    <div class="size-item">
+      <svg width="64" height="64" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="7" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="7" y="1" width="1" height="1" fill="#5DDBB8" opacity="0.6"/><rect x="7" y="2" width="1" height="1" fill="#33C69F"/><rect x="7" y="3" width="1" height="1" fill="#2AA886"/><rect x="2" y="7" width="4" height="1" fill="#2AA886"/><rect x="6" y="6" width="1" height="1" fill="#33C69F"/><rect x="1" y="6" width="1" height="1" fill="#33C69F"/><rect x="0" y="7" width="1" height="1" fill="#33C69F"><animate attributeName="fill" values="#33C69F;#7AE8CB;#33C69F" dur="2s" repeatCount="indefinite"/></rect><rect x="0" y="6" width="1" height="1" fill="#2AA886" opacity="0.6"/><rect x="0" y="4" width="1" height="1" fill="#2AA886"/><rect x="0" y="5" width="1" height="1" fill="#33C69F"/></svg>
+      <span class="size-label">64px</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- CONTEXT: In-situ scorecard mockup                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+
+<div class="context-section">
+  <h2>In Context — Scorecard Achievement Cards</h2>
+  <p style="color: #9898A8; font-size: 13px; margin-bottom: 20px;">How the badges look inside the 3-column achievement grid at 40×40px (matching the scorecard layout)</p>
+
+  <div class="scorecard-mock">
+    <h3>Achievements</h3>
+    <div class="mock-grid">
+
+      <!-- Response Time -->
+      <div class="mock-card">
+        <div class="mock-card-icon">
+          <svg width="28" height="28" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="4" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="3" height="1" fill="#33C69F"/><rect x="1" y="3" width="5" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="3" y="4" width="2" height="1" fill="#33C69F"/><rect x="2" y="5" width="2" height="1" fill="#5DDBB8"/><rect x="1" y="6" width="2" height="1" fill="#2AA886"/><rect x="0" y="2" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0.5;0;0.5" dur="1.2s" repeatCount="indefinite"/></rect><rect x="7" y="4" width="1" height="1" fill="#1E7F65" opacity="0.5"><animate attributeName="opacity" values="0;0.5;0" dur="1.2s" repeatCount="indefinite"/></rect></svg>
+        </div>
+        <div class="mock-card-text">
+          <div class="title">Response Time</div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="stat">1.8 hr</span>
+            <span class="desc">Average response time</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Accuracy -->
+      <div class="mock-card">
+        <div class="mock-card-icon">
+          <svg width="28" height="28" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#1E7F65"/><rect x="0" y="2" width="1" height="4" fill="#1E7F65"/><rect x="7" y="2" width="1" height="4" fill="#1E7F65"/><rect x="2" y="7" width="4" height="1" fill="#1E7F65"/><rect x="1" y="1" width="1" height="1" fill="#1E7F65"/><rect x="6" y="1" width="1" height="1" fill="#1E7F65"/><rect x="1" y="6" width="1" height="1" fill="#1E7F65"/><rect x="6" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="2" width="2" height="1" fill="#2AA886"/><rect x="2" y="3" width="1" height="2" fill="#2AA886"/><rect x="5" y="3" width="1" height="2" fill="#2AA886"/><rect x="3" y="5" width="2" height="1" fill="#2AA886"/><rect x="3" y="3" width="2" height="2" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2.4s" repeatCount="indefinite"/></rect></svg>
+        </div>
+        <div class="mock-card-text">
+          <div class="title">Content Accuracy</div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="stat">96%</span>
+            <span class="desc">AI answer accuracy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions Answered -->
+      <div class="mock-card">
+        <div class="mock-card-icon">
+          <svg width="28" height="28" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="5" y="2" width="2" height="1" fill="#33C69F"/><rect x="4" y="3" width="1" height="1" fill="#33C69F"/><rect x="3" y="4" width="1" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#2AA886"/><rect x="3" y="7" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect></svg>
+        </div>
+        <div class="mock-card-text">
+          <div class="title">Questions Answered</div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="stat">2,847</span>
+            <span class="desc">Total questions answered</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visitor Engagement -->
+      <div class="mock-card">
+        <div class="mock-card-icon">
+          <svg width="28" height="28" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="3" y="0" width="2" height="1" fill="#7AE8CB"/><rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"><animate attributeName="fill" values="#5DDBB8;#FFFFFF;#5DDBB8;#5DDBB8" dur="1.6s" repeatCount="indefinite"/></rect><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="2" y="2" width="4" height="1" fill="#33C69F"/><rect x="3" y="3" width="2" height="1" fill="#33C69F"/><rect x="3" y="4" width="2" height="1" fill="#2AA886"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="4" y="5" width="1" height="1" fill="#1E7F65"/><rect x="3" y="6" width="1" height="1" fill="#1E7F65"/><rect x="4" y="6" width="1" height="1" fill="#1E7F65"/><rect x="3" y="7" width="1" height="1" fill="#0F3D31"/><rect x="4" y="7" width="1" height="1" fill="#0F3D31"/></svg>
+        </div>
+        <div class="mock-card-text">
+          <div class="title">Visitor Engagement</div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="stat">1,240</span>
+            <span class="desc">Unique visitors (90 days)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Freshness -->
+      <div class="mock-card">
+        <div class="mock-card-icon">
+          <svg width="28" height="28" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="5" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="3s" repeatCount="indefinite"/></rect><rect x="5" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="4" y="2" width="2" height="1" fill="#33C69F"/><rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="2" y="2" width="1" height="1" fill="#33C69F"/><rect x="1" y="2" width="1" height="1" fill="#2AA886"/><rect x="3" y="2" width="1" height="1" fill="#33C69F"/><rect x="3" y="3" width="1" height="1" fill="#2AA886"/><rect x="3" y="4" width="1" height="1" fill="#1E7F65"/><rect x="3" y="5" width="1" height="1" fill="#1E7F65"/><rect x="2" y="6" width="3" height="1" fill="#0F3D31"/><rect x="1" y="7" width="6" height="1" fill="#0F3D31" opacity="0.6"/></svg>
+        </div>
+        <div class="mock-card-text">
+          <div class="title">Content Freshness</div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="stat">3 days</span>
+            <span class="desc">Since last update</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Update Frequency -->
+      <div class="mock-card">
+        <div class="mock-card-icon">
+          <svg width="28" height="28" viewBox="0 0 8 8" style="image-rendering: pixelated;"><rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/><rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/><rect x="7" y="0" width="1" height="1" fill="#7AE8CB"><animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/></rect><rect x="7" y="2" width="1" height="1" fill="#33C69F"/><rect x="7" y="3" width="1" height="1" fill="#2AA886"/><rect x="2" y="7" width="4" height="1" fill="#2AA886"/><rect x="6" y="6" width="1" height="1" fill="#33C69F"/><rect x="1" y="6" width="1" height="1" fill="#33C69F"/><rect x="0" y="7" width="1" height="1" fill="#33C69F"><animate attributeName="fill" values="#33C69F;#7AE8CB;#33C69F" dur="2s" repeatCount="indefinite"/></rect><rect x="0" y="4" width="1" height="1" fill="#2AA886"/><rect x="0" y="5" width="1" height="1" fill="#33C69F"/></svg>
+        </div>
+        <div class="mock-card-text">
+          <div class="title">Update Frequency</div>
+          <div style="display:flex; align-items:baseline; gap:6px;">
+            <span class="stat">8</span>
+            <span class="desc">Updates this month</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PALETTE & DESIGN REFERENCE                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+
+<div class="context-section" style="margin-top: 48px;">
+  <h2>Design Reference</h2>
+  <div style="background: #16161E; border: 1px solid #2A2A3A; border-radius: 16px; padding: 24px; display: flex; gap: 32px; flex-wrap: wrap;">
+
+    <div>
+      <p style="font-size: 12px; color: #9898A8; margin-bottom: 12px; font-weight: 600;">Conveyor Green Palette</p>
+      <div style="display: flex; gap: 4px;">
+        <div style="width: 32px; height: 32px; background: #7AE8CB; border-radius: 6px;" title="#7AE8CB bright"></div>
+        <div style="width: 32px; height: 32px; background: #5DDBB8; border-radius: 6px;" title="#5DDBB8"></div>
+        <div style="width: 32px; height: 32px; background: #33C69F; border-radius: 6px;" title="#33C69F primary"></div>
+        <div style="width: 32px; height: 32px; background: #2AA886; border-radius: 6px;" title="#2AA886"></div>
+        <div style="width: 32px; height: 32px; background: #1E7F65; border-radius: 6px;" title="#1E7F65"></div>
+        <div style="width: 32px; height: 32px; background: #0F3D31; border-radius: 6px;" title="#0F3D31 shadow"></div>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size: 12px; color: #9898A8; margin-bottom: 12px; font-weight: 600;">Shared Traits</p>
+      <ul style="font-size: 12px; color: #9898A8; list-style: disc; padding-left: 16px; line-height: 1.8;">
+        <li>8×8 pixel grid, <code>image-rendering: pixelated</code></li>
+        <li>SVG <code>&lt;rect&gt;</code> elements only (no paths)</li>
+        <li>Subtle <code>&lt;animate&gt;</code> for liveliness</li>
+        <li>Monochrome green — same palette as Coco</li>
+        <li>Scales crisp from 16px to 64px+</li>
+      </ul>
+    </div>
+
+    <div>
+      <p style="font-size: 12px; color: #9898A8; margin-bottom: 12px; font-weight: 600;">Animation Notes</p>
+      <ul style="font-size: 12px; color: #9898A8; list-style: disc; padding-left: 16px; line-height: 1.8;">
+        <li>All durations 1.2s–3.5s (no fast flashing)</li>
+        <li>Uses fill or opacity animations only</li>
+        <li>Small icons (16px) omit animations for clarity</li>
+        <li>Each badge has a unique signature animation</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

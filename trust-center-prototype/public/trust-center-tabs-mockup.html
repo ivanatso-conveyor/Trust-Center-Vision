@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Center — Tabs Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* === THEME VARIABLES === */
+  :root {
+    /* Arcline (teal/cyan) — default */
+    --brand-50: #E6FAFB;
+    --brand-100: #C0F2F5;
+    --brand-200: #80E0E8;
+    --brand-300: #4DD4DE;
+    --brand-400: #22B8CF;
+    --brand-500: #1898B0;
+    --brand-600: #107888;
+    --brand-700: #0B5A66;
+    --brand-800: #073D45;
+    --brand-900: #041F24;
+    --accent: #FFD700;
+
+    /* Dark mode surfaces */
+    --bg-primary: #0D0D12;
+    --bg-surface: #16161E;
+    --bg-elevated: #1E1E2A;
+    --bg-hover: #252536;
+    --bg-card: #1A1A26;
+    --border-default: #2A2A3A;
+    --border-bright: #3A3A4F;
+    --text-primary: #E8E8ED;
+    --text-secondary: #9898A8;
+    --text-muted: #5E5E72;
+    --brand-glow: rgba(34, 184, 207, 0.06);
+
+    /* Sidebar width simulation */
+    --sidebar-w: 68px;
+    --cart-w: 300px;
+  }
+
+  .theme-mediacore {
+    --brand-400: #6C63FF;
+    --brand-500: #5A52E0;
+    --brand-600: #4840C0;
+    --brand-700: #3530A0;
+    --brand-800: #252080;
+    --brand-glow: rgba(108, 99, 255, 0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* === SIDEBAR STUB === */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border-default);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .sidebar .logo {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--brand-800);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .sidebar .logo svg { width: 20px; height: 20px; }
+  .sidebar .nav-btn {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: none; background: none;
+    color: var(--text-muted); transition: all 0.2s;
+    position: relative;
+  }
+  .sidebar .nav-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .sidebar .nav-btn.active {
+    background: rgba(34, 184, 207, 0.12);
+    color: var(--brand-400);
+  }
+  .sidebar .nav-btn.active::before {
+    content: '';
+    position: absolute; left: -2px; top: 50%; transform: translateY(-50%);
+    width: 4px; height: 20px; border-radius: 2px;
+    background: var(--brand-400);
+  }
+  .sidebar .nav-btn svg { width: 20px; height: 20px; }
+
+  /* === MAIN CONTENT === */
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 28px 60px;
+    width: 100%;
+  }
+
+  /* === TOP TABS === */
+  .top-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .top-tab {
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border-default);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .top-tab:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-bright);
+  }
+  .top-tab.active {
+    background: var(--brand-400);
+    color: #fff;
+    border-color: var(--brand-400);
+  }
+
+  /* === SEARCH BAR === */
+  .search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .product-filter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .product-filter svg { width: 14px; height: 14px; color: var(--text-muted); }
+  .search-input {
+    flex: 1;
+    padding: 10px 16px;
+    padding-left: 40px;
+    border-radius: 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    font-size: 13px;
+    color: var(--text-primary);
+    font-family: inherit;
+    position: relative;
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-input:focus { outline: none; border-color: var(--brand-400); }
+  .search-wrap {
+    flex: 1;
+    position: relative;
+  }
+  .search-wrap svg {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: var(--text-muted); pointer-events: none;
+  }
+
+  /* === TAB PANELS === */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* === OVERVIEW TAB === */
+  .hero-section {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .hero-main {
+    flex: 1;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 28px;
+  }
+  .hero-logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--brand-800);
+    margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-logo svg { width: 22px; height: 22px; }
+  .hero-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .hero-desc {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+    margin-bottom: 20px; max-width: 520px;
+  }
+  .hero-desc a { color: var(--brand-400); text-decoration: none; }
+  .hero-stats {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .stat-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 10px;
+    background: var(--bg-elevated); border: 1px solid var(--border-default);
+    font-size: 12px; font-weight: 500; color: var(--text-secondary);
+  }
+  .stat-pill .num { color: var(--brand-400); font-weight: 700; }
+  .stat-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; }
+
+  .quick-links {
+    width: 240px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 20px;
+    flex-shrink: 0;
+  }
+  .quick-links-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--text-muted); margin-bottom: 14px;
+  }
+  .quick-link {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--brand-400); text-decoration: none;
+    padding: 8px 0; transition: opacity 0.2s;
+  }
+  .quick-link:hover { opacity: 0.8; }
+  .quick-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* Two-column sections */
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 24px;
+  }
+  .section-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .section-title { font-size: 14px; font-weight: 600; }
+  .view-all {
+    font-size: 12px; font-weight: 500; color: var(--brand-400);
+    cursor: pointer; text-decoration: none;
+  }
+
+  /* Activity chart placeholder */
+  .activity-chart {
+    background: var(--bg-card);
+    border-radius: 10px;
+    padding: 16px;
+    height: 130px;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+  }
+  .chart-bar {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    background: var(--brand-400);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .chart-bar:hover { opacity: 1; }
+  .activity-label {
+    font-size: 12px; color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  .activity-label strong { color: var(--brand-400); }
+
+  /* Certifications grid */
+  .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .cert-badge {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 6px;
+    line-height: 1.3;
+  }
+
+  /* Performance section */
+  .perf-section {
+    background: linear-gradient(135deg, #0F1A1C, #101520);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .perf-title {
+    font-size: 13px; font-weight: 600; color: var(--brand-400);
+    margin-bottom: 16px;
+  }
+  .perf-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .perf-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .perf-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+  .perf-label svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; color: var(--brand-400); }
+  .perf-value { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+  .perf-sub { font-size: 11px; color: var(--text-muted); margin-left: 4px; font-weight: 400; }
+
+  /* Bottom two-col */
+  .logo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .logo-placeholder {
+    height: 40px;
+    border-radius: 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+  }
+
+  .subprocessor-list {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .subprocessor-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; border-radius: 8px;
+    background: var(--bg-elevated);
+    font-size: 13px;
+  }
+  .subprocessor-row .name { color: var(--text-primary); font-weight: 500; }
+  .subprocessor-row .purpose { color: var(--text-muted); font-size: 11px; }
+
+  /* === DOCUMENTS & KNOWLEDGE TAB === */
+  .top-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .engagement-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .engagement-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .engagement-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 600;
+  }
+  .engagement-title svg { width: 16px; height: 16px; color: var(--brand-400); }
+  .bulk-btn {
+    padding: 6px 14px; border-radius: 8px;
+    background: var(--bg-elevated); border: 1px solid var(--border-default);
+    font-size: 12px; font-weight: 500; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .bulk-btn:hover { border-color: var(--brand-400); color: var(--brand-400); }
+  .engagement-subtitle {
+    font-size: 11px; color: var(--text-muted); margin-bottom: 14px;
+  }
+  .doc-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .doc-row:last-child { border-bottom: none; }
+  .doc-row .rank { width: 20px; font-size: 12px; color: var(--text-muted); }
+  .doc-row .name { flex: 1; font-size: 13px; color: var(--text-primary); }
+  .doc-row .count { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+  .engagement-footer {
+    margin-top: 14px; padding-top: 12px;
+    border-top: 1px solid var(--border-default);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .engagement-footer strong { color: var(--brand-400); font-weight: 600; }
+
+  /* KB FAQs */
+  .kb-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+  }
+  .faq-item {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+  }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-header {
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .faq-badge {
+    padding: 3px 8px; border-radius: 6px;
+    font-size: 10px; font-weight: 600;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .faq-badge.access { background: rgba(34,184,207,0.15); color: var(--brand-400); }
+  .faq-badge.appsec { background: rgba(168,85,247,0.15); color: #A855F7; }
+  .faq-badge.data { background: rgba(249,115,22,0.15); color: #F97316; }
+  .faq-badge.infra { background: rgba(34,197,94,0.15); color: #22C55E; }
+  .faq-badge.ir { background: rgba(239,68,68,0.15); color: #EF4444; }
+  .faq-question {
+    flex: 1; font-size: 13px; color: var(--text-primary); line-height: 1.5;
+  }
+  .faq-expand {
+    color: var(--text-muted); font-size: 16px; flex-shrink: 0;
+    margin-left: 8px;
+  }
+  .faq-answer {
+    font-size: 12px; color: var(--text-secondary); line-height: 1.6;
+    padding: 10px 0 4px 0; display: none;
+  }
+  .faq-item.open .faq-answer { display: block; }
+  .faq-item.open .faq-expand { transform: rotate(180deg); }
+  .faq-add-btn {
+    padding: 4px 10px; border-radius: 6px;
+    background: var(--brand-400); color: #fff;
+    font-size: 11px; font-weight: 600;
+    border: none; cursor: pointer; flex-shrink: 0; margin-left: 8px;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .faq-item:hover .faq-add-btn { opacity: 1; }
+
+  /* All Content section */
+  .all-content-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .all-content-title { font-size: 16px; font-weight: 600; }
+  .view-toggles {
+    display: flex; gap: 4px;
+  }
+  .view-toggle {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: none; border: 1px solid var(--border-default);
+    color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .view-toggle.active {
+    background: var(--bg-elevated);
+    border-color: var(--border-bright);
+    color: var(--text-primary);
+  }
+  .view-toggle svg { width: 16px; height: 16px; }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .content-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    padding: 18px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+  .content-card:hover {
+    border-color: var(--border-bright);
+    background: var(--bg-hover);
+  }
+  .content-card-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .file-badge {
+    padding: 3px 8px; border-radius: 5px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase;
+  }
+  .file-badge.pdf { background: rgba(239,68,68,0.15); color: #EF4444; }
+  .file-badge.xlsx { background: rgba(34,197,94,0.15); color: #22C55E; }
+  .file-badge.docx { background: rgba(59,130,246,0.15); color: #3B82F6; }
+  .file-badge.cert { background: rgba(168,85,247,0.15); color: #A855F7; }
+  .card-actions {
+    display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s;
+  }
+  .content-card:hover .card-actions { opacity: 1; }
+  .card-action {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--bg-elevated); border: 1px solid var(--border-default);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-muted); transition: all 0.2s;
+  }
+  .card-action:hover { border-color: var(--brand-400); color: var(--brand-400); }
+  .card-action svg { width: 14px; height: 14px; }
+  .add-btn {
+    padding: 4px 10px; border-radius: 6px;
+    background: var(--brand-400); color: #fff;
+    font-size: 11px; font-weight: 600;
+    border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .content-card-name {
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .content-card-date { font-size: 11px; color: var(--text-muted); }
+
+  /* === UPDATES TAB === */
+  .updates-feed {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .update-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 24px;
+    transition: all 0.2s;
+  }
+  .update-card:hover { border-color: var(--border-bright); }
+  .update-meta {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .update-type {
+    padding: 3px 10px; border-radius: 6px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+  }
+  .update-type.new { background: rgba(34,197,94,0.15); color: #22C55E; }
+  .update-type.updated { background: rgba(59,130,246,0.15); color: #3B82F6; }
+  .update-type.removed { background: rgba(239,68,68,0.15); color: #EF4444; }
+  .update-date { font-size: 11px; color: var(--text-muted); }
+  .update-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .update-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* === CART SIDEBAR STUB === */
+  .cart-sidebar {
+    width: var(--cart-w);
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border-default);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .cart-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .coco-mini {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: var(--bg-elevated);
+  }
+  .cart-label { font-size: 13px; font-weight: 600; }
+  .cart-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .cart-tab {
+    flex: 1; padding: 10px; text-align: center;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-muted); cursor: pointer;
+    border: none; background: none;
+    transition: color 0.2s;
+  }
+  .cart-tab.active { color: var(--text-primary); border-bottom: 2px solid var(--brand-400); }
+  .cart-body { flex: 1; padding: 16px; }
+
+  /* Theme switcher */
+  .theme-switch {
+    position: fixed; bottom: 16px; right: 320px;
+    display: flex; gap: 6px; z-index: 50;
+  }
+  .theme-btn {
+    padding: 6px 12px; border-radius: 8px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border-default);
+    background: var(--bg-elevated); color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .theme-btn.active {
+    border-color: var(--brand-400);
+    color: var(--brand-400);
+  }
+</style>
+</head>
+<body id="body">
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="logo">
+    <svg viewBox="0 0 40 40" fill="none"><path d="M8 26C8 26 12 10 20 10C28 10 32 26 32 26" stroke="var(--brand-400)" stroke-width="3.5" stroke-linecap="round"/><circle cx="20" cy="22" r="3" fill="var(--brand-200)"/></svg>
+  </div>
+  <button class="nav-btn active" title="Trust Center">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+  </button>
+  <button class="nav-btn" title="Agent">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01M15 9h.01M9 15h6"/></svg>
+  </button>
+  <button class="nav-btn" title="Scorecard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v18M18 3v18M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+</div>
+
+<!-- Main content -->
+<div class="main-content">
+  <div class="page-inner">
+
+    <!-- Top tabs -->
+    <div class="top-tabs">
+      <button class="top-tab active" onclick="switchTab('overview')">Overview</button>
+      <button class="top-tab" onclick="switchTab('docs')">Documents &amp; Knowledge</button>
+      <button class="top-tab" onclick="switchTab('updates')">Updates</button>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-row">
+      <div class="product-filter">
+        All Products
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="search-input" type="text" placeholder="Search Documents, FAQs, Certifications, etc">
+      </div>
+    </div>
+
+    <!-- ============ OVERVIEW TAB ============ -->
+    <div class="tab-panel active" id="tab-overview">
+
+      <!-- Hero section -->
+      <div class="hero-section">
+        <div class="hero-main">
+          <div class="hero-logo">
+            <svg viewBox="0 0 40 40" fill="none"><path d="M8 26C8 26 12 10 20 10C28 10 32 26 32 26" stroke="var(--brand-400)" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="22" r="2.5" fill="var(--brand-200)"/></svg>
+          </div>
+          <h2 class="hero-title" id="heroTitle">Arcline Trust Center</h2>
+          <p class="hero-desc">Everything you need to complete your security review is here. Browse documents, certifications, and compliance details with confidence. Our Trust Center is regularly updated to reflect the latest audit results, and subprocessor disclosures. Reach out at <a href="#">trust@arcline.com</a>.</p>
+          <div class="hero-stats">
+            <div class="stat-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg><span class="num">28</span> Documents</div>
+            <div class="stat-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="num">57</span> Knowledge Base FAQs</div>
+            <div class="stat-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a7 7 0 0114 0v2"/></svg><span class="num">6</span> Certifications</div>
+            <div class="stat-pill"><div class="dot"></div> Active: 8 minutes ago</div>
+          </div>
+        </div>
+        <div class="quick-links">
+          <div class="quick-links-title">Quick Links</div>
+          <a href="#" class="quick-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>Arcline Homepage</a>
+          <a href="#" class="quick-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>Privacy Policy</a>
+          <a href="#" class="quick-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>Status Page</a>
+          <a href="#" class="quick-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Report a vulnerability</a>
+        </div>
+      </div>
+
+      <!-- Activity + Certifications -->
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Trust Center Activity</span>
+            <a class="view-all">View All</a>
+          </div>
+          <p class="activity-label">New documents since your last visit: <strong>3</strong></p>
+          <div class="activity-chart" id="activityChart"></div>
+        </div>
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Certifications</span>
+            <a class="view-all">View All</a>
+          </div>
+          <div class="cert-grid">
+            <div class="cert-badge">SOC 2<br>Type II</div>
+            <div class="cert-badge">ISO<br>27001</div>
+            <div class="cert-badge">ISO<br>27701</div>
+            <div class="cert-badge">HIPAA</div>
+            <div class="cert-badge">GDPR</div>
+            <div class="cert-badge">SOC 3</div>
+            <div class="cert-badge">CSA<br>STAR</div>
+            <div class="cert-badge">PCI<br>DSS</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance -->
+      <div class="perf-section">
+        <div class="perf-title">Trust Center Performance</div>
+        <div class="perf-grid">
+          <div class="perf-card">
+            <div class="perf-label">Response Time</div>
+            <div class="perf-value">1.8 hr<span class="perf-sub">Average response time</span></div>
+          </div>
+          <div class="perf-card">
+            <div class="perf-label">Content Accuracy</div>
+            <div class="perf-value">96%<span class="perf-sub">AI answer accuracy</span></div>
+          </div>
+          <div class="perf-card">
+            <div class="perf-label">Questions Answered</div>
+            <div class="perf-value">2,847<span class="perf-sub">Total questions answered</span></div>
+          </div>
+          <div class="perf-card">
+            <div class="perf-label">Visitor Engagement</div>
+            <div class="perf-value">1,240<span class="perf-sub">Unique visitors (90 days)</span></div>
+          </div>
+          <div class="perf-card">
+            <div class="perf-label">Content Freshness</div>
+            <div class="perf-value">3 days<span class="perf-sub">Since last update</span></div>
+          </div>
+          <div class="perf-card">
+            <div class="perf-label">Update Frequency</div>
+            <div class="perf-value">8<span class="perf-sub">Updates this month</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trusted By + Subprocessors -->
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Trusted By</span>
+            <a class="view-all">View All</a>
+          </div>
+          <div class="logo-grid">
+            <div class="logo-placeholder"></div><div class="logo-placeholder"></div>
+            <div class="logo-placeholder"></div><div class="logo-placeholder"></div>
+            <div class="logo-placeholder"></div><div class="logo-placeholder"></div>
+            <div class="logo-placeholder"></div><div class="logo-placeholder"></div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Subprocessors</span>
+            <a class="view-all">View Table</a>
+          </div>
+          <div class="subprocessor-list">
+            <div class="subprocessor-row"><span class="name">AWS</span><span class="purpose">Cloud infrastructure</span></div>
+            <div class="subprocessor-row"><span class="name">Datadog</span><span class="purpose">Monitoring & observability</span></div>
+            <div class="subprocessor-row"><span class="name">Snowflake</span><span class="purpose">Data warehousing</span></div>
+            <div class="subprocessor-row"><span class="name">Stripe</span><span class="purpose">Payment processing</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ DOCUMENTS & KNOWLEDGE TAB ============ -->
+    <div class="tab-panel" id="tab-docs">
+
+      <!-- Top row: Engagement + KB FAQs -->
+      <div class="top-row">
+        <div class="engagement-card">
+          <div class="engagement-header">
+            <div class="engagement-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              Document Engagement
+            </div>
+            <button class="bulk-btn">Bulk download</button>
+          </div>
+          <div class="engagement-subtitle">Most Viewed Documents (30 days)</div>
+          <div class="doc-row"><span class="rank">1.</span><span class="name">SOC 2 Type II Report (2026)</span><span class="count">487</span></div>
+          <div class="doc-row"><span class="rank">2.</span><span class="name">Security Whitepaper</span><span class="count">312</span></div>
+          <div class="doc-row"><span class="rank">3.</span><span class="name">Sub-processor List</span><span class="count">289</span></div>
+          <div class="doc-row"><span class="rank">4.</span><span class="name">Penetration Test Summary</span><span class="count">201</span></div>
+          <div class="doc-row"><span class="rank">5.</span><span class="name">Data Processing Agreement</span><span class="count">178</span></div>
+          <div class="engagement-footer">Downloads: <strong>1,847</strong> &nbsp;&nbsp; Unique: <strong>412</strong></div>
+        </div>
+
+        <div class="kb-card">
+          <div class="section-header" style="margin-bottom:12px;">
+            <span class="section-title">Top Knowledge Base FAQs</span>
+          </div>
+          <div class="faq-item open">
+            <div class="faq-header">
+              <span class="faq-badge access">Access Management</span>
+              <span class="faq-question">How does Arcline manage user access controls?</span>
+              <button class="faq-add-btn" style="opacity:1">+ Save</button>
+              <span class="faq-expand">▾</span>
+            </div>
+            <div class="faq-answer" style="display:block">We implement role-based access control (RBAC) with least-privilege principles. All access is reviewed quarterly and requires manager approval.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-header">
+              <span class="faq-badge appsec">Application Security</span>
+              <span class="faq-question">What is your secure development lifecycle?</span>
+              <button class="faq-add-btn">+ Save</button>
+              <span class="faq-expand">▾</span>
+            </div>
+            <div class="faq-answer">We follow OWASP guidelines with mandatory code reviews, SAST/DAST scanning, and penetration testing before each release.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-header">
+              <span class="faq-badge data">Data Privacy</span>
+              <span class="faq-question">Where is customer data stored and processed?</span>
+              <button class="faq-add-btn">+ Save</button>
+              <span class="faq-expand">▾</span>
+            </div>
+            <div class="faq-answer">Customer data is stored in US-based AWS regions with encryption at rest (AES-256) and in transit (TLS 1.3).</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-header">
+              <span class="faq-badge infra">Infrastructure</span>
+              <span class="faq-question">How is your infrastructure secured?</span>
+              <button class="faq-add-btn">+ Save</button>
+              <span class="faq-expand">▾</span>
+            </div>
+            <div class="faq-answer">We use VPCs with strict security groups, WAF protection, DDoS mitigation, and continuous monitoring via Datadog.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-header">
+              <span class="faq-badge ir">Incident Response</span>
+              <span class="faq-question">What is your incident response process?</span>
+              <button class="faq-add-btn">+ Save</button>
+              <span class="faq-expand">▾</span>
+            </div>
+            <div class="faq-answer">We maintain a dedicated IR team with 24/7 on-call rotation. Customers are notified within 72 hours of any breach affecting their data.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- All Content grid -->
+      <div class="all-content-header">
+        <span class="all-content-title">All Content</span>
+        <div class="view-toggles">
+          <button class="view-toggle active" title="Grid"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+          <button class="view-toggle" title="List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+          <button class="view-toggle" title="Table"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></button>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="content-card">
+          <div class="content-card-top">
+            <span class="file-badge xlsx">XLSX</span>
+            <div class="card-actions">
+              <button class="card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+              <button class="add-btn">+ Add</button>
+            </div>
+          </div>
+          <div class="content-card-name">Vendor Risk Assessment</div>
+          <div class="content-card-date">Updated Mar 2026</div>
+        </div>
+        <div class="content-card">
+          <div class="content-card-top">
+            <span class="file-badge pdf">PDF</span>
+            <div class="card-actions">
+              <button class="card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+              <button class="add-btn">+ Add</button>
+            </div>
+          </div>
+          <div class="content-card-name">SOC 2 Type II Report</div>
+          <div class="content-card-date">Updated Feb 2026</div>
+        </div>
+        <div class="content-card">
+          <div class="content-card-top">
+            <span class="file-badge pdf">PDF</span>
+            <div class="card-actions">
+              <button class="card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+              <button class="add-btn">+ Add</button>
+            </div>
+          </div>
+          <div class="content-card-name">Security Whitepaper</div>
+          <div class="content-card-date">Updated Mar 2026</div>
+        </div>
+        <div class="content-card">
+          <div class="content-card-top">
+            <span class="file-badge docx">DOCX</span>
+            <div class="card-actions">
+              <button class="card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+              <button class="add-btn">+ Add</button>
+            </div>
+          </div>
+          <div class="content-card-name">Penetration Test Summary</div>
+          <div class="content-card-date">Updated Jan 2026</div>
+        </div>
+        <div class="content-card">
+          <div class="content-card-top">
+            <span class="file-badge pdf">PDF</span>
+            <div class="card-actions">
+              <button class="card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+              <button class="add-btn">+ Add</button>
+            </div>
+          </div>
+          <div class="content-card-name">Data Processing Agreement</div>
+          <div class="content-card-date">Updated Mar 2026</div>
+        </div>
+        <div class="content-card">
+          <div class="content-card-top">
+            <span class="file-badge xlsx">XLSX</span>
+            <div class="card-actions">
+              <button class="card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+              <button class="add-btn">+ Add</button>
+            </div>
+          </div>
+          <div class="content-card-name">Sub-processor List</div>
+          <div class="content-card-date">Updated Mar 2026</div>
+        </div>
+        <div class="content-card">
+          <div class="content-card-top">
+            <span class="file-badge cert">CERT</span>
+            <div class="card-actions">
+              <button class="card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+              <button class="add-btn">+ Add</button>
+            </div>
+          </div>
+          <div class="content-card-name">ISO 27001 Certificate</div>
+          <div class="content-card-date">Issued Dec 2025</div>
+        </div>
+        <div class="content-card">
+          <div class="content-card-top">
+            <span class="file-badge pdf">PDF</span>
+            <div class="card-actions">
+              <button class="card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+              <button class="add-btn">+ Add</button>
+            </div>
+          </div>
+          <div class="content-card-name">Business Continuity Plan</div>
+          <div class="content-card-date">Updated Feb 2026</div>
+        </div>
+        <div class="content-card">
+          <div class="content-card-top">
+            <span class="file-badge docx">DOCX</span>
+            <div class="card-actions">
+              <button class="card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+              <button class="add-btn">+ Add</button>
+            </div>
+          </div>
+          <div class="content-card-name">Incident Response Policy</div>
+          <div class="content-card-date">Updated Jan 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ UPDATES TAB ============ -->
+    <div class="tab-panel" id="tab-updates">
+      <div class="updates-feed">
+        <div class="update-card">
+          <div class="update-meta">
+            <span class="update-type new">New</span>
+            <span class="update-date">March 28, 2026</span>
+          </div>
+          <div class="update-title">New SOC 2 Type II Report Added</div>
+          <div class="update-desc">Our latest SOC 2 Type II audit report covering the period July 2025 – January 2026 is now available for download. This report was conducted by Deloitte and covers all five trust service criteria.</div>
+        </div>
+        <div class="update-card">
+          <div class="update-meta">
+            <span class="update-type updated">Updated</span>
+            <span class="update-date">March 22, 2026</span>
+          </div>
+          <div class="update-title">Security Whitepaper Refreshed</div>
+          <div class="update-desc">Updated our security whitepaper to reflect the latest infrastructure changes including our migration to a multi-region deployment and zero-trust network architecture.</div>
+        </div>
+        <div class="update-card">
+          <div class="update-meta">
+            <span class="update-type new">New</span>
+            <span class="update-date">March 15, 2026</span>
+          </div>
+          <div class="update-title">New Sub-processor: Datadog</div>
+          <div class="update-desc">Datadog has been added as a sub-processor for monitoring and observability services. Data processed includes application performance metrics and log data. Full details available in the updated sub-processor list.</div>
+        </div>
+        <div class="update-card">
+          <div class="update-meta">
+            <span class="update-type updated">Updated</span>
+            <span class="update-date">March 8, 2026</span>
+          </div>
+          <div class="update-title">Data Processing Agreement v3.2</div>
+          <div class="update-desc">Minor revisions to our DPA reflecting updated data retention policies and expanded EU representative information per GDPR requirements.</div>
+        </div>
+        <div class="update-card">
+          <div class="update-meta">
+            <span class="update-type removed">Removed</span>
+            <span class="update-date">March 1, 2026</span>
+          </div>
+          <div class="update-title">Deprecated: Legacy Encryption Whitepaper</div>
+          <div class="update-desc">The 2024 encryption whitepaper has been replaced by the updated Security Whitepaper which now includes comprehensive encryption details.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Cart sidebar -->
+<div class="cart-sidebar">
+  <div class="cart-header">
+    <div class="coco-mini"></div>
+    <span class="cart-label">Coco</span>
+  </div>
+  <div class="cart-tabs">
+    <button class="cart-tab active">To-do</button>
+    <button class="cart-tab">Collection</button>
+    <button class="cart-tab">Session</button>
+  </div>
+  <div class="cart-body"></div>
+</div>
+
+<!-- Theme switcher -->
+<div class="theme-switch">
+  <button class="theme-btn active" onclick="setTheme('arcline')">Arcline (Teal)</button>
+  <button class="theme-btn" onclick="setTheme('mediacore')">MediaCore (Purple)</button>
+</div>
+
+<script>
+  // Tab switching
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // Theme switching
+  function setTheme(theme) {
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    if (theme === 'mediacore') {
+      document.body.classList.add('theme-mediacore');
+      document.getElementById('heroTitle').textContent = 'MediaCore Trust Center';
+    } else {
+      document.body.classList.remove('theme-mediacore');
+      document.getElementById('heroTitle').textContent = 'Arcline Trust Center';
+    }
+  }
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-header').addEventListener('click', (e) => {
+      if (e.target.classList.contains('faq-add-btn')) return;
+      item.classList.toggle('open');
+    });
+  });
+
+  // Generate activity chart bars
+  const chart = document.getElementById('activityChart');
+  const heights = [20, 35, 45, 25, 60, 80, 55, 70, 40, 90, 65, 50, 75, 85, 30, 55, 95, 60, 45, 70, 50, 80, 65, 40, 55, 90, 35, 70, 85, 60];
+  heights.forEach(h => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = h + '%';
+    chart.appendChild(bar);
+  });
+</script>
+
+</body>
+</html>

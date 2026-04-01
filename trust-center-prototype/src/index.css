@@ -145,9 +145,9 @@ body {
   --coco-interior: var(--color-brand-950);
   --coco-highlight: var(--color-brand-800);
   --coco-gold: var(--color-accent-600);
-  --coco-eye-l: var(--color-bg-primary);
-  --coco-eye-r: var(--color-bg-elevated);
-  --coco-smile: var(--color-bg-primary);
+  --coco-eye-l: #18181B;
+  --coco-eye-r: #27272A;
+  --coco-smile: #18181B;
   --coco-arm: var(--color-brand-600);
   --coco-feet: var(--color-brand-700);
   --coco-flash: var(--color-brand-800);

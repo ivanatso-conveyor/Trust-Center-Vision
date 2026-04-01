@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useMemo, useCallback, createContext, useContext } from "react";
+import { createPortal } from "react-dom";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { Tabs } from "@ark-ui/react/tabs";
 import {
   FileText, Shield, Search, Sparkles, Check, Lock, ChevronDown,
   X, Send, Paperclip, Clock, Award, Eye, Download, Trash2, AlertTriangle,
@@ -9,7 +11,16 @@ import {
   Upload, Loader, CheckCircle2, Circle, ListTodo, Plus, Package,
   Quote, Bookmark, StickyNote, FolderDown, History, RotateCcw,
   Sun, Moon, Filter, Copy, Plug, ArrowRight, ArrowLeft, RefreshCw,
+  Info, ThumbsUp, ThumbsDown, TrendingUp, ChevronUp, Target, Activity,
+  BarChart3, Timer, MousePointer, ArrowUpRight, Mic,
+  Folder, ChevronRight, LayoutGrid, List, Columns3,
 } from "lucide-react";
+import {
+  RadialBarChart, RadialBar, Legend, Sector,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
+  ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  Radar, PieChart, Pie, Cell, BarChart, Bar, ComposedChart, Line,
+} from "recharts";
 
 /* ═══════════════════════════════════════════════════════════════
    THEME CONTEXT
@@ -20,6 +31,9 @@ function useTheme() { return useContext(ThemeContext); }
 
 const TcContext = createContext();
 function useTc() { return useContext(TcContext); }
+
+const CocoCharacterContext = createContext("sort");
+function useCocoCharacter() { return useContext(CocoCharacterContext); }
 
 /* ═══════════════════════════════════════════════════════════════
    CART CONTEXT - shared across all views
@@ -102,6 +116,22 @@ function CartProvider({ children }) {
   const [todoNotification, setTodoNotification] = useState(null); // { message, remaining }
   const [recentlyCompleted, setRecentlyCompleted] = useState(new Set());
 
+  // Shared content gaps state (scorecard + agent can both read/write)
+  const [contentGaps, setContentGaps] = useState([
+    { id: 1, topic: "EU Data Residency — specific AWS regions", category: "Data Privacy", firstAsked: "Feb 12", asked: 47, status: "review", watchers: 3, votes: 47 },
+    { id: 2, topic: "SOC 2 Type II scope — which services covered?", category: "Certifications", firstAsked: "Jan 8", asked: 31, status: "drafted", watchers: 5, votes: 31, eta: "2 days" },
+    { id: 3, topic: "Complete sub-processor list with DPA status", category: "Vendor Risk", firstAsked: "Mar 1", asked: 28, status: "open", watchers: 0, votes: 28 },
+    { id: 4, topic: "Incident response SLA for critical vulnerabilities", category: "Incident Response", firstAsked: "Feb 20", asked: 19, status: "open", watchers: 0, votes: 19 },
+    { id: 5, topic: "Data deletion / right to erasure process", category: "Data Privacy", firstAsked: "Mar 5", asked: 15, status: "review", watchers: 2, votes: 15 },
+    { id: 6, topic: "Penetration test methodology details", category: "Application Security", firstAsked: "Mar 10", asked: 8, status: "open", watchers: 0, votes: 8 },
+  ]);
+  const addContentGap = useCallback((gap) => {
+    setContentGaps(prev => {
+      if (prev.some(g => g.topic === gap.topic)) return prev;
+      return [...prev, { id: Date.now() + Math.random(), asked: 1, watchers: 1, votes: 1, status: "open", firstAsked: "Mar 29", ...gap }];
+    });
+  }, []);
+
   const addItem = useCallback((item) => {
     setItems(prev => {
       if (prev.some(i => i.title === item.title)) return prev;
@@ -175,6 +205,7 @@ function CartProvider({ children }) {
       items, addItem, removeItem, clearAll, isItemAdded, sessions, todos, startReviewTodos, toggleTodo, advanceTodos, panelTab, setPanelTab,
       cocoStatus, cocoAnim, cocoTaskLabel, cocoTasks, cocoNotification, setCocoState, startCocoWork, updateCocoTask, finishCocoWork, dismissCocoNotification, resetCoco,
       todoNotification, recentlyCompleted,
+      contentGaps, setContentGaps, addContentGap,
     }}>
       {children}
     </CartContext.Provider>
@@ -267,10 +298,219 @@ const COCO_PALETTE = {
   smileOpacity: "var(--coco-smile-opacity)",
 };
 
+const COCO_CHARACTERS = {
+  sort: {
+    name: "Sort Coco",
+    role: "The Organizer",
+    isDefault: true,
+    renderSvg: (size) => (
+      <svg width={size} height={size} viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg"
+        style={{ imageRendering: "pixelated" }}>
+        <rect x="2" y="0" width="4" height="1" fill="var(--coco-top)"/>
+        <rect x="1" y="1" width="2" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="2" width="1" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="3" width="1" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="4" width="2" height="1" fill="var(--coco-mid)"/>
+        <rect x="2" y="5" width="4" height="1" fill="var(--coco-bottom)"/>
+        <rect x="3" y="1" width="3" height="1" fill="var(--coco-mid)"/>
+        <rect x="3" y="4" width="3" height="1" fill="var(--coco-interior)" opacity="0.3"/>
+        {/* Scanning eyes */}
+        <rect x="3" y="2" width="1" height="1" fill="var(--coco-eye-l)">
+          <animate attributeName="x" values="3;3;2;2;3;3;4;4;3;3" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="5" y="2" width="1" height="1" fill="var(--coco-eye-r)">
+          <animate attributeName="x" values="5;5;4;4;5;5;6;6;5;5" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        {/* Smile */}
+        <rect x="1" y="3" width="1" height="1" fill="var(--coco-smile)" opacity="var(--coco-smile-opacity)"/>
+        {/* Arm */}
+        <rect x="0" y="2" width="1" height="1" fill="var(--coco-arm)"/>
+        {/* Sort flashes */}
+        <rect x="0" y="1" width="1" height="1" fill="var(--coco-flash)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.8;0.4;0;0;0;0;0;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="1" width="1" height="1" fill="var(--coco-gold)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0;0;0;0;0.8;0.4;0;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        {/* Feet */}
+        <rect x="2" y="6" width="1" height="1" fill="var(--coco-feet)"/>
+        <rect x="5" y="6" width="1" height="1" fill="var(--coco-feet)"/>
+      </svg>
+    ),
+  },
+
+  search: {
+    name: "Search Coco",
+    role: "The Document Finder",
+    renderSvg: (size) => (
+      <svg width={size} height={size} viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg"
+        style={{ imageRendering: "pixelated" }}>
+        <rect x="2" y="0" width="4" height="1" fill="var(--coco-top)"/>
+        <rect x="1" y="1" width="2" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="2" width="1" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="3" width="1" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="4" width="2" height="1" fill="var(--coco-mid)"/>
+        <rect x="2" y="5" width="4" height="1" fill="var(--coco-bottom)"/>
+        <rect x="3" y="1" width="3" height="1" fill="var(--coco-mid)"/>
+        <rect x="3" y="4" width="3" height="1" fill="var(--coco-interior)" opacity="0.3"/>
+        <rect x="3" y="2" width="1" height="1" fill="var(--coco-eye-l)"/>
+        <rect x="5" y="2" width="1" height="1" fill="var(--coco-eye-r)">
+          <animate attributeName="y" values="2;2;3;3;2;1;1;2" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="2" width="1" height="1" fill="var(--coco-eye-l)" opacity="0">
+          <animate attributeName="opacity" values="0;0.4;0.6;0.4;0;0;0;0" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="2;2;3;3;2;1;1;2" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="1" height="1" fill="var(--coco-smile)" opacity="var(--coco-smile-opacity)"/>
+        <rect x="0" y="2" width="1" height="1" fill="var(--coco-arm)"/>
+        <rect x="2" y="6" width="1" height="1" fill="var(--coco-feet)"/>
+        <rect x="5" y="6" width="1" height="1" fill="var(--coco-feet)"/>
+      </svg>
+    ),
+  },
+
+  stamp: {
+    name: "Stamp Coco",
+    role: "The Approver",
+    renderSvg: (size) => (
+      <svg width={size} height={size} viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg"
+        style={{ imageRendering: "pixelated" }}>
+        <rect x="2" y="0" width="4" height="1" fill="var(--coco-top)"/>
+        <rect x="1" y="1" width="2" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="2" width="1" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="3" width="1" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="4" width="2" height="1" fill="var(--coco-mid)"/>
+        <rect x="2" y="5" width="4" height="1" fill="var(--coco-bottom)"/>
+        <rect x="3" y="1" width="3" height="1" fill="var(--coco-mid)"/>
+        <rect x="3" y="4" width="3" height="1" fill="var(--coco-interior)" opacity="0.3"/>
+        <rect x="3" y="2" width="1" height="1" fill="var(--coco-eye-l)"/>
+        <rect x="5" y="2" width="1" height="1" fill="var(--coco-eye-l)"/>
+        <rect x="1" y="3" width="1" height="1" fill="var(--coco-smile)" opacity="var(--coco-smile-opacity)"/>
+        <rect x="0" y="2" width="1" height="1" fill="var(--coco-arm)"/>
+        <rect x="7" y="1" width="1" height="1" fill="var(--coco-arm)">
+          <animate attributeName="y" values="1;1;3;3;1;1" dur="1.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="7" y="4" width="1" height="1" fill="var(--coco-gold)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.9;0.4;0;0" dur="1.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="6" width="1" height="1" fill="var(--coco-feet)"/>
+        <rect x="5" y="6" width="1" height="1" fill="var(--coco-feet)"/>
+      </svg>
+    ),
+  },
+
+  wave: {
+    name: "Wave Crunch",
+    role: "The Greeter",
+    renderSvg: (size) => (
+      <svg width={size} height={size} viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg"
+        style={{ imageRendering: "pixelated" }}>
+        <rect x="3" y="0" width="1" height="1" fill="var(--coco-gold)"/>
+        <rect x="1" y="1" width="5" height="1" fill="var(--coco-top)"/>
+        <rect x="1" y="2" width="5" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="3" width="5" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="4" width="5" height="1" fill="var(--coco-mid)"/>
+        <rect x="2" y="2" width="1" height="1" fill="var(--coco-smile)"/>
+        <rect x="4" y="2" width="1" height="1" fill="var(--coco-smile)"/>
+        <rect x="2" y="4" width="3" height="1" fill="var(--coco-smile)"/>
+        <rect x="0" y="3" width="1" height="1" fill="var(--coco-arm)"/>
+        <rect x="6" y="3" width="1" height="1" fill="var(--coco-arm)">
+          <animate attributeName="y" values="3;2;1;2;3;3" dur="1.2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="0" width="1" height="1" fill="var(--coco-gold)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.8;0;0;0" dur="1.2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="5" width="1" height="1" fill="var(--coco-bottom)"/>
+        <rect x="5" y="5" width="1" height="1" fill="var(--coco-bottom)"/>
+      </svg>
+    ),
+  },
+
+  typer: {
+    name: "Typer Crunch",
+    role: "The Auto-Filler",
+    renderSvg: (size) => (
+      <svg width={size} height={size} viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg"
+        style={{ imageRendering: "pixelated" }}>
+        <rect x="3" y="0" width="1" height="1" fill="var(--coco-gold)"/>
+        <rect x="1" y="1" width="5" height="1" fill="var(--coco-top)"/>
+        <rect x="1" y="2" width="5" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="3" width="5" height="1" fill="var(--coco-spine)"/>
+        <rect x="1" y="4" width="5" height="1" fill="var(--coco-mid)"/>
+        <rect x="2" y="3" width="1" height="1" fill="var(--coco-smile)"/>
+        <rect x="4" y="3" width="1" height="1" fill="var(--coco-smile)"/>
+        <rect x="3" y="4" width="1" height="1" fill="var(--coco-smile)"/>
+        <rect x="0" y="3" width="1" height="1" fill="var(--coco-arm)">
+          <animate attributeName="y" values="3;4;3;3;4;3" dur="0.7s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="4" width="1" height="1" fill="var(--coco-arm)">
+          <animate attributeName="y" values="4;3;4;4;3;4" dur="0.7s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="5" width="1" height="1" fill="var(--coco-bottom)"/>
+        <rect x="5" y="5" width="1" height="1" fill="var(--coco-bottom)"/>
+      </svg>
+    ),
+  },
+
+  loader: {
+    name: "Loader Crunch",
+    role: "The Package Carrier",
+    renderSvg: (size) => (
+      <svg width={size} height={size} viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg"
+        style={{ imageRendering: "pixelated" }}>
+        <rect x="1" y="0" width="3" height="1" fill="var(--coco-mid)">
+          <animate attributeName="y" values="0;0;1;0" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="0" width="1" height="1" fill="var(--coco-gold)" opacity="0.5">
+          <animate attributeName="y" values="0;0;1;0" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="1" width="5" height="1" fill="var(--coco-top)">
+          <animate attributeName="y" values="1;1;2;1" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="2" width="5" height="1" fill="var(--coco-spine)">
+          <animate attributeName="y" values="2;2;3;2" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="3" width="5" height="1" fill="var(--coco-spine)">
+          <animate attributeName="y" values="3;3;4;3" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="4" width="5" height="1" fill="var(--coco-mid)">
+          <animate attributeName="y" values="4;4;5;4" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="2" y="2" width="1" height="1" fill="var(--coco-smile)">
+          <animate attributeName="y" values="2;2;3;2" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="4" y="2" width="1" height="1" fill="var(--coco-smile)">
+          <animate attributeName="y" values="2;2;3;2" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="3" y="4" width="1" height="1" fill="var(--coco-smile)">
+          <animate attributeName="y" values="4;4;5;4" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="0" y="1" width="1" height="1" fill="var(--coco-arm)">
+          <animate attributeName="y" values="1;1;2;1" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="6" y="3" width="1" height="1" fill="var(--coco-arm)">
+          <animate attributeName="y" values="3;3;4;3" dur="1.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="1" y="6" width="1" height="1" fill="var(--coco-bottom)"/>
+        <rect x="5" y="6" width="1" height="1" fill="var(--coco-bottom)"/>
+      </svg>
+    ),
+  },
+};
+
 function Coco({ size = 48, state = "idle", className = "" }) {
+  const characterId = useCocoCharacter();
   const p = COCO_PALETTE;
   const config = COCO_STATES[state] || COCO_STATES.idle;
   const dur = config.speed;
+
+  // Determine if we should use the character's custom SVG
+  // "sort" always uses the existing C-Block (it IS the C-Block)
+  // Other characters use their renderSvg for idle/sorting/waving states
+  // but fall back to C-Block for celebrating/sleeping/thinking (state-specific animations)
+  const character = COCO_CHARACTERS[characterId];
+  const useCharacterSvg = characterId !== "sort" && character &&
+    ["idle", "sorting", "waving"].includes(state);
 
   return (
     <div
@@ -295,98 +535,105 @@ function Coco({ size = 48, state = "idle", className = "" }) {
         @keyframes cocoParticle2 { 0%{transform:translate(0,0);opacity:1} 100%{transform:translate(3px,-3px);opacity:0} }
         @keyframes cocoParticle3 { 0%{transform:translate(0,0);opacity:1} 100%{transform:translate(4px,-5px);opacity:0} }
         @keyframes cocoZFloat { 0%{transform:translateY(0);opacity:0.6} 100%{transform:translateY(-8px);opacity:0} }
+        @keyframes cocoNod { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-3deg)} 75%{transform:rotate(3deg)} }
       `}</style>
 
-      <svg width={size} height={size} viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg"
-        style={{ imageRendering: "pixelated", opacity: config.bodyOpacity }}>
-        {/* C SHAPE BODY */}
-        <rect x="2" y="0" width="4" height="1" fill={p.topBar} />
-        <rect x="1" y="1" width="2" height="1" fill={p.spine} />
-        <rect x="1" y="2" width="1" height="1" fill={p.spine} />
-        <rect x="1" y="3" width="1" height="1" fill={p.spine} />
-        <rect x="1" y="4" width="2" height="1" fill={p.midBar} />
-        <rect x="2" y="5" width="4" height="1" fill={p.bottomBar} />
-        <rect x="3" y="1" width="3" height="1" fill={p.midBar} />
-        <rect x="3" y="4" width="3" height="1" fill={p.interior} opacity="0.3" />
+      {useCharacterSvg ? (
+        <>
+          {character.renderSvg(size)}
+        </>
+      ) : (
+        <svg width={size} height={size} viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg"
+          style={{ imageRendering: "pixelated", opacity: config.bodyOpacity }}>
+          {/* C SHAPE BODY */}
+          <rect x="2" y="0" width="4" height="1" fill={p.topBar} />
+          <rect x="1" y="1" width="2" height="1" fill={p.spine} />
+          <rect x="1" y="2" width="1" height="1" fill={p.spine} />
+          <rect x="1" y="3" width="1" height="1" fill={p.spine} />
+          <rect x="1" y="4" width="2" height="1" fill={p.midBar} />
+          <rect x="2" y="5" width="4" height="1" fill={p.bottomBar} />
+          <rect x="3" y="1" width="3" height="1" fill={p.midBar} />
+          <rect x="3" y="4" width="3" height="1" fill={p.interior} opacity="0.3" />
 
-        {/* EYES */}
-        {state === "sleeping" ? (
-          <>
-            <rect x="3" y="2" width="1" height="1" fill={p.sleepEye} />
-            <rect x="5" y="2" width="1" height="1" fill={p.sleepEye} />
-          </>
-        ) : state === "thinking" ? (
-          <>
-            <rect x="3" y="2" width="1" height="1" fill={p.eyeL}>
-              <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" />
-            </rect>
-            <rect x="5" y="2" width="1" height="1" fill={p.eyeR}>
-              <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" />
-            </rect>
-          </>
-        ) : state === "celebrating" ? (
-          <>
-            <rect x="3" y="2" width="1" height="1" fill={p.celebEye} />
-            <rect x="5" y="2" width="1" height="1" fill={p.celebEye} />
-          </>
-        ) : state === "waving" ? (
-          <>
-            <rect x="3" y="2" width="1" height="1" fill={p.eyeL} />
-            <rect x="5" y="2" width="1" height="1" fill={p.eyeL} />
-          </>
-        ) : (
-          <>
-            <rect x="3" y="2" width="1" height="1" fill={p.eyeL}>
-              <animate attributeName="x" values="3;3;2;2;3;3;4;4;3;3" dur={dur} repeatCount="indefinite" />
-            </rect>
-            <rect x="5" y="2" width="1" height="1" fill={p.eyeR}>
-              <animate attributeName="x" values="5;5;4;4;5;5;6;6;5;5" dur={dur} repeatCount="indefinite" />
-            </rect>
-          </>
-        )}
+          {/* EYES */}
+          {state === "sleeping" ? (
+            <>
+              <rect x="3" y="2" width="1" height="1" fill={p.sleepEye} />
+              <rect x="5" y="2" width="1" height="1" fill={p.sleepEye} />
+            </>
+          ) : state === "thinking" ? (
+            <>
+              <rect x="3" y="2" width="1" height="1" fill={p.eyeL}>
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" />
+              </rect>
+              <rect x="5" y="2" width="1" height="1" fill={p.eyeR}>
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" />
+              </rect>
+            </>
+          ) : state === "celebrating" ? (
+            <>
+              <rect x="3" y="2" width="1" height="1" fill={p.celebEye} />
+              <rect x="5" y="2" width="1" height="1" fill={p.celebEye} />
+            </>
+          ) : state === "waving" ? (
+            <>
+              <rect x="3" y="2" width="1" height="1" fill={p.eyeL} />
+              <rect x="5" y="2" width="1" height="1" fill={p.eyeL} />
+            </>
+          ) : (
+            <>
+              <rect x="3" y="2" width="1" height="1" fill={p.eyeL}>
+                <animate attributeName="x" values="3;3;2;2;3;3;4;4;3;3" dur={dur} repeatCount="indefinite" />
+              </rect>
+              <rect x="5" y="2" width="1" height="1" fill={p.eyeR}>
+                <animate attributeName="x" values="5;5;4;4;5;5;6;6;5;5" dur={dur} repeatCount="indefinite" />
+              </rect>
+            </>
+          )}
 
-        {/* SMILE */}
-        <rect x="1" y="3" width="1" height="1" fill={p.smile} opacity={state === "waving" ? 1 : p.smileOpacity} />
+          {/* SMILE */}
+          <rect x="1" y="3" width="1" height="1" fill={p.smile} opacity={state === "waving" ? 1 : p.smileOpacity} />
 
-        {/* ARM */}
-        {state === "waving" ? (
-          <rect x="0" y="2" width="1" height="1" fill={p.arm}>
-            <animate attributeName="y" values="2;1;0;1;2;2" dur="1.2s" repeatCount="indefinite" />
-          </rect>
-        ) : state === "celebrating" ? (
-          <rect x="0" y="1" width="1" height="1" fill={p.arm} />
-        ) : (
-          <rect x="0" y="2" width="1" height="1" fill={p.arm} />
-        )}
+          {/* ARM */}
+          {state === "waving" ? (
+            <rect x="0" y="2" width="1" height="1" fill={p.arm}>
+              <animate attributeName="y" values="2;1;0;1;2;2" dur="1.2s" repeatCount="indefinite" />
+            </rect>
+          ) : state === "celebrating" ? (
+            <rect x="0" y="1" width="1" height="1" fill={p.arm} />
+          ) : (
+            <rect x="0" y="2" width="1" height="1" fill={p.arm} />
+          )}
 
-        {/* SORTING INDICATOR FLASHES */}
-        {config.sortFlash && (
-          <>
-            <rect x="0" y="1" width="1" height="1" fill={p.flash} opacity="0">
-              <animate attributeName="opacity" values="0;0;0.8;0.4;0;0;0;0;0;0" dur={dur} repeatCount="indefinite" />
-            </rect>
-            <rect x="7" y="1" width="1" height="1" fill={p.gold} opacity="0">
-              <animate attributeName="opacity" values="0;0;0;0;0;0;0.8;0.4;0;0" dur={dur} repeatCount="indefinite" />
-            </rect>
-          </>
-        )}
+          {/* SORTING INDICATOR FLASHES */}
+          {config.sortFlash && (
+            <>
+              <rect x="0" y="1" width="1" height="1" fill={p.flash} opacity="0">
+                <animate attributeName="opacity" values="0;0;0.8;0.4;0;0;0;0;0;0" dur={dur} repeatCount="indefinite" />
+              </rect>
+              <rect x="7" y="1" width="1" height="1" fill={p.gold} opacity="0">
+                <animate attributeName="opacity" values="0;0;0;0;0;0;0.8;0.4;0;0" dur={dur} repeatCount="indefinite" />
+              </rect>
+            </>
+          )}
 
-        {/* CELEBRATING FLASHES */}
-        {state === "celebrating" && (
-          <>
-            <rect x="0" y="1" width="1" height="1" fill={p.flash}>
-              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="0.6s" repeatCount="indefinite" />
-            </rect>
-            <rect x="7" y="1" width="1" height="1" fill={p.gold}>
-              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="0.6s" repeatCount="indefinite" />
-            </rect>
-          </>
-        )}
+          {/* CELEBRATING FLASHES */}
+          {state === "celebrating" && (
+            <>
+              <rect x="0" y="1" width="1" height="1" fill={p.flash}>
+                <animate attributeName="opacity" values="0.8;0.3;0.8" dur="0.6s" repeatCount="indefinite" />
+              </rect>
+              <rect x="7" y="1" width="1" height="1" fill={p.gold}>
+                <animate attributeName="opacity" values="0.8;0.3;0.8" dur="0.6s" repeatCount="indefinite" />
+              </rect>
+            </>
+          )}
 
-        {/* FEET */}
-        <rect x="2" y="6" width="1" height="1" fill={p.feet} />
-        <rect x="5" y="6" width="1" height="1" fill={p.feet} />
-      </svg>
+          {/* FEET */}
+          <rect x="2" y="6" width="1" height="1" fill={p.feet} />
+          <rect x="5" y="6" width="1" height="1" fill={p.feet} />
+        </svg>
+      )}
 
       {/* PARTICLES (celebrating) */}
       {state === "celebrating" && (
@@ -589,6 +836,28 @@ function CartPanel({ onNavigateToAgent }) {
   const cocoTasksDone = cocoTasks.filter(t => t.status === "done").length;
   const cocoTasksTotal = cocoTasks.length;
 
+  // Voice mode
+  const [voiceActive, setVoiceActive] = useState(false);
+  const [voiceTranscript, setVoiceTranscript] = useState([]);
+  const voiceTimerRef = useRef(null);
+
+  const startVoice = () => {
+    setVoiceActive(true);
+    setVoiceTranscript([]);
+    // Demo: simulate a conversation after a short delay
+    voiceTimerRef.current = setTimeout(() => {
+      setVoiceTranscript(prev => [...prev, { role: "user", text: "What encryption does this vendor use?" }]);
+      setTimeout(() => {
+        setVoiceTranscript(prev => [...prev, { role: "coco", text: "They use AES-256 for data at rest and TLS 1.2+ in transit. Key management is through AWS KMS with annual rotation." }]);
+      }, 2500);
+    }, 1500);
+  };
+
+  const stopVoice = () => {
+    setVoiceActive(false);
+    if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current);
+  };
+
   const typeIcons = {
     document: <FileText className="w-3.5 h-3.5 text-brand-500" />,
     quote: <Quote className="w-3.5 h-3.5 text-yellow-500" />,
@@ -607,11 +876,11 @@ function CartPanel({ onNavigateToAgent }) {
   ];
 
   return (
-    <div className="w-[340px] bg-bg-surface/50 border-l border-border-default flex flex-col shrink-0 overflow-hidden">
+    <div className="w-[340px] bg-bg-surface/50 border-l border-border-default flex flex-col shrink-0 overflow-hidden relative">
       {/* Coco status bar - clickable to go to agent chat */}
       <button onClick={onNavigateToAgent}
-        className={`w-full flex items-center gap-2.5 px-4 py-2.5 border-b transition-all text-left hover:bg-bg-hover/50 ${cocoStatus === "done" ? "border-brand-600/30 bg-brand-500/5" : "border-border-default"}`}>
-        <Coco size={24} state={cocoAnim} />
+        className={`w-full flex items-center gap-2.5 px-4 h-[56px] shrink-0 border-b transition-all text-left hover:bg-bg-hover/50 ${cocoStatus === "done" ? "border-brand-600/30 bg-brand-500/5" : "border-border-default"}`}>
+        <Coco size={28} state={cocoAnim} />
         <div className="flex-1 min-w-0 flex items-center gap-2">
           <span className="text-xs font-medium text-text-primary shrink-0">Coco</span>
           <span className="text-[10px] text-text-muted truncate">
@@ -621,8 +890,52 @@ function CartPanel({ onNavigateToAgent }) {
         {cocoStatus === "working" && cocoTasksTotal > 0 && (
           <span className="text-[10px] font-medium text-brand-500 shrink-0">{Math.round((cocoTasksDone / cocoTasksTotal) * 100)}%</span>
         )}
-        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${cocoStatus === "working" ? "bg-yellow-500 animate-pulse" : cocoStatus === "done" ? "bg-brand-500" : "bg-text-muted/30"}`} />
+        <button onClick={(e) => { e.stopPropagation(); voiceActive ? stopVoice() : startVoice(); }}
+          className={`shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-colors ${
+            voiceActive ? "bg-red-500/15 text-red-400 border border-red-500/30 animate-pulse" : "bg-bg-primary/60 text-text-muted border border-border-default/50 hover:text-brand-400 hover:border-brand-500/30"
+          }`}>
+          <Mic className="w-3 h-3" /> {voiceActive ? "Stop" : "Voice"}
+        </button>
       </button>
+
+      {/* Voice transcript overlay — covers tabs + content */}
+      <AnimatePresence>
+        {voiceActive && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+            className="absolute inset-x-3 top-[58px] z-30 bg-bg-surface border border-border-default rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+            <div className="px-4 py-3">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+                <span className="text-[10px] font-medium text-red-400">Listening...</span>
+              </div>
+              {voiceTranscript.length === 0 && (
+                <p className="text-[11px] text-text-muted italic">Speak to Coco — your words will appear here...</p>
+              )}
+              <div className="space-y-2.5">
+                {voiceTranscript.map((t, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                    className={`flex gap-2.5 ${t.role === "user" ? "justify-end" : ""}`}>
+                    {t.role === "coco" && <Coco size={22} state="idle" className="shrink-0 mt-0.5" />}
+                    <div className={`rounded-xl px-3 py-2 max-w-[85%] ${
+                      t.role === "user" ? "bg-brand-500/10 border border-brand-500/20" : "bg-bg-primary border border-border-default"
+                    }`}>
+                      <p className="text-xs text-text-primary leading-relaxed">{t.text}</p>
+                    </div>
+                  </motion.div>
+                ))}
+                {voiceTranscript.length > 0 && voiceTranscript[voiceTranscript.length - 1].role === "coco" && (
+                  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                    <button onClick={() => { const t = [...voiceTranscript]; stopVoice(); onNavigateToAgent({ voiceTranscript: t }); }}
+                      className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 mt-1 rounded-xl border border-brand-500/30 text-brand-400 text-xs font-medium hover:bg-brand-500/10 transition-colors">
+                      Continue in chat <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Coco notification toast */}
       <AnimatePresence>
@@ -865,58 +1178,136 @@ function CartPanel({ onNavigateToAgent }) {
    ═══════════════════════════════════════════════════════════════ */
 
 const PRODUCT_LINES = [
-  "All Products", "Cloud Platform", "On-Prem Server", "API Gateway",
-  "Data Analytics", "Mobile SDK", "IoT Edge", "Identity Manager",
+  "Cloud Platform", "On-Prem Server", "API Gateway",
+  "Data Analytics", "Mobile SDK", "Identity Manager",
 ];
+
+const FILE_SYSTEM = [
+  { type: 'folder', name: 'Compliance Reports', children: [
+    { type: 'file', name: 'SOC 2 Type II Report', fileType: 'pdf', date: 'Feb 2026', locked: true },
+    { type: 'file', name: 'SOC 3 Report', fileType: 'pdf', date: 'Feb 2026', locked: false },
+    { type: 'file', name: 'ISO 27001 Certificate', fileType: 'cert', date: 'Dec 2025', locked: false },
+    { type: 'file', name: 'ISO 27701 Certificate', fileType: 'cert', date: 'Nov 2025', locked: false },
+    { type: 'file', name: 'HIPAA Compliance Letter', fileType: 'pdf', date: 'Jan 2026', locked: true },
+    { type: 'file', name: 'CSA STAR Self-Assessment', fileType: 'xlsx', date: 'Mar 2026', locked: false },
+    { type: 'file', name: 'PCI DSS AOC', fileType: 'pdf', date: 'Oct 2025', locked: true },
+  ]},
+  { type: 'folder', name: 'Policies', children: [
+    { type: 'file', name: 'Information Security Policy', fileType: 'pdf', date: 'Mar 2026', locked: false },
+    { type: 'file', name: 'Incident Response Policy', fileType: 'docx', date: 'Jan 2026', locked: false },
+    { type: 'file', name: 'Business Continuity Plan', fileType: 'pdf', date: 'Feb 2026', locked: false },
+    { type: 'file', name: 'Disaster Recovery Plan', fileType: 'pdf', date: 'Feb 2026', locked: true },
+    { type: 'file', name: 'Acceptable Use Policy', fileType: 'pdf', date: 'Dec 2025', locked: false },
+    { type: 'file', name: 'Data Retention Policy', fileType: 'pdf', date: 'Nov 2025', locked: false },
+    { type: 'file', name: 'Access Control Policy', fileType: 'docx', date: 'Jan 2026', locked: false },
+    { type: 'file', name: 'Change Management Policy', fileType: 'docx', date: 'Mar 2026', locked: false },
+  ]},
+  { type: 'folder', name: 'Legal', children: [
+    { type: 'file', name: 'Data Processing Agreement', fileType: 'pdf', date: 'Mar 2026', locked: false },
+    { type: 'file', name: 'Standard NDA Template', fileType: 'docx', date: 'Jan 2026', locked: false },
+    { type: 'file', name: 'Terms of Service', fileType: 'pdf', date: 'Feb 2026', locked: false },
+    { type: 'file', name: 'Privacy Policy', fileType: 'pdf', date: 'Mar 2026', locked: false },
+    { type: 'file', name: 'Sub-processor List', fileType: 'xlsx', date: 'Mar 2026', locked: false },
+    { type: 'file', name: 'GDPR Compliance Statement', fileType: 'pdf', date: 'Dec 2025', locked: false },
+  ]},
+  { type: 'folder', name: 'Penetration Testing', children: [
+    { type: 'file', name: 'Pentest Report – Q1 2026', fileType: 'pdf', date: 'Mar 2026', locked: true },
+    { type: 'file', name: 'Pentest Report – Q4 2025', fileType: 'pdf', date: 'Dec 2025', locked: true },
+    { type: 'file', name: 'Pentest Executive Summary', fileType: 'docx', date: 'Mar 2026', locked: false },
+    { type: 'file', name: 'Remediation Tracker', fileType: 'xlsx', date: 'Mar 2026', locked: true },
+  ]},
+  { type: 'folder', name: 'Questionnaires', children: [
+    { type: 'file', name: 'SIG Lite Questionnaire', fileType: 'xlsx', date: 'Feb 2026', locked: false },
+    { type: 'file', name: 'CSA CAIQ v4', fileType: 'xlsx', date: 'Mar 2026', locked: false },
+    { type: 'file', name: 'Custom Questionnaire Template', fileType: 'xlsx', date: 'Jan 2026', locked: false },
+    { type: 'file', name: 'HECVAT Full', fileType: 'xlsx', date: 'Nov 2025', locked: false },
+  ]},
+  { type: 'file', name: 'Security Whitepaper', fileType: 'pdf', date: 'Mar 2026', locked: false },
+  { type: 'file', name: 'Vendor Risk Assessment', fileType: 'xlsx', date: 'Mar 2026', locked: true },
+  { type: 'file', name: 'Architecture Diagram', fileType: 'pdf', date: 'Feb 2026', locked: false },
+  { type: 'file', name: 'Encryption at Rest Overview', fileType: 'pdf', date: 'Jan 2026', locked: false },
+  { type: 'file', name: 'Network Security Overview', fileType: 'pdf', date: 'Feb 2026', locked: false },
+  { type: 'file', name: 'Employee Security Training Log', fileType: 'xlsx', date: 'Mar 2026', locked: true },
+  { type: 'file', name: 'Annual Risk Assessment Summary', fileType: 'pdf', date: 'Dec 2025', locked: false },
+  { type: 'file', name: 'Third-Party Audit Letter', fileType: 'pdf', date: 'Feb 2026', locked: true },
+  { type: 'file', name: 'Cloud Infrastructure FAQ', fileType: 'docx', date: 'Jan 2026', locked: false },
+  { type: 'file', name: 'SSO Integration Guide', fileType: 'pdf', date: 'Nov 2025', locked: false },
+  { type: 'file', name: 'API Security Best Practices', fileType: 'pdf', date: 'Mar 2026', locked: false },
+  { type: 'file', name: 'Product Security Roadmap', fileType: 'pdf', date: 'Mar 2026', locked: true },
+  { type: 'file', name: 'Bug Bounty Program Overview', fileType: 'pdf', date: 'Feb 2026', locked: false },
+];
+
+const UPDATES = [
+  { type: 'new', date: 'March 28, 2026', title: 'New SOC 2 Type II Report Added',
+    body: 'Our latest SOC 2 Type II audit report covering the period July 2025 – January 2026 is now available for download. This report was conducted by Deloitte and covers all five trust service criteria.\n\nKey highlights include zero critical findings, improved controls around data encryption at rest, and expanded coverage of our incident response procedures. The report is available in the Documents section for immediate download.' },
+  { type: 'updated', date: 'March 22, 2026', title: 'Security Whitepaper Refreshed',
+    body: 'Updated our security whitepaper to reflect the latest infrastructure changes including our migration to a multi-region deployment and zero-trust network architecture.\n\nNew sections cover our container security strategy, service mesh implementation, and updated key management practices. The previous version has been archived and is still accessible upon request.' },
+  { type: 'new', date: 'March 15, 2026', title: 'New Sub-processor: Datadog',
+    body: 'Datadog has been added as a sub-processor for monitoring and observability services. Data processed includes application performance metrics and log data. Full details available in the updated sub-processor list.\n\nDatadog processes data in US-based facilities and has been assessed against our vendor security requirements. Their SOC 2 Type II report and security documentation are available upon request.' },
+  { type: 'updated', date: 'March 8, 2026', title: 'Data Processing Agreement v3.2',
+    body: 'Minor revisions to our DPA reflecting updated data retention policies and expanded EU representative information per GDPR requirements.\n\nChanges include a new 90-day data retention window for analytics data (reduced from 180 days), updated Standard Contractual Clauses reflecting the latest EU Commission decisions, and designation of our new EU representative based in Dublin.' },
+  { type: 'removed', date: 'March 1, 2026', title: 'Deprecated: Legacy Encryption Whitepaper',
+    body: 'The 2024 encryption whitepaper has been replaced by the updated Security Whitepaper which now includes comprehensive encryption details.\n\nAll encryption-related content from the legacy document has been incorporated into sections 4 and 5 of the new Security Whitepaper. If you previously referenced the old document in compliance reviews, please update your references accordingly.' },
+];
+
+const SEARCH_DATA = {
+  sections: [
+    { title: 'Documents & Knowledge Base', desc: 'Browse documents and security categories' },
+    { title: 'Trusted By', desc: 'Companies that trust Arcline' },
+    { title: 'Announcements', desc: 'Latest trust center announcements' },
+    { title: 'Video Resources', desc: 'Security and compliance video content' },
+  ],
+  docs: [
+    { name: 'ISO 27001 Certificate', type: 'cert' },
+    { name: 'SOC 2 Type II Report', type: 'pdf' },
+    { name: 'Security Whitepaper', type: 'pdf' },
+    { name: 'Data Processing Agreement', type: 'pdf' },
+    { name: 'Vendor Risk Assessment', type: 'xlsx' },
+    { name: 'Pentest Executive Summary', type: 'docx' },
+    { name: 'Business Continuity Plan', type: 'pdf' },
+    { name: 'Incident Response Policy', type: 'docx' },
+    { name: 'Sub-processor List', type: 'xlsx' },
+    { name: 'Information Security Policy', type: 'pdf' },
+    { name: 'CSA CAIQ v4', type: 'xlsx' },
+    { name: 'Privacy Policy', type: 'pdf' },
+  ]
+};
+
+function getFileCount(item) {
+  if (item.type === 'file') return 1;
+  return item.children.reduce((sum, c) => sum + getFileCount(c), 0);
+}
+
+function getItemsAtPath(path) {
+  let items = FILE_SYSTEM;
+  for (const seg of path) {
+    const folder = items.find(i => i.type === 'folder' && i.name === seg);
+    if (folder) items = folder.children;
+    else return [];
+  }
+  return items;
+}
 
 function TrustCenterHome() {
   const tc = useTc();
-  const [searchFocused, setSearchFocused] = useState(false);
-  const [activeTab, setActiveTab] = useState("Overview");
-  const [expandedFaq, setExpandedFaq] = useState(null);
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("overview");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState("All Products");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [searchResultsOpen, setSearchResultsOpen] = useState(false);
+  const [productChecks, setProductChecks] = useState(() => PRODUCT_LINES.map(() => true));
   const [productDropdownOpen, setProductDropdownOpen] = useState(false);
+  const [expandedFaq, setExpandedFaq] = useState(0);
+  const [fileBrowserView, setFileBrowserView] = useState("grid");
+  const [currentPath, setCurrentPath] = useState([]);
+  const [columnSelections, setColumnSelections] = useState([]);
+  const [selectedUpdate, setSelectedUpdate] = useState(null);
+  const [selectedDoc, setSelectedDoc] = useState(null);
+
   const dropdownRef = useRef(null);
+  const searchRef = useRef(null);
+  const columnsRef = useRef(null);
 
-  // Close dropdown on outside click
-  useEffect(() => {
-    const handleClick = (e) => { if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setProductDropdownOpen(false); };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  // ⌘K shortcut
-  useEffect(() => {
-    const handleKey = (e) => { if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); document.getElementById("tc-global-search")?.focus(); } };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, []);
-
-  const tabs = [
-    { label: "Overview", icon: Compass },
-    { label: "Documents", icon: FileText },
-    { label: "Knowledge Base", icon: BookOpen },
-    { label: "Subprocessors", icon: Users },
-    { label: "Updates", icon: Bell },
-  ];
-  const stats = [
-    { icon: FileText, label: "Documents", value: "42" },
-    { icon: BookOpen, label: "FAQs", value: "128" },
-    { icon: Shield, label: "Certifications", value: "6" },
-    { icon: Clock, label: "Avg Response", value: "< 2hr" },
-  ];
-  const certifications = ["SOC 2 Type II", "ISO 27001", "GDPR", "HIPAA", "SOC 3"];
-  const securityItems = [
-    "Annual Penetration Testing", "Data Processing Agreement", "Mobile Device Management", "Cyber Insurance",
-    "Bug Bounty Program", "Vulnerability Scanning", "Security Awareness Training", "Incident Response Plan",
-  ];
-  const documents = [
-    { title: "SOC 2 Type II Report", type: "PDF", date: "Mar 2026", locked: true },
-    { title: "ISO 27001 Certificate", type: "PDF", date: "Jan 2026", locked: false },
-    { title: "Data Processing Addendum", type: "PDF", date: "Feb 2026", locked: false },
-    { title: "Vendor Risk Assessment", type: "XLSX", date: "Mar 2026", locked: true },
-  ];
   const faqs = [
     { category: "Access Management", q: `How does ${tc.name} manage user access controls?`, a: "We implement role-based access control (RBAC) with least-privilege principles. All access is reviewed quarterly and requires manager approval." },
     { category: "Application Security", q: "What is your secure development lifecycle?", a: "We follow OWASP guidelines with mandatory code reviews, SAST/DAST scanning, and annual penetration testing by independent third parties." },
@@ -925,210 +1316,743 @@ function TrustCenterHome() {
     { category: "Incident Response", q: "What is your incident response process?", a: "We maintain a documented IR plan with 24/7 on-call rotation. Customers are notified within 72 hours of confirmed breaches per GDPR requirements." },
   ];
 
+  const topDocs = [
+    { name: "SOC 2 Type II Report (2026)", views: 487 },
+    { name: "Security Whitepaper", views: 312 },
+    { name: "Sub-processor List", views: 289 },
+    { name: "Penetration Test Summary", views: 201 },
+    { name: "Data Processing Agreement", views: 178 },
+    { name: "Vendor Risk Assessment", views: 156 },
+    { name: "Business Continuity Plan", views: 134 },
+    { name: "Incident Response Policy", views: 112 },
+  ];
+
+  // Product filter label
+  const allChecked = productChecks.every(Boolean);
+  const noneChecked = productChecks.every(v => !v);
+  const checkedCount = productChecks.filter(Boolean).length;
+  const filterLabel = (allChecked || noneChecked) ? "All Products" : `${checkedCount} Product${checkedCount !== 1 ? "s" : ""}`;
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setProductDropdownOpen(false);
+      if (searchRef.current && !searchRef.current.contains(e.target)) { setSearchResultsOpen(false); }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // Keyboard shortcuts: Cmd+K, Escape
+  useEffect(() => {
+    const handleKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        document.getElementById("tc-global-search")?.focus();
+      }
+      if (e.key === "Escape") {
+        if (selectedUpdate !== null) { setSelectedUpdate(null); return; }
+        if (searchResultsOpen) { setSearchResultsOpen(false); setSearchQuery(""); return; }
+        if (productDropdownOpen) { setProductDropdownOpen(false); return; }
+      }
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [selectedUpdate, searchResultsOpen, productDropdownOpen]);
+
+  // Lock body scroll when modal open
+  useEffect(() => {
+    if (selectedUpdate !== null) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
+  }, [selectedUpdate]);
+
+  // Search filtering
+  const filteredSections = useMemo(() => {
+    if (!searchQuery) return SEARCH_DATA.sections;
+    const q = searchQuery.toLowerCase();
+    return SEARCH_DATA.sections.filter(s => s.title.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q));
+  }, [searchQuery]);
+  const filteredDocs = useMemo(() => {
+    if (!searchQuery) return SEARCH_DATA.docs;
+    const q = searchQuery.toLowerCase();
+    return SEARCH_DATA.docs.filter(d => d.name.toLowerCase().includes(q));
+  }, [searchQuery]);
+
+  // Heatmap data (17 weeks x 7 days)
+  const heatmapData = useMemo(() => {
+    function seededRand(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+    const cells = [];
+    for (let week = 0; week < 17; week++) {
+      for (let day = 0; day < 7; day++) {
+        const r = seededRand(week * 7 + day + 42);
+        const boost = week / 17;
+        let level = 0;
+        if (r < 0.18 + boost * 0.25) level = 1;
+        if (r < 0.10 + boost * 0.18) level = 2;
+        if (r < 0.05 + boost * 0.12) level = 3;
+        if (r < 0.02 + boost * 0.07) level = 4;
+        if (day >= 5 && level > 0) level = Math.max(0, level - 1);
+        cells.push(level);
+      }
+    }
+    return cells;
+  }, []);
+
+  // File browser helpers
+  const currentItems = useMemo(() => getItemsAtPath(currentPath), [currentPath]);
+  const openFolder = (name) => { setCurrentPath(prev => [...prev, name]); };
+  const navigateTo = (idx) => { if (idx < 0) setCurrentPath([]); else setCurrentPath(prev => prev.slice(0, idx + 1)); };
+
+  // Column view selection
+  const selectColumn = (depth, idx) => {
+    setColumnSelections(prev => { const next = prev.slice(0, depth); next[depth] = idx; return next; });
+    setTimeout(() => { if (columnsRef.current) columnsRef.current.scrollLeft = columnsRef.current.scrollWidth; }, 50);
+  };
+
+  // Build columns data
+  const columnsData = useMemo(() => {
+    const cols = [FILE_SYSTEM];
+    let items = FILE_SYSTEM;
+    for (let d = 0; d < columnSelections.length; d++) {
+      const selIdx = columnSelections[d];
+      if (selIdx == null || !items[selIdx] || items[selIdx].type !== 'folder') break;
+      items = items[selIdx].children;
+      cols.push(items);
+    }
+    return cols;
+  }, [columnSelections]);
+
+  // Performance cards with pixel art icons
+  const perfCards = [
+    { label: "Response Time", value: "1.8 hr", sub: "Average response time",
+      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="2" y="8" width="2" height="2" fill="var(--color-brand-400)"/><rect x="4" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="6" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="8" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="10" y="8" width="2" height="2" fill="var(--color-brand-400)"/><rect x="12" y="10" width="2" height="2" fill="var(--color-brand-400)"/><rect x="6" y="2" width="2" height="2" fill="var(--color-brand-300)"/><rect x="4" y="10" width="2" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="2" y="12" width="12" height="2" fill="var(--color-brand-400)" opacity="0.3"/></svg> },
+    { label: "Content Accuracy", value: "96%", sub: "AI answer accuracy",
+      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="4" y="2" width="8" height="2" fill="var(--color-brand-400)"/><rect x="2" y="4" width="2" height="8" fill="var(--color-brand-400)"/><rect x="12" y="4" width="2" height="8" fill="var(--color-brand-400)"/><rect x="4" y="12" width="8" height="2" fill="var(--color-brand-400)"/><rect x="6" y="6" width="4" height="4" fill="var(--color-brand-300)"/><rect x="7" y="7" width="2" height="2" fill="var(--color-brand-400)"/></svg> },
+    { label: "Questions Answered", value: "2,847", sub: "Total questions answered",
+      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="6" y="2" width="4" height="2" fill="var(--color-brand-400)"/><rect x="4" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="10" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="6" y="6" width="4" height="2" fill="var(--color-brand-400)"/><rect x="6" y="8" width="4" height="2" fill="var(--color-brand-300)"/><rect x="4" y="10" width="2" height="4" fill="var(--color-brand-400)"/><rect x="10" y="10" width="2" height="4" fill="var(--color-brand-400)"/><rect x="6" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.5"/></svg> },
+    { label: "Visitor Engagement", value: "1,240", sub: "Unique visitors (90 days)",
+      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="6" y="2" width="2" height="2" fill="var(--color-brand-300)"/><rect x="4" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="8" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="2" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="10" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="4" y="8" width="2" height="4" fill="var(--color-brand-400)"/><rect x="8" y="8" width="2" height="4" fill="var(--color-brand-400)"/><rect x="2" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="8" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.5"/></svg> },
+    { label: "Content Freshness", value: "3 days", sub: "Since last update",
+      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="4" y="2" width="8" height="2" fill="var(--color-brand-400)"/><rect x="2" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="12" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="4" y="6" width="2" height="2" fill="var(--color-brand-300)"/><rect x="10" y="6" width="2" height="2" fill="var(--color-brand-300)"/><rect x="6" y="8" width="4" height="2" fill="var(--color-brand-400)"/><rect x="4" y="10" width="8" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="6" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.3"/></svg> },
+    { label: "Update Frequency", value: "8", sub: "Updates this month",
+      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="2" y="12" width="2" height="2" fill="var(--color-brand-400)"/><rect x="2" y="10" width="2" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="5" y="8" width="2" height="6" fill="var(--color-brand-400)"/><rect x="5" y="6" width="2" height="2" fill="var(--color-brand-300)"/><rect x="8" y="6" width="2" height="8" fill="var(--color-brand-400)"/><rect x="8" y="4" width="2" height="2" fill="var(--color-brand-300)"/><rect x="11" y="2" width="2" height="12" fill="var(--color-brand-400)"/><rect x="11" y="0" width="2" height="2" fill="var(--color-brand-300)"/></svg> },
+  ];
+
+  const heatLevelClass = (level) => {
+    if (level === 0) return "bg-bg-elevated";
+    const mixes = [
+      "",
+      "[background:color-mix(in_srgb,var(--color-brand-400)_20%,var(--color-bg-elevated))]",
+      "[background:color-mix(in_srgb,var(--color-brand-400)_40%,var(--color-bg-elevated))]",
+      "[background:color-mix(in_srgb,var(--color-brand-400)_65%,var(--color-bg-elevated))]",
+      "bg-brand-400",
+    ];
+    return mixes[level];
+  };
+
   return (
-    <div>
-      {/* Global Search Bar */}
-      <div className={`flex items-center rounded-xl mb-8 border transition-all ${searchFocused ? "border-brand-500 shadow-[0_0_20px_var(--brand-glow-lg)]" : "border-border-default"} bg-bg-surface`}>
-        {/* Product line dropdown */}
-        <div className="relative" ref={dropdownRef}>
-          <button onClick={() => setProductDropdownOpen(!productDropdownOpen)}
-            className="flex items-center gap-2 pl-4 pr-3 py-3 border-r border-border-default text-sm font-medium text-text-primary hover:bg-bg-hover transition-colors rounded-l-xl whitespace-nowrap">
-            <Filter className="w-3.5 h-3.5 text-brand-500" />
-            {selectedProduct}
-            <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform ${productDropdownOpen ? "rotate-180" : ""}`} />
-          </button>
-          <AnimatePresence>
-            {productDropdownOpen && (
-              <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}
-                className="absolute top-full left-0 mt-1 w-56 bg-bg-surface border border-border-default rounded-xl shadow-lg z-50 py-1 overflow-hidden">
-                {PRODUCT_LINES.map(product => (
-                  <button key={product} onClick={() => { setSelectedProduct(product); setProductDropdownOpen(false); }}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors ${selectedProduct === product ? "text-brand-500 bg-brand-500/5" : "text-text-primary hover:bg-bg-hover"}`}>
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${selectedProduct === product || selectedProduct === "All Products" ? "border-brand-500 bg-brand-500" : "border-border-bright"}`}>
-                      {(selectedProduct === product || selectedProduct === "All Products") && <Check className="w-3 h-3 text-white" />}
+    <Tabs.Root value={activeTab} onValueChange={(e) => { setActiveTab(e.value); setCurrentPath([]); setColumnSelections([]); }}
+      className="max-w-[960px] mx-auto">
+      {/* ═══ STICKY HEADER ═══ */}
+      <div className="sticky top-0 z-40 bg-bg-primary pt-6 mb-6" style={{ position: "sticky" }}>
+        {/* Tab selector */}
+        <div className="flex justify-center mb-5">
+          <Tabs.List className="inline-flex bg-bg-surface/60 backdrop-blur-sm border border-border-default rounded-lg p-0.5 gap-0.5">
+            {[
+              { key: "overview", label: "Overview" },
+              { key: "docs", label: "Documents & Knowledge" },
+              { key: "updates", label: "Updates" },
+            ].map(tab => (
+              <Tabs.Trigger key={tab.key} value={tab.key}
+                className="px-3 py-1.5 rounded-md text-[11px] font-semibold transition-all cursor-pointer data-[selected]:bg-brand-500/80 data-[selected]:backdrop-blur-md data-[selected]:text-white text-text-secondary hover:bg-bg-hover hover:text-text-primary"
+                style={activeTab === tab.key ? { boxShadow: "0 2px 12px var(--brand-glow-md), inset 0 1px 0 rgba(255,255,255,0.1)" } : undefined}>
+                {tab.label}
+              </Tabs.Trigger>
+            ))}
+            <Tabs.Indicator className="hidden" />
+          </Tabs.List>
+        </div>
+
+        {/* Search row */}
+        <div className="flex gap-2.5 items-center">
+          {/* Product filter */}
+          <div className="relative" ref={dropdownRef}>
+            <button onClick={() => setProductDropdownOpen(!productDropdownOpen)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-elevated border text-[13px] font-medium cursor-pointer whitespace-nowrap shrink-0 transition-colors ${productDropdownOpen ? "border-brand-400 text-brand-400" : "border-border-default text-text-secondary hover:border-border-bright"}`}>
+              <Filter className="w-3.5 h-3.5 text-text-muted" />
+              <span>{filterLabel}</span>
+              <ChevronDown className={`w-3 h-3 transition-transform ${productDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            <AnimatePresence>
+              {productDropdownOpen && (
+                <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}
+                  className="absolute top-full left-0 mt-2 w-60 bg-bg-surface border border-border-default rounded-xl p-4 shadow-[0_12px_40px_rgba(0,0,0,0.4)] z-[45]">
+                  <div className="text-[10px] font-bold uppercase tracking-[1.2px] text-brand-400 mb-3">Filter by Product</div>
+                  {PRODUCT_LINES.map((product, idx) => (
+                    <button key={product} onClick={() => setProductChecks(prev => { const next = [...prev]; next[idx] = !next[idx]; return next; })}
+                      className="flex items-center gap-2.5 py-1.5 w-full text-left text-[13px] font-medium text-text-primary hover:text-brand-400 transition-colors cursor-pointer">
+                      <div className={`w-[18px] h-[18px] rounded flex items-center justify-center shrink-0 border-2 transition-all ${productChecks[idx] ? "bg-brand-400 border-brand-400" : "border-border-bright"}`}>
+                        {productChecks[idx] && <Check className="w-3 h-3 text-white" />}
+                      </div>
+                      {product}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Search input */}
+          <div className="relative flex-1" ref={searchRef}>
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+            <input id="tc-global-search" type="text" value={searchQuery}
+              onChange={e => { setSearchQuery(e.target.value); setSearchResultsOpen(true); }}
+              onFocus={() => { setSearchFocused(true); if (searchQuery) setSearchResultsOpen(true); }}
+              onBlur={() => setSearchFocused(false)}
+              placeholder="Search Documents, FAQs, Certifications, etc"
+              className={`w-full py-2.5 pl-11 pr-12 rounded-xl bg-bg-elevated border text-[13px] text-text-primary placeholder:text-text-muted font-[inherit] outline-none transition-colors ${searchFocused ? "border-brand-400" : "border-border-default"}`} />
+            {!searchQuery && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded-[5px] bg-bg-hover border border-border-default text-[11px] text-text-muted pointer-events-none">⌘K</span>
+            )}
+
+            {/* Search results dropdown */}
+            <AnimatePresence>
+              {searchResultsOpen && searchQuery && (
+                <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}
+                  className="absolute top-full left-0 right-0 mt-2 bg-bg-surface border border-border-default rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.4)] z-[45] max-h-[420px] overflow-y-auto flex">
+                  <div className="w-[220px] border-r border-border-default p-4 shrink-0">
+                    <div className="text-[10px] font-bold uppercase tracking-[1px] text-text-muted mb-2.5">Trust Center Sections ({filteredSections.length})</div>
+                    {filteredSections.map(s => (
+                      <div key={s.title} className="p-2 px-2.5 rounded-lg cursor-pointer hover:bg-bg-hover transition-colors">
+                        <div className="text-[13px] font-semibold text-text-primary">{s.title}</div>
+                        <div className="text-[11px] text-text-muted mt-0.5">{s.desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex-1 p-4 overflow-y-auto">
+                    <div className="text-[10px] font-bold uppercase tracking-[1px] text-text-muted mb-2.5">Documents ({filteredDocs.length})</div>
+                    {filteredDocs.map(d => (
+                      <div key={d.name} className="p-2 px-2.5 rounded-lg cursor-pointer hover:bg-bg-hover transition-colors">
+                        <div className="text-[13px] font-semibold text-text-primary">
+                          <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold uppercase mr-1.5 bg-bg-elevated border border-border-default text-text-secondary align-[1px]">{d.type.toUpperCase()}</span>
+                          {d.name}
+                        </div>
+                      </div>
+                    ))}
+                    {/* Ask AI Agent bar */}
+                    <div onClick={() => navigate("/trust-center/agent")}
+                      className="flex items-center gap-2.5 p-3 mt-2.5 border-t border-border-default cursor-pointer hover:bg-bg-hover rounded-b-xl transition-colors">
+                      <button className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-brand-400 text-brand-400 text-xs font-semibold whitespace-nowrap shrink-0">
+                        <Bot className="w-3.5 h-3.5" /> Ask AI Agent
+                      </button>
+                      <span className="text-[13px] text-text-secondary flex-1">Ask about &apos;<strong className="text-brand-400">{searchQuery}</strong>&apos;</span>
+                      <ChevronRight className="w-4 h-4 text-text-muted shrink-0" />
                     </div>
-                    {product}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Bottom border line */}
+        <div className="h-px bg-border-default mt-5" />
+      </div>
+
+      {/* ═══ TAB CONTENT ═══ */}
+      <AnimatePresence mode="wait">
+        {/* ═══════ TAB 1: OVERVIEW ═══════ */}
+        {activeTab === "overview" && (
+          <motion.div key="overview" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+            {/* Hero card */}
+            <div className="bg-bg-surface border border-border-default rounded-[14px] p-7 mb-6">
+              <div className="flex gap-6">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3.5 mb-3">
+                    <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 overflow-hidden"
+                      style={{ background: tc.logo === "mediacore" ? "#333366" : tc.logo === "arcline" ? "#122E32" : "var(--color-brand-800)" }}>
+                      {tc.logo === "arcline" ? <ArclineLogo size={28} />
+                        : tc.logo === "mediacore" ? <MediacoreLogo size={32} />
+                        : <ArclineLogo size={28} />}
+                    </div>
+                    <h2 className="text-lg font-bold text-text-primary">{tc.name} Trust Center</h2>
+                  </div>
+                  <p className="text-[13px] text-text-secondary leading-[1.7] mb-5">
+                    Everything you need to complete your security review is here. Browse documents, certifications, and compliance details with confidence. Our Trust Center is regularly updated to reflect the latest audit results, and subprocessor disclosures. Reach out at <a href="#" className="text-brand-400 no-underline">trust@{tc.name.toLowerCase()}.com</a>.
+                  </p>
+                  <div className="flex gap-2.5 flex-wrap">
+                    <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary">
+                      <FileText className="w-3.5 h-3.5 text-brand-400" /><span className="text-brand-400 font-bold">28</span> Documents
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary">
+                      <BookOpen className="w-3.5 h-3.5 text-brand-400" /><span className="text-brand-400 font-bold">57</span> FAQs
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary">
+                      <Shield className="w-3.5 h-3.5 text-brand-400" /><span className="text-brand-400 font-bold">6</span> Certifications
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-400" /> Active: 8 minutes ago
+                    </div>
+                  </div>
+                </div>
+                {/* Quick Links */}
+                <div className="w-[200px] shrink-0 border-l border-border-default pl-6">
+                  <div className="text-[10px] font-bold uppercase tracking-[1.2px] text-text-muted mb-3.5">Quick Links</div>
+                  {["Homepage", "Privacy Policy", "Status Page"].map(link => (
+                    <a key={link} href="#" className="flex items-center gap-2 py-1.5 text-xs text-brand-400 no-underline hover:opacity-80 transition-opacity">
+                      <ExternalLink className="w-[13px] h-[13px] shrink-0" />{tc.name} {link}
+                    </a>
+                  ))}
+                  <a href="#" className="flex items-center gap-2 py-1.5 text-xs text-brand-400 no-underline hover:opacity-80 transition-opacity">
+                    <Shield className="w-[13px] h-[13px] shrink-0" />Report a vulnerability
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Activity + Certifications */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              {/* Activity Heatmap */}
+              <div className="bg-bg-surface border border-border-default rounded-[14px] p-[22px]">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-semibold text-text-primary">Trust Center Activity</span>
+                  <span className="text-xs font-medium text-brand-400 cursor-pointer">View All</span>
+                </div>
+                <div className="flex justify-between items-center mb-2.5">
+                  <p className="text-xs text-text-secondary">New documents since your last visit: <strong className="text-brand-400">3</strong></p>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <span className="text-[9px] text-text-muted">Less</span>
+                    {[0, 1, 2, 3, 4].map(l => (
+                      <div key={l} className={`w-2.5 h-2.5 rounded-sm ${heatLevelClass(l)}`} />
+                    ))}
+                    <span className="text-[9px] text-text-muted">More</span>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <div className="grid grid-rows-7 grid-flow-col gap-0.5" style={{ gridAutoColumns: "1fr" }}>
+                    {heatmapData.map((level, i) => (
+                      <div key={i} className={`aspect-square rounded-sm ${heatLevelClass(level)} hover:scale-[1.6] hover:z-[2] hover:relative transition-transform`} style={{ minWidth: 0 }} />
+                    ))}
+                  </div>
+                </div>
+                <div className="flex mt-2">
+                  {["Jan", "Feb", "Mar", "Apr"].map(m => (
+                    <span key={m} className="flex-1 text-left text-[9px] text-text-muted">{m}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Certifications */}
+              <div className="bg-bg-surface border border-border-default rounded-[14px] p-[22px]">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-semibold text-text-primary">Certifications</span>
+                  <span className="text-xs font-medium text-brand-400 cursor-pointer">View All</span>
+                </div>
+                <div className="grid grid-cols-4 gap-2.5">
+                  {[
+                    { src: "/badges/iso-27001.png", label: "ISO 27001" },
+                    { src: "/badges/iso-27701.svg", label: "ISO 27701" },
+                    { src: "/badges/gdpr.png", label: "GDPR" },
+                    { src: "/badges/nist.png", label: "NIST" },
+                    { src: "/badges/acn.png", label: "ACN" },
+                    { src: "/badges/cmmc.png", label: "CMMC" },
+                    { src: "/badges/hds.png", label: "HDS" },
+                    { src: "/badges/itar.png", label: "ITAR" },
+                  ].map(cert => (
+                    <div key={cert.label} className="aspect-square rounded-[10px] bg-bg-elevated border border-border-default flex flex-col items-center justify-center gap-1.5 p-2 hover:border-border-bright transition-colors">
+                      <img src={cert.src} alt={cert.label} className="w-10 h-10 object-contain rounded-lg" />
+                      <span className="text-[9px] font-semibold text-text-muted text-center leading-tight">{cert.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Performance */}
+            <div className="bg-bg-surface border border-border-default rounded-[14px] p-6 mb-6">
+              <div className="text-[13px] font-semibold text-brand-400 mb-4">Trust Center Performance</div>
+              <div className="grid grid-cols-3 gap-3">
+                {perfCards.map(card => (
+                  <div key={card.label} className="bg-[rgba(255,255,255,0.04)] border border-border-default rounded-[10px] p-4 flex gap-3.5 items-center">
+                    <div className="shrink-0">{card.icon}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] text-text-muted mb-1">{card.label}</div>
+                      <div className="text-[22px] font-bold text-text-primary leading-none">{card.value}<span className="text-[11px] text-text-muted ml-1 font-normal">{card.sub}</span></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Trusted By + Subprocessors */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-bg-surface border border-border-default rounded-[14px] p-[22px]">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-semibold text-text-primary">Trusted By</span>
+                  <span className="text-xs font-medium text-brand-400 cursor-pointer">View All</span>
+                </div>
+                <div className="grid grid-cols-4 gap-2.5">
+                  {[
+                    { name: "Atlassian", logo: "https://cdn.simpleicons.org/atlassian/2684FF" },
+                    { name: "Figma", logo: "https://cdn.simpleicons.org/figma/F24E1E" },
+                    { name: "Intercom", logo: "https://cdn.simpleicons.org/intercom/6AFDEF" },
+                    { name: "Notion", logo: "https://cdn.simpleicons.org/notion/FFFFFF" },
+                    { name: "Scratchpad", logo: "https://cdn.simpleicons.org/scratch/4D97FF" },
+                    { name: "Shopify", logo: "https://cdn.simpleicons.org/shopify/95BF47" },
+                    { name: "Stripe", logo: "https://cdn.simpleicons.org/stripe/635BFF" },
+                    { name: "Dropbox", logo: "https://cdn.simpleicons.org/dropbox/0061FF" },
+                  ].map(c => (
+                    <div key={c.name} className="aspect-square rounded-[10px] bg-bg-elevated border border-border-default flex flex-col items-center justify-center gap-2.5 p-2 hover:border-border-bright transition-colors">
+                      <img src={c.logo} alt={c.name} className="w-10 h-10 object-contain" />
+                      <span className="text-[9px] font-semibold text-text-muted text-center leading-tight">{c.name}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[11px] text-text-muted leading-relaxed mt-4">
+                  {tc.name} is trusted by leading companies across SaaS, fintech, and enterprise software. These organizations rely on our security posture and compliance documentation to streamline their vendor reviews and meet their own audit requirements.
+                </p>
+              </div>
+              <div className="bg-bg-surface border border-border-default rounded-[14px] p-[22px]">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-semibold text-text-primary">Subprocessors</span>
+                  <span className="text-xs font-medium text-brand-400 cursor-pointer">View Table</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {[
+                    { name: "Google Cloud", usage: "Cloud infrastructure, compute, storage, and hosting", location: "US-East, EU-West", logo: "https://cdn.simpleicons.org/googlecloud/4285F4" },
+                    { name: "Datadog", usage: "Application monitoring, logging, and observability", location: "US", logo: "https://cdn.simpleicons.org/datadog/632CA6" },
+                    { name: "Snowflake", usage: "Data warehousing and analytics processing", location: "US-East", logo: "https://cdn.simpleicons.org/snowflake/29B5E8" },
+                    { name: "Stripe", usage: "Payment processing and billing management", location: "US, EU", logo: "https://cdn.simpleicons.org/stripe/635BFF" },
+                  ].map(sp => (
+                    <div key={sp.name} className="flex items-center gap-3 p-3 px-3.5 rounded-[10px] bg-bg-elevated text-[13px]">
+                      <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0 overflow-hidden">
+                        <img src={sp.logo} alt={sp.name} className="w-[22px] h-[22px] object-contain" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-text-primary font-semibold text-[13px]">{sp.name}</div>
+                        <div className="text-text-secondary text-[11px] mt-0.5">{sp.usage}</div>
+                      </div>
+                      <span className="text-[10px] text-text-muted whitespace-nowrap px-2 py-0.5 rounded-md bg-bg-hover shrink-0">{sp.location}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ═══════ TAB 2: DOCUMENTS & KNOWLEDGE ═══════ */}
+        {activeTab === "docs" && (
+          <motion.div key="docs" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+            {/* Top row: Engagement + KB */}
+            <div className="grid grid-cols-2 gap-4 mb-7">
+              {/* Document Engagement */}
+              <div className="bg-bg-surface border border-border-default rounded-[14px] p-[22px] group/doc">
+                <div className="flex justify-between items-center mb-3.5">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+                    <FileText className="w-4 h-4 text-brand-400" /> Document Engagement
+                  </div>
+                  <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary hover:border-brand-400 hover:text-brand-400 transition-all cursor-pointer opacity-0 group-hover/doc:opacity-100">
+                    <Download className="w-3 h-3" /> Bulk download
+                  </button>
+                </div>
+                <div className="text-[11px] text-text-muted mb-3.5">Most Viewed Documents (30 days)</div>
+                {topDocs.map((doc, i) => (
+                  <div key={doc.name} onClick={() => setSelectedDoc(doc)} className="flex items-center py-2.5 px-3 rounded-lg cursor-pointer hover:bg-bg-hover transition-colors group">
+                    <span className="w-6 text-xs text-text-muted shrink-0">{i + 1}.</span>
+                    <span className="flex-1 text-[13px] text-text-primary font-medium">{doc.name}</span>
+                    <span className="text-[13px] font-semibold text-text-secondary">{doc.views}</span>
+                    <ChevronRight className="w-4 h-4 text-text-muted ml-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                ))}
+                <div className="mt-3.5 pt-3 border-t border-border-default text-[11px] text-text-muted">
+                  Downloads: <strong className="text-brand-400 font-semibold">1,847</strong> &nbsp;&nbsp; Unique: <strong className="text-brand-400 font-semibold">412</strong>
+                </div>
+              </div>
+
+              {/* Knowledge Base FAQs */}
+              <div className="bg-bg-surface border border-border-default rounded-[14px] p-[22px] flex flex-col group/kb">
+                <div className="flex justify-between items-center mb-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+                    <BookOpen className="w-4 h-4 text-brand-400" /> Knowledge Base FAQs
+                  </div>
+                  <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary hover:border-brand-400 hover:text-brand-400 transition-all cursor-pointer opacity-0 group-hover/kb:opacity-100">
+                    <Download className="w-3 h-3" /> Bulk download
+                  </button>
+                </div>
+                {faqs.map((faq, i) => (
+                  <div key={i} className="py-2.5 border-b border-white/[0.04] last:border-b-0 cursor-pointer" onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}>
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex-1 text-[13px] text-text-primary leading-relaxed">{faq.q}</span>
+                      <ChevronDown className={`w-4 h-4 text-text-muted shrink-0 ml-2 transition-transform ${expandedFaq === i ? "rotate-180" : ""}`} />
+                    </div>
+                    <span className="inline-block mt-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold whitespace-nowrap bg-[rgba(34,184,207,0.12)] text-brand-400">{faq.category}</span>
+                    <AnimatePresence>
+                      {expandedFaq === i && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                          <div className="pt-3 pb-1.5">
+                            <p className="text-[13px] text-text-secondary leading-[1.7]">{faq.a}</p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* All Content - File Browser */}
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-base font-semibold text-text-primary">All Content</span>
+              <div className="flex gap-1">
+                {[
+                  { key: "grid", icon: <LayoutGrid className="w-4 h-4" />, title: "Icons" },
+                  { key: "list", icon: <List className="w-4 h-4" />, title: "List" },
+                  { key: "columns", icon: <Columns3 className="w-4 h-4" />, title: "Columns" },
+                ].map(v => (
+                  <button key={v.key} title={v.title}
+                    onClick={() => { setFileBrowserView(v.key); if (v.key === "columns") { setCurrentPath([]); setColumnSelections([]); } }}
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center border cursor-pointer transition-all ${fileBrowserView === v.key ? "bg-bg-elevated border-border-bright text-text-primary" : "border-border-default text-text-muted hover:text-text-primary"}`}>
+                    {v.icon}
                   </button>
                 ))}
-              </motion.div>
+              </div>
+            </div>
+
+            {/* Breadcrumb */}
+            {currentPath.length > 0 && fileBrowserView !== "columns" && (
+              <div className="flex items-center gap-1 mb-3.5 text-xs">
+                <button onClick={() => navigateTo(-1)} className="text-brand-400 font-medium px-1.5 py-0.5 rounded hover:bg-bg-hover transition-colors cursor-pointer bg-transparent border-none text-xs font-[inherit]">All Content</button>
+                {currentPath.map((seg, i) => (
+                  <span key={i} className="flex items-center gap-1">
+                    <span className="text-text-muted text-[11px]">&#x203A;</span>
+                    {i < currentPath.length - 1 ? (
+                      <button onClick={() => navigateTo(i)} className="text-brand-400 font-medium px-1.5 py-0.5 rounded hover:bg-bg-hover transition-colors cursor-pointer bg-transparent border-none text-xs font-[inherit]">{seg}</button>
+                    ) : (
+                      <span className="text-text-primary font-medium px-1.5 py-0.5">{seg}</span>
+                    )}
+                  </span>
+                ))}
+              </div>
             )}
-          </AnimatePresence>
-        </div>
-        {/* Search input */}
-        <div className="flex-1 flex items-center gap-3 px-4">
-          <Search className="w-4 h-4 text-text-muted shrink-0" />
-          <input id="tc-global-search" type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search documents, FAQs, certifications..."
-            className="bg-transparent outline-none text-text-primary placeholder:text-text-muted w-full text-sm py-3"
-            onFocus={() => setSearchFocused(true)} onBlur={() => setSearchFocused(false)} aria-label="Global search" />
-        </div>
-        {/* Keyboard shortcut hint */}
-        <div className="flex items-center gap-1 mr-4 px-2 py-1 rounded-md bg-bg-elevated border border-border-default">
-          <span className="text-[11px] text-text-muted font-medium">⌘K</span>
-        </div>
-      </div>
 
-      {/* Glow menu tabs */}
-      <div className="flex justify-center mb-8">
-        <motion.nav className="p-1.5 rounded-2xl bg-bg-surface/80 backdrop-blur-lg border border-border-default/40 shadow-lg relative overflow-hidden"
-          initial="initial" whileHover="hover">
-          <motion.div className="absolute -inset-2 rounded-3xl z-0 pointer-events-none"
-            style={{ background: "radial-gradient(circle, var(--brand-glow-sm) 0%, transparent 70%)" }}
-            variants={{ initial: { opacity: 0 }, hover: { opacity: 1, transition: { duration: 0.5 } } }} />
-          <ul className="flex items-center gap-1 relative z-10">
-            {tabs.map(({ label, icon: Icon }) => {
-              const isActive = label === activeTab;
-              return (
-                <motion.li key={label} className="relative">
-                  <button onClick={() => setActiveTab(label)} className="block w-full">
-                    <motion.div className="block rounded-xl overflow-visible group relative"
-                      style={{ perspective: "600px" }} whileHover="hover" initial="initial">
-                      {/* Glow behind active item */}
-                      <motion.div className="absolute inset-0 z-0 pointer-events-none rounded-xl"
-                        variants={{ initial: { opacity: 0, scale: 0.8 }, hover: { opacity: 1, scale: 2, transition: { opacity: { duration: 0.5 }, scale: { duration: 0.5, type: "spring", stiffness: 300, damping: 25 } } } }}
-                        animate={isActive ? "hover" : "initial"}
-                        style={{ background: "radial-gradient(circle, var(--brand-glow-md) 0%, var(--brand-glow-sm) 50%, transparent 100%)" }} />
-                      {/* Front face */}
-                      <motion.div
-                        className={`flex items-center gap-2 px-4 py-2 relative z-10 rounded-xl transition-colors ${isActive ? "text-text-primary" : "text-text-muted group-hover:text-text-primary"}`}
-                        variants={{ initial: { rotateX: 0, opacity: 1 }, hover: { rotateX: -90, opacity: 0 } }}
-                        transition={{ type: "spring", stiffness: 100, damping: 20, duration: 0.5 }}
-                        style={{ transformStyle: "preserve-3d", transformOrigin: "center bottom" }}>
-                        <Icon className={`w-4 h-4 transition-colors duration-300 ${isActive ? "text-brand-500" : "group-hover:text-brand-500"}`} />
-                        <span className="text-sm font-medium">{label}</span>
-                      </motion.div>
-                      {/* Back face (flips in on hover) */}
-                      <motion.div
-                        className={`flex items-center gap-2 px-4 py-2 absolute inset-0 z-10 rounded-xl transition-colors ${isActive ? "text-text-primary" : "text-text-muted group-hover:text-text-primary"}`}
-                        variants={{ initial: { rotateX: 90, opacity: 0 }, hover: { rotateX: 0, opacity: 1 } }}
-                        transition={{ type: "spring", stiffness: 100, damping: 20, duration: 0.5 }}
-                        style={{ transformStyle: "preserve-3d", transformOrigin: "center top", rotateX: 90 }}>
-                        <Icon className={`w-4 h-4 transition-colors duration-300 ${isActive ? "text-brand-500" : "group-hover:text-brand-500"}`} />
-                        <span className="text-sm font-medium">{label}</span>
-                      </motion.div>
-                    </motion.div>
-                  </button>
-                </motion.li>
-              );
-            })}
-          </ul>
-        </motion.nav>
-      </div>
-
-      {/* Hero */}
-      <div className="rounded-xl p-8 mb-8" style={{ background: "var(--hero-gradient)" }}>
-        <h1 className="text-[28px] font-bold text-text-primary mb-2">{tc.tcTitle}</h1>
-        <p className="text-text-secondary text-base mb-6">{tc.tcSubtitle}</p>
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          {stats.map(({ icon: Icon, label, value }) => (
-            <div key={label} className="bg-bg-primary/40 backdrop-blur rounded-xl p-4 border border-border-default/50">
-              <Icon className="w-5 h-5 text-brand-500 mb-2" />
-              <p className="text-xl font-bold text-text-primary">{value}</p>
-              <p className="text-xs text-text-secondary">{label}</p>
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-2 mb-6">
-          {certifications.map(cert => (
-            <div key={cert} className="group relative">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-brand-600/40 bg-bg-primary/30 text-sm text-brand-400 hover:border-brand-500 transition-colors cursor-pointer">
-                <Shield className="w-3.5 h-3.5" />{cert}
-              </div>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs rounded-lg bg-bg-elevated border border-border-bright text-text-primary opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">View Report</div>
-            </div>
-          ))}
-        </div>
-        <div className="bg-bg-primary/30 rounded-xl p-4 border border-border-default/50 mb-6">
-          <ContributionGraph weeks={12} cellSize={8} gap={2} seed={42} label="Trust Center Activity - Last 90 Days" />
-        </div>
-      </div>
-
-      {/* Personalized */}
-      <div className="mb-8">
-        <h2 className="text-[22px] font-semibold text-text-primary mb-4">Welcome back, Jordan</h2>
-        <div className="grid grid-cols-3 gap-4">
-          {[
-            { title: "Your Questionnaire", detail: "87% complete", icon: FileText, color: "text-brand-500" },
-            { title: "New Documents", detail: "3 since your last visit", icon: Bell, color: "text-brand-400" },
-            { title: "Gap Requests", detail: "2 resolved", icon: Check, color: "text-brand-500" },
-          ].map(card => (
-            <motion.div key={card.title} className="bg-bg-surface rounded-xl p-5 border border-border-default hover:border-brand-600/40 transition-colors cursor-pointer" whileHover={{ y: -2 }}>
-              <card.icon className={`w-5 h-5 ${card.color} mb-3`} />
-              <p className="text-sm font-semibold text-text-primary">{card.title}</p>
-              <p className="text-xs text-text-secondary mt-1">{card.detail}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Security Posture */}
-      <div className="mb-8">
-        <h2 className="text-[22px] font-semibold text-text-primary mb-4">Security Posture</h2>
-        <div className="grid grid-cols-2 gap-3">
-          {securityItems.map(item => (
-            <div key={item} className="flex items-center justify-between bg-bg-surface rounded-xl px-4 py-3 border border-border-default group">
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-brand-500/15 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-brand-500" /></div>
-                <span className="text-sm text-text-primary">{item}</span>
-              </div>
-              <AddToCartButton item={{ type: "quote", title: item, subtitle: "Security posture item" }} label="Save" />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Documents - with add-to-cart */}
-      <div className="mb-8">
-        <h2 className="text-[22px] font-semibold text-text-primary mb-4">Featured Documents</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {documents.map(doc => (
-            <motion.div key={doc.title} className="bg-bg-surface rounded-xl p-5 border border-border-default hover:border-border-bright transition-colors cursor-pointer group" whileHover={{ y: -2 }}>
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-brand-500" />
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${doc.type === "PDF" ? "bg-red-500/15 text-red-400" : "bg-brand-500/15 text-brand-400"}`}>{doc.type}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {doc.locked && <Lock className="w-4 h-4 text-text-muted" />}
-                  <AddToCartButton item={{ type: "document", title: doc.title, subtitle: `${doc.type} · ${doc.date}` }} />
-                </div>
-              </div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-brand-400 transition-colors">{doc.title}</p>
-              <p className="text-xs text-text-muted mt-1">Updated {doc.date}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Knowledge Base - with save-quote */}
-      <div className="mb-8">
-        <h2 className="text-[22px] font-semibold text-text-primary mb-4">Knowledge Base</h2>
-        <div className="bg-bg-surface rounded-xl border border-border-default divide-y divide-border-default">
-          {faqs.map((faq, i) => (
-            <div key={i}>
-              <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-bg-hover transition-colors" aria-expanded={expandedFaq === i}>
-                <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-500">{faq.category}</span>
-                  <span className="text-sm text-text-primary">{faq.q}</span>
-                </div>
-                <motion.div animate={{ rotate: expandedFaq === i ? 180 : 0 }}><ChevronDown className="w-4 h-4 text-text-muted shrink-0" /></motion.div>
-              </button>
-              <AnimatePresence>
-                {expandedFaq === i && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                    <div className="px-5 pb-4 flex items-start justify-between gap-4">
-                      <p className="text-sm text-text-secondary leading-relaxed">{faq.a}</p>
-                      <AddToCartButton item={{ type: "quote", title: `"${faq.a.substring(0, 60)}..."`, subtitle: `From: ${faq.category}` }} label="Quote" />
+            {/* Grid View */}
+            {fileBrowserView === "grid" && (
+              <div className="grid grid-cols-3 gap-3.5">
+                {currentItems.map(item => item.type === "folder" ? (
+                  <div key={item.name} onClick={() => openFolder(item.name)}
+                    className="bg-bg-surface border border-border-default rounded-xl p-6 flex flex-col items-center text-center cursor-pointer hover:border-border-bright hover:bg-bg-hover transition-all">
+                    <Folder className="w-[42px] h-[42px] text-brand-400" fill="var(--color-brand-400)" />
+                    <div className="text-[13px] font-semibold text-text-primary mt-2.5">{item.name}</div>
+                    <div className="text-[11px] text-text-muted mt-0.5">{getFileCount(item)} items</div>
+                  </div>
+                ) : (
+                  <div key={item.name} className="relative bg-bg-surface border border-border-default rounded-xl p-[18px] flex flex-col hover:border-border-bright hover:bg-bg-hover transition-all group/file">
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <FileText className="w-6 h-6 text-text-muted" />
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    <div className="text-[13px] font-semibold text-text-primary mb-1 leading-tight">{item.name}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[5px] text-[10px] font-bold uppercase bg-bg-elevated border border-border-default text-text-secondary">
+                        {item.locked && <Lock className="w-2.5 h-2.5" />}
+                        {item.fileType.toUpperCase()}
+                      </span>
+                      <span className="text-[11px] text-text-muted">{item.date}</span>
+                    </div>
+                    <div className="absolute top-2.5 right-2.5 opacity-0 group-hover/file:opacity-100 transition-opacity">
+                      <AddToCartButton item={{ title: item.name, type: item.fileType.toUpperCase(), desc: item.date }} label="Save" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* List View */}
+            {fileBrowserView === "list" && (
+              <div className="flex flex-col gap-0.5">
+                {currentItems.map(item => item.type === "folder" ? (
+                  <div key={item.name} onClick={() => openFolder(item.name)}
+                    className="relative flex items-center gap-3 py-2.5 px-3.5 pr-24 rounded-lg cursor-pointer hover:bg-bg-hover transition-colors group">
+                    <Folder className="w-[18px] h-[18px] text-brand-400 shrink-0" fill="var(--color-brand-400)" />
+                    <span className="flex-1 text-[13px] font-medium text-text-primary">{item.name}</span>
+                    <span className="text-xs text-text-muted w-[72px] text-right shrink-0">{getFileCount(item)} items</span>
+                    <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                ) : (
+                  <div key={item.name} className="relative flex items-center gap-3 py-2.5 px-3.5 pr-24 rounded-lg hover:bg-bg-hover transition-colors group/listfile">
+                    <FileText className="w-[18px] h-[18px] text-text-muted shrink-0" />
+                    <span className="text-[13px] font-medium text-text-primary">{item.name}</span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[5px] text-[10px] font-bold uppercase bg-bg-elevated border border-border-default text-text-secondary shrink-0">
+                      {item.locked && <Lock className="w-2.5 h-2.5" />}
+                      {item.fileType.toUpperCase()}
+                    </span>
+                    <span className="flex-1" />
+                    <span className="text-xs text-text-muted w-[72px] text-right shrink-0">{item.date}</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 opacity-0 group-hover/listfile:opacity-100 transition-opacity">
+                      <AddToCartButton item={{ title: item.name, type: item.fileType.toUpperCase(), desc: item.date }} label="Save" />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Columns View */}
+            {fileBrowserView === "columns" && (
+              <div ref={columnsRef} className="flex border border-border-default rounded-xl overflow-x-auto overflow-y-hidden" style={{ height: 380 }}>
+                {columnsData.map((items, depth) => (
+                  <div key={depth} className={`min-w-[220px] w-[220px] border-r border-border-default overflow-y-auto shrink-0 ${depth === columnsData.length - 1 ? "flex-1 !min-w-[260px] !border-r-0" : ""}`}>
+                    {items.map((item, idx) => {
+                      const isActive = columnSelections[depth] === idx;
+                      return (
+                        <div key={item.name} onClick={() => selectColumn(depth, idx)}
+                          className={`flex items-center gap-2 py-2 px-3.5 cursor-pointer transition-colors text-[13px] ${isActive ? "bg-brand-400 text-white" : "text-text-primary hover:bg-bg-hover"}`}>
+                          {item.type === "folder" ? (
+                            <Folder className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-brand-400"}`} fill={isActive ? "white" : "var(--color-brand-400)"} />
+                          ) : (
+                            <FileText className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-text-muted"}`} />
+                          )}
+                          <span className="flex-1 font-medium whitespace-nowrap overflow-hidden text-ellipsis">{item.name}</span>
+                          {item.type === "folder" ? (
+                            <>
+                              <span className={`text-[11px] shrink-0 ${isActive ? "text-white/70" : "text-text-muted"}`}>{getFileCount(item)}</span>
+                              <ChevronRight className={`w-3 h-3 shrink-0 ${isActive ? "text-white/60" : "text-text-muted"}`} />
+                            </>
+                          ) : (
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase shrink-0 ${isActive ? "bg-white/20 text-white" : "bg-bg-elevated border border-border-default text-text-secondary"}`}>{item.fileType.toUpperCase()}</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* ═══════ TAB 3: UPDATES ═══════ */}
+        {activeTab === "updates" && (
+          <motion.div key="updates" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+            <div className="flex flex-col gap-4">
+              {UPDATES.map((update, i) => (
+                <div key={i} onClick={() => setSelectedUpdate(i)}
+                  className="bg-bg-surface border border-border-default rounded-[14px] p-6 cursor-pointer transition-all hover:border-brand-400 hover:shadow-[0_0_0_1px_var(--color-brand-400)]">
+                  <div className="flex items-center gap-2.5 mb-2.5">
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[rgba(34,184,207,0.12)] shrink-0">
+                      {update.type === "new" && <Plus className="w-[15px] h-[15px] text-brand-400" />}
+                      {update.type === "updated" && <Eye className="w-[15px] h-[15px] text-brand-400" />}
+                      {update.type === "removed" && <Trash2 className="w-[15px] h-[15px] text-brand-400" />}
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.5px] text-brand-400">{update.type}</span>
+                    <span className="text-[11px] text-text-muted">{update.date}</span>
+                  </div>
+                  <div className="text-[15px] font-semibold text-text-primary mb-1.5">{update.title}</div>
+                  <div className="text-[13px] text-text-secondary leading-relaxed" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                    {update.body.split("\n\n")[0]}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ═══ UPDATE DETAIL MODAL ═══ */}
+      {selectedUpdate !== null && createPortal(
+        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center" onClick={() => setSelectedUpdate(null)}>
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-bg-surface border border-border-default rounded-2xl p-8 max-w-[600px] w-[90%] max-h-[80vh] overflow-y-auto relative shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+            onClick={e => e.stopPropagation()}>
+            <button onClick={() => setSelectedUpdate(null)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-bg-elevated border border-border-default text-text-muted flex items-center justify-center cursor-pointer hover:border-brand-400 hover:text-brand-400 transition-all">
+              <X className="w-4 h-4" />
+            </button>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[rgba(34,184,207,0.12)] shrink-0">
+                {UPDATES[selectedUpdate].type === "new" && <Plus className="w-[15px] h-[15px] text-brand-400" />}
+                {UPDATES[selectedUpdate].type === "updated" && <Eye className="w-[15px] h-[15px] text-brand-400" />}
+                {UPDATES[selectedUpdate].type === "removed" && <Trash2 className="w-[15px] h-[15px] text-brand-400" />}
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-[0.5px] text-brand-400">{UPDATES[selectedUpdate].type}</span>
+              <span className="text-[11px] text-text-muted">{UPDATES[selectedUpdate].date}</span>
+            </div>
+            <div className="text-xl font-bold text-text-primary mb-4 pr-10">{UPDATES[selectedUpdate].title}</div>
+            <div className="text-sm text-text-secondary leading-[1.8]">
+              {UPDATES[selectedUpdate].body.split("\n\n").map((p, i) => <p key={i} className="mb-3">{p}</p>)}
+            </div>
+            <div className="mt-5 pt-4 border-t border-border-default flex gap-2">
+              <button onClick={() => setSelectedUpdate(null)}
+                className="px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer border border-border-default bg-bg-elevated text-text-secondary hover:border-brand-400 hover:text-brand-400 transition-all">Close</button>
+              <button className="px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer border border-brand-400 bg-brand-400 text-white hover:opacity-90 transition-all">View Document</button>
+            </div>
+          </motion.div>
+        </div>,
+        document.body
+      )}
+
+      {/* ═══ DOCUMENT PREVIEW MODAL ═══ */}
+      {selectedDoc && createPortal(
+        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center" onClick={() => setSelectedDoc(null)}>
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+            className="bg-bg-surface border border-border-default rounded-2xl max-w-[640px] w-[90%] max-h-[80vh] overflow-hidden relative shadow-[0_20px_60px_rgba(0,0,0,0.5)] flex flex-col"
+            onClick={e => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border-default">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-brand-400" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-text-primary">{selectedDoc.name}</h3>
+                  <p className="text-[10px] text-text-muted">{selectedDoc.views} views in the last 30 days</p>
+                </div>
+              </div>
+              <button onClick={() => setSelectedDoc(null)} className="p-1.5 rounded-lg hover:bg-bg-hover transition-colors">
+                <X className="w-4 h-4 text-text-muted" />
+              </button>
+            </div>
+            {/* Placeholder document body */}
+            <div className="flex-1 overflow-y-auto px-6 py-5">
+              <div className="bg-bg-elevated rounded-xl border border-border-default p-6 mb-4">
+                <div className="space-y-3">
+                  <div className="h-3 bg-bg-hover rounded-full w-3/4" />
+                  <div className="h-3 bg-bg-hover rounded-full w-full" />
+                  <div className="h-3 bg-bg-hover rounded-full w-5/6" />
+                  <div className="h-3 bg-bg-hover rounded-full w-2/3" />
+                </div>
+                <div className="mt-6 space-y-3">
+                  <div className="h-3 bg-bg-hover rounded-full w-full" />
+                  <div className="h-3 bg-bg-hover rounded-full w-4/5" />
+                  <div className="h-3 bg-bg-hover rounded-full w-full" />
+                  <div className="h-3 bg-bg-hover rounded-full w-3/4" />
+                  <div className="h-3 bg-bg-hover rounded-full w-5/6" />
+                </div>
+                <div className="mt-6 space-y-3">
+                  <div className="h-3 bg-bg-hover rounded-full w-2/3" />
+                  <div className="h-3 bg-bg-hover rounded-full w-full" />
+                  <div className="h-3 bg-bg-hover rounded-full w-4/5" />
+                </div>
+              </div>
+              <p className="text-[11px] text-text-muted text-center">This is a preview placeholder. The full document would be rendered here.</p>
+              <p className="text-[10px] text-text-muted text-center mt-2">PDF · Last updated Mar 2026</p>
+            </div>
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-border-default flex items-center justify-between">
+              <button onClick={() => setSelectedDoc(null)}
+                className="px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer border border-border-default bg-bg-elevated text-text-secondary hover:border-brand-400 hover:text-brand-400 transition-all">Close</button>
+              <div className="flex gap-2">
+                <AddToCartButton item={{ title: selectedDoc.name, type: "PDF", desc: `${selectedDoc.views} views` }} label="Save to Collection" />
+                <button className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer bg-brand-500 text-white hover:opacity-90 transition-all">
+                  <Download className="w-3 h-3" /> Download
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>,
+        document.body
+      )}
+    </Tabs.Root>
   );
 }
 
@@ -1764,7 +2688,8 @@ function DocumentViewer({ citation, onClose }) {
 
 function AgentView() {
   const tc = useTc();
-  const { addItem, isItemAdded, startReviewTodos, advanceTodos, toggleTodo, setPanelTab, setCocoState, startCocoWork, updateCocoTask, finishCocoWork, resetCoco, cocoAnim: sharedCocoAnim, cocoStatus: sharedCocoStatus } = useCart();
+  const location = useLocation();
+  const { addItem, isItemAdded, startReviewTodos, advanceTodos, toggleTodo, setPanelTab, setCocoState, startCocoWork, updateCocoTask, finishCocoWork, resetCoco, cocoAnim: sharedCocoAnim, cocoStatus: sharedCocoStatus, addContentGap } = useCart();
   const [chatStarted, setChatStarted] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -1778,6 +2703,7 @@ function AgentView() {
   const [mcpOpen, setMcpOpen] = useState(false);
   const [draftModalOpen, setDraftModalOpen] = useState(false);
   const [draftSent, setDraftSent] = useState(false);
+  const [gapsShared, setGapsShared] = useState(false);
   const [questionnaireDownloaded, setQuestionnaireDownloaded] = useState(false);
   const [comparisonStarted, setComparisonStarted] = useState(false);
   const [mcpPromptReady, setMcpPromptReady] = useState(false);
@@ -1895,6 +2821,51 @@ function AgentView() {
     setCocoState("working", "waving", "Greeting visitor");
   }, [setCocoState, demoScript]);
 
+  // Skip to questionnaire upload when navigated from Scorecard
+  const skipHandled = useRef(false);
+  useEffect(() => {
+    if (location.state?.skipToUpload && !skipHandled.current && !chatStarted) {
+      skipHandled.current = true;
+      // Clear the navigation state so it doesn't re-trigger
+      window.history.replaceState({}, "");
+      // Start chat and jump to step 12 (questionnaire upload prompt)
+      demoActive.current = true;
+      setChatStarted(true);
+      setMessages([
+        { role: "agent", state: "idle", text: "Hey! I see you're coming from the Trust Scorecard. I can help pre-fill a questionnaire from the Trust Center docs — just upload yours and I'll get started." },
+      ]);
+      setDemoStep(12); // Step 12 is the upload prompt
+      setCocoState("idle", "idle", "Ready for questionnaire");
+      // Start the review todos in the sidebar
+      startReviewTodos();
+    }
+  }, [location.state, chatStarted, setCocoState, startReviewTodos, demoScript]);
+
+  // Continue from voice mode — seed chat with voice transcript
+  const voiceHandled = useRef(false);
+  useEffect(() => {
+    if (location.state?.voiceTranscript && !voiceHandled.current && !chatStarted) {
+      voiceHandled.current = true;
+      const transcript = location.state.voiceTranscript;
+      window.history.replaceState({}, "");
+      demoActive.current = true;
+      setChatStarted(true);
+      // Convert voice transcript to chat messages
+      const msgs = transcript.map(t => ({
+        role: t.role === "coco" ? "agent" : "user",
+        state: "idle",
+        text: t.text,
+      }));
+      // Add a bridging message from Coco
+      msgs.push({
+        role: "agent", state: "idle",
+        text: "Continuing from our voice conversation — feel free to ask follow-up questions or I can help you dig deeper into any of these topics.",
+      });
+      setMessages(msgs);
+      setCocoState("idle", "idle", "Continuing conversation");
+    }
+  }, [location.state, chatStarted, setCocoState]);
+
   // User clicks a demo prompt button
   const advanceDemo = useCallback((promptText, uploadFile) => {
     if (uploadFile) {
@@ -1938,7 +2909,7 @@ function AgentView() {
       const animDuration = getTextDuration(mcpSuggestionText) * 1000 + 1200;
       setTimeout(() => setMcpPromptReady(true), animDuration);
     }, msgDelay);
-  }, []);
+  }, [addContentGap]);
 
   // MCP vendor comparison flow
   const handleStartComparison = useCallback(() => {
@@ -1948,7 +2919,7 @@ function AgentView() {
     // 1. Add user message
     setMessages(prev => [...prev, {
       role: "user",
-      text: "Compare breach notification timelines and incident response across @mediacore @conveyor @nunita",
+      text: "Compare breach notification timelines and incident response across @mediacore @arcline @nunita",
     }]);
 
     // 2. Thinking steps - querying each vendor via MCP
@@ -1958,7 +2929,7 @@ function AgentView() {
         role: "agent", state: "thinking",
         thinking: [
           "Connecting to Mediacore Trust Center via MCP...",
-          "Querying Conveyor Trust Center incident response policies...",
+          "Querying Arcline Trust Center incident response policies...",
           "Fetching Nunita Trust Center IR documentation...",
           "Cross-referencing breach notification SLAs across all three vendors...",
         ],
@@ -1973,13 +2944,13 @@ function AgentView() {
         role: "agent", state: "idle",
         text: "Here's a side-by-side comparison of incident response practices across all three vendors:",
         comparisonTable: {
-          vendors: ["Mediacore", "Conveyor", "Nunita"],
+          vendors: ["Mediacore", "Arcline", "Nunita"],
           rows: [
             {
               label: "Breach Notification SLA",
               cells: [
                 { status: "good", value: "24 hours", source: "@mediacore/dpa p.8" },
-                { status: "good", value: "72 hours (GDPR-aligned)", source: "@conveyor/dpa p.11" },
+                { status: "good", value: "72 hours (GDPR-aligned)", source: "@arcline/dpa p.11" },
                 { status: "gap", value: "\"Without undue delay\"", source: "@nunita/privacy-policy p.5" },
               ],
             },
@@ -1987,7 +2958,7 @@ function AgentView() {
               label: "Dedicated IR Team",
               cells: [
                 { status: "good", value: "Yes — 24/7 CSIRT, 4 FTEs", source: "@mediacore/soc2-type2 p.41" },
-                { status: "good", value: "Yes — SecOps on-call rotation", source: "@conveyor/security-policy p.22" },
+                { status: "good", value: "Yes — SecOps on-call rotation", source: "@arcline/security-policy p.22" },
                 { status: "warning", value: "Shared with engineering team", source: "@nunita/security-overview p.9" },
               ],
             },
@@ -1995,7 +2966,7 @@ function AgentView() {
               label: "Post-Incident Reporting",
               cells: [
                 { status: "good", value: "RCA within 5 business days", source: "@mediacore/ir-plan p.6" },
-                { status: "good", value: "RCA within 7 business days", source: "@conveyor/soc2-report p.38" },
+                { status: "good", value: "RCA within 7 business days", source: "@arcline/soc2-report p.38" },
                 { status: "gap", value: "No documented timeline", source: "No source found" },
               ],
             },
@@ -2003,7 +2974,7 @@ function AgentView() {
               label: "Customer Communication",
               cells: [
                 { status: "good", value: "Direct email + status page", source: "@mediacore/ir-plan p.7" },
-                { status: "good", value: "Email + in-app banner + status page", source: "@conveyor/security-policy p.24" },
+                { status: "good", value: "Email + in-app banner + status page", source: "@arcline/security-policy p.24" },
                 { status: "warning", value: "Email only", source: "@nunita/faq #incident-response" },
               ],
             },
@@ -2011,13 +2982,13 @@ function AgentView() {
               label: "Annual IR Testing",
               cells: [
                 { status: "good", value: "Quarterly tabletop exercises", source: "@mediacore/iso27001 p.15" },
-                { status: "good", value: "Biannual tabletop + annual simulation", source: "@conveyor/soc2-report p.40" },
+                { status: "good", value: "Biannual tabletop + annual simulation", source: "@arcline/soc2-report p.40" },
                 { status: "gap", value: "Not documented", source: "No source found" },
               ],
             },
           ],
         },
-        comparisonSummary: "**Mediacore** has the tightest breach notification window at 24 hours with a dedicated CSIRT. **Conveyor** is strong across the board with GDPR-aligned 72-hour notification, multi-channel communication, and the most rigorous IR testing program. **Nunita** has significant gaps — no defined notification SLA, no documented post-incident timeline, and no evidence of IR testing. I'd flag Nunita's incident response as a risk item.",
+        comparisonSummary: "**Mediacore** has the tightest breach notification window at 24 hours with a dedicated CSIRT. **Arcline** is strong across the board with GDPR-aligned 72-hour notification, multi-channel communication, and the most rigorous IR testing program. **Nunita** has significant gaps — no defined notification SLA, no documented post-incident timeline, and no evidence of IR testing. I'd flag Nunita's incident response as a risk item.",
         comparisonActions: true,
       }]);
     }, 5500);
@@ -2169,7 +3140,7 @@ function AgentView() {
             className="text-sm text-text-secondary text-center mb-8">
             Your cowork agent for security reviews. Tag documents, ask questions, or hand me a questionnaire.
             <button onClick={startDemo} className="inline-flex items-center gap-1 ml-1 text-brand-500 hover:text-brand-400 transition-colors font-medium">
-              <Sparkles className="w-3.5 h-3.5" />View guided demo
+              View guided demo <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </motion.p>
 
@@ -2221,6 +3192,9 @@ function AgentView() {
                   </button>
                   <button className="flex items-center gap-1.5 text-[11px] text-text-muted hover:text-brand-400 transition-colors">
                     <Paperclip className="w-3.5 h-3.5" />Attach
+                  </button>
+                  <button className="flex items-center gap-1.5 text-[11px] text-text-muted hover:text-brand-400 transition-colors" aria-label="Voice input">
+                    <Mic className="w-3.5 h-3.5" />Voice
                   </button>
                 </div>
                 <button onClick={handleSend} disabled={!input.trim()}
@@ -2277,7 +3251,7 @@ function AgentView() {
   return (
     <div className="h-full flex flex-col">
       {/* Chat header */}
-      <div className="flex items-center gap-3 px-6 py-3 border-b border-border-default bg-bg-surface/50">
+      <div className="flex items-center gap-3 px-6 h-[56px] shrink-0 border-b border-border-default bg-bg-surface/50">
         <button onClick={() => setChatStarted(false)}
           className="p-1.5 rounded-lg hover:bg-bg-hover transition-colors shrink-0" aria-label="Back to home">
           <ArrowLeft className="w-4 h-4 text-text-muted" />
@@ -2492,7 +3466,22 @@ function AgentView() {
                     <div className="p-3">
                       <div className="flex items-center gap-2 p-2.5 rounded-lg bg-brand-500/5 border border-brand-600/20">
                         <Coco size={20} state="celebrating" className="shrink-0" />
-                        <p className="text-[11px] text-brand-400 font-medium">Message sent to {msg.gapDraft.to}</p>
+                        <p className="text-[11px] text-brand-400 font-medium flex-1">Message sent to {msg.gapDraft.to}</p>
+                        {!gapsShared ? (
+                          <button onClick={() => {
+                            setGapsShared(true);
+                            addContentGap({ topic: "Client-managed encryption keys (BYOK) support", category: "Encryption & Key Mgmt" });
+                            addContentGap({ topic: "Key custodian procedures and segregation of duties", category: "Encryption & Key Mgmt" });
+                            addContentGap({ topic: "Data retention policy for backups after termination", category: "Data Privacy" });
+                          }}
+                            className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-md bg-brand-500 text-bg-primary text-[10px] font-medium hover:bg-brand-400 transition-colors">
+                            <ArrowUpRight className="w-3 h-3" /> Share to Scorecard
+                          </button>
+                        ) : (
+                          <span className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-md bg-brand-500/15 text-brand-400 text-[10px] font-medium">
+                            <Check className="w-3 h-3" /> Shared
+                          </span>
+                        )}
                       </div>
                     </div>
                   )}
@@ -2571,7 +3560,7 @@ function AgentView() {
                         const comparisonAdded = isItemAdded("Vendor IR Comparison");
                         return (
                           <button
-                            onClick={() => { if (!comparisonAdded) { addItem({ title: "Vendor IR Comparison", type: "Report", desc: "Side-by-side incident response comparison across Mediacore, Conveyor, and Nunita" }); setPanelTab("collection"); } }}
+                            onClick={() => { if (!comparisonAdded) { addItem({ title: "Vendor IR Comparison", type: "Report", desc: "Side-by-side incident response comparison across Mediacore, Arcline, and Nunita" }); setPanelTab("collection"); } }}
                             disabled={comparisonAdded}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] transition-colors border ${comparisonAdded ? "bg-brand-500/20 text-brand-400 border-brand-500/30 cursor-default opacity-70" : "bg-bg-hover text-text-secondary hover:text-text-primary border-border-default cursor-pointer"}`}>
                             <Bookmark className="w-3 h-3" /> {comparisonAdded ? "Added to collection" : "Add to review collection"}
@@ -2604,7 +3593,7 @@ function AgentView() {
                 <p className="text-sm text-text-primary group-hover:text-brand-400 transition-colors">
                   Compare breach notification timelines and incident response across{" "}
                   <span className="text-brand-400 font-semibold">@mediacore</span>{" "}
-                  <span className="text-brand-400 font-semibold">@conveyor</span>{" "}
+                  <span className="text-brand-400 font-semibold">@arcline</span>{" "}
                   <span className="text-brand-400 font-semibold">@nunita</span>
                 </p>
                 <p className="text-[11px] text-brand-400/60 mt-1 flex items-center justify-end gap-1">Click to continue <span className="inline-block animate-[pulse_2s_ease-in-out_infinite]">→</span></p>
@@ -2680,6 +3669,9 @@ function AgentView() {
               placeholder={agentWorking ? "Coco is working..." : "Type @ to tag documents, or ask anything..."}
               disabled={agentWorking}
               className="bg-transparent outline-none text-sm text-text-primary placeholder:text-text-muted flex-1 disabled:opacity-50" />
+            <button className="p-1 hover:bg-bg-hover rounded transition-colors" aria-label="Voice input">
+              <Mic className="w-4 h-4 text-text-muted" />
+            </button>
             <button onClick={handleSend} disabled={agentWorking || !input.trim()}
               className="p-1.5 bg-brand-500 rounded-lg hover:bg-brand-400 transition-colors disabled:opacity-30" aria-label="Send">
               <Send className="w-3.5 h-3.5 text-bg-primary" />
@@ -2740,137 +3732,1021 @@ function AgentView() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   VIEW: ACME CORP (Admin)
+   VIEW: TRUST SCORECARD
    ═══════════════════════════════════════════════════════════════ */
 
-function AcmeCorpDashboard() {
-  const [expandedRow, setExpandedRow] = useState(null);
-  const adminStats = [
-    { label: "Questions Answered", value: "312" },
-    { label: "Gaps Resolved", value: "47" },
-    { label: "AI Accuracy", value: "96%" },
-    { label: "Avg Response", value: "1.8hr" },
-  ];
-  const gapRequests = [
-    { id: 1, title: "Data Residency in EU", requester: "Jordan Chen", company: "BigCorp", time: "3 hours ago", priority: "high",
-      context: "Jordan asked about EU data residency during a SIG Lite questionnaire. Coco found partial answers in your Privacy Policy but couldn't determine specific AWS regions." },
-    { id: 2, title: "Penetration Test Methodology", requester: "Alex Rivera", company: "TechStart", time: "1 day ago", priority: "medium",
-      context: "Alex requested details about penetration testing methodology. Coco referenced the annual pentest report but couldn't extract specific methodology details." },
-    { id: 3, title: "SSO SAML Configuration", requester: "Sam Park", company: "FinanceInc", time: "2 days ago", priority: "low",
-      context: "Sam asked about SSO SAML integration. Coco found references to SSO support but couldn't locate specific SAML metadata endpoints." },
-  ];
-  const contentGaps = [
-    { topic: "Data Residency", count: 47 }, { topic: "SSO Configuration", count: 31 },
-    { topic: "Pen Test Reports", count: 24 }, { topic: "Subprocessor List", count: 18 }, { topic: "Incident History", count: 12 },
-  ];
-  const maxGap = Math.max(...contentGaps.map(g => g.count));
-  const priorityColors = {
-    high: "bg-red-500/15 text-red-400 border-red-500/30",
-    medium: "bg-yellow-500/15 text-yellow-500 border-yellow-500/30",
-    low: "bg-bg-hover text-text-secondary border-border-default",
-  };
-  const adminBadges = [
-    { name: "Response Hero", tier: "Bronze", progress: 25, target: 100, color: "var(--color-badge-bronze)" },
-    { name: "Content Master", tier: "—", progress: 92, target: 95, color: "var(--color-brand-500)", label: "92% accuracy (need 95%)" },
-    { name: "Always Fresh", tier: "Silver", progress: 50, target: 100, color: "var(--color-badge-silver)", label: "12/24 months" },
-  ];
+function Tooltip({ text, children }) {
+  const [show, setShow] = useState(false);
+  return (
+    <span className="relative inline-flex" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      {children}
+      <AnimatePresence>
+        {show && (
+          <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 4 }}
+            className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 p-3 rounded-lg bg-bg-primary border border-border-default shadow-xl text-xs text-text-secondary leading-relaxed pointer-events-none">
+            {text}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </span>
+  );
+}
+
+function SaveableSection({ title, desc, type = "image", children }) {
+  const { addItem, isItemAdded } = useCart();
+  const saved = isItemAdded(title);
+  return (
+    <div className="group/save relative">
+      {children}
+      <div className={`absolute top-3 right-3 z-10 transition-all duration-200 ${saved ? "opacity-100" : "opacity-0 group-hover/save:opacity-100"}`}>
+        {!saved ? (
+          <button onClick={() => addItem({ title, desc: desc || title, type: type === "table" ? "XLSX" : "PNG" })}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-bg-primary/90 backdrop-blur border border-border-default shadow-lg text-[10px] font-medium text-text-secondary hover:text-brand-400 hover:border-brand-500/40 transition-colors">
+            <FolderDown className="w-3.5 h-3.5" /> Save to Collection
+          </button>
+        ) : (
+          <span className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-brand-500/10 backdrop-blur border border-brand-500/30 text-[10px] font-medium text-brand-400">
+            <Check className="w-3.5 h-3.5" /> Saved
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── Recharts shared components ── */
+
+const CHART_PALETTES = {
+  arcline: { brand: '#22B8CF', brandLight: '#80E0E8', brandDim: '#1A9DB5' },
+  mediacore: { brand: '#8B5CF6', brandLight: '#C4B5FD', brandDim: '#7C3AED' },
+};
+const CHART_COLORS_BASE = {
+  surface: '#16161E', border: '#2A2A3A', textMuted: '#7A7A8E',
+  textSecondary: '#A0A0B8', textPrimary: '#F0F0F8',
+  yellow: '#f59e0b', red: '#ef4444', blue: '#38bdf8', purple: '#a78bfa',
+};
+function getChartColors(tcId) {
+  const p = CHART_PALETTES[tcId] || CHART_PALETTES.arcline;
+  return { ...CHART_COLORS_BASE, ...p };
+}
+// Default for non-TC-aware contexts
+const CHART_COLORS = { ...CHART_COLORS_BASE, ...CHART_PALETTES.arcline };
+
+function ChartTooltip({ active, payload, label, formatter }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-bg-primary border border-border-default rounded-lg px-3.5 py-2.5 shadow-xl">
+      {label && <div className="text-xs font-semibold text-text-primary mb-1">{label}</div>}
+      {payload.map((p, i) => (
+        <div key={i} className="text-[11px] text-text-secondary">
+          {p.name}: <strong className="text-brand-400">{formatter ? formatter(p.value, p.name) : p.value}</strong>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Radial Bar Chart for Trust Score ── */
+
+const ACHIEVEMENT_ICONS = {
+  "Response Time": (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="4" y="0" width="2" height="1" fill="#7AE8CB"/>
+      <rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/>
+      <rect x="2" y="2" width="3" height="1" fill="#33C69F"/>
+      <rect x="1" y="3" width="5" height="1" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB;#7AE8CB" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="3" y="4" width="2" height="1" fill="#33C69F"/>
+      <rect x="2" y="5" width="2" height="1" fill="#5DDBB8"/>
+      <rect x="1" y="6" width="2" height="1" fill="#2AA886"/>
+      <rect x="0" y="2" width="1" height="1" fill="#1E7F65" opacity="0.5">
+        <animate attributeName="opacity" values="0.5;0;0.5" dur="1.2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="7" y="4" width="1" height="1" fill="#1E7F65" opacity="0.5">
+        <animate attributeName="opacity" values="0;0.5;0" dur="1.2s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  ),
+  "Content Accuracy": (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="2" y="0" width="4" height="1" fill="#1E7F65"/>
+      <rect x="0" y="2" width="1" height="4" fill="#1E7F65"/>
+      <rect x="7" y="2" width="1" height="4" fill="#1E7F65"/>
+      <rect x="2" y="7" width="4" height="1" fill="#1E7F65"/>
+      <rect x="1" y="1" width="1" height="1" fill="#1E7F65"/>
+      <rect x="6" y="1" width="1" height="1" fill="#1E7F65"/>
+      <rect x="1" y="6" width="1" height="1" fill="#1E7F65"/>
+      <rect x="6" y="6" width="1" height="1" fill="#1E7F65"/>
+      <rect x="3" y="2" width="2" height="1" fill="#2AA886"/>
+      <rect x="2" y="3" width="1" height="2" fill="#2AA886"/>
+      <rect x="5" y="3" width="1" height="2" fill="#2AA886"/>
+      <rect x="3" y="5" width="2" height="1" fill="#2AA886"/>
+      <rect x="3" y="3" width="2" height="2" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2.4s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  ),
+  "Questions Answered": (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/>
+      <rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="5" y="2" width="2" height="1" fill="#33C69F"/>
+      <rect x="4" y="3" width="1" height="1" fill="#33C69F"/>
+      <rect x="3" y="4" width="1" height="1" fill="#2AA886"/>
+      <rect x="3" y="5" width="1" height="1" fill="#2AA886"/>
+      <rect x="3" y="7" width="1" height="1" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  ),
+  "Visitor Engagement": (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="3" y="0" width="2" height="1" fill="#7AE8CB"/>
+      <rect x="3" y="1" width="2" height="1" fill="#5DDBB8"/>
+      <rect x="6" y="1" width="1" height="1" fill="#5DDBB8">
+        <animate attributeName="fill" values="#5DDBB8;#FFFFFF;#5DDBB8;#5DDBB8" dur="1.6s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="1" y="2" width="1" height="1" fill="#2AA886"/>
+      <rect x="2" y="2" width="4" height="1" fill="#33C69F"/>
+      <rect x="3" y="3" width="2" height="1" fill="#33C69F"/>
+      <rect x="3" y="4" width="2" height="1" fill="#2AA886"/>
+      <rect x="3" y="5" width="1" height="1" fill="#1E7F65"/>
+      <rect x="4" y="5" width="1" height="1" fill="#1E7F65"/>
+      <rect x="3" y="6" width="1" height="1" fill="#1E7F65"/>
+      <rect x="4" y="6" width="1" height="1" fill="#1E7F65"/>
+      <rect x="3" y="7" width="1" height="1" fill="#0F3D31"/>
+      <rect x="4" y="7" width="1" height="1" fill="#0F3D31"/>
+    </svg>
+  ),
+  "Content Freshness": (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="5" y="0" width="1" height="1" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="3s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="5" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="4" y="2" width="2" height="1" fill="#33C69F"/>
+      <rect x="2" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="2" y="2" width="1" height="1" fill="#33C69F"/>
+      <rect x="1" y="2" width="1" height="1" fill="#2AA886"/>
+      <rect x="3" y="2" width="1" height="1" fill="#33C69F"/>
+      <rect x="3" y="3" width="1" height="1" fill="#2AA886"/>
+      <rect x="3" y="4" width="1" height="1" fill="#1E7F65"/>
+      <rect x="3" y="5" width="1" height="1" fill="#1E7F65"/>
+      <rect x="2" y="6" width="3" height="1" fill="#0F3D31"/>
+      <rect x="1" y="7" width="6" height="1" fill="#0F3D31" opacity="0.6"/>
+    </svg>
+  ),
+  "Update Frequency": (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="2" y="0" width="4" height="1" fill="#7AE8CB"/>
+      <rect x="1" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="6" y="1" width="1" height="1" fill="#5DDBB8"/>
+      <rect x="7" y="0" width="1" height="1" fill="#7AE8CB">
+        <animate attributeName="fill" values="#7AE8CB;#FFFFFF;#7AE8CB" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="7" y="1" width="1" height="1" fill="#5DDBB8" opacity="0.6"/>
+      <rect x="7" y="2" width="1" height="1" fill="#33C69F"/>
+      <rect x="7" y="3" width="1" height="1" fill="#2AA886"/>
+      <rect x="2" y="7" width="4" height="1" fill="#2AA886"/>
+      <rect x="6" y="6" width="1" height="1" fill="#33C69F"/>
+      <rect x="1" y="6" width="1" height="1" fill="#33C69F"/>
+      <rect x="0" y="7" width="1" height="1" fill="#33C69F">
+        <animate attributeName="fill" values="#33C69F;#7AE8CB;#33C69F" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="0" y="6" width="1" height="1" fill="#2AA886" opacity="0.6"/>
+      <rect x="0" y="4" width="1" height="1" fill="#2AA886"/>
+      <rect x="0" y="5" width="1" height="1" fill="#33C69F"/>
+    </svg>
+  ),
+};
+
+const BUYER_ICONS_PURPLE = {
+  framework: (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="1" y="0" width="5" height="1" fill="#4C1D95"/>
+      <rect x="1" y="1" width="1" height="5" fill="#4C1D95"/>
+      <rect x="6" y="0" width="1" height="5" fill="#4C1D95"/>
+      <rect x="2" y="2" width="5" height="1" fill="#6D28D9"/>
+      <rect x="2" y="3" width="1" height="4" fill="#6D28D9"/>
+      <rect x="7" y="2" width="1" height="5" fill="#6D28D9"/>
+      <rect x="2" y="7" width="6" height="1" fill="#6D28D9"/>
+      <rect x="3" y="4" width="3" height="1" fill="#8B5CF6" opacity="0.6"/>
+      <rect x="3" y="6" width="3" height="1" fill="#8B5CF6" opacity="0.6"/>
+      <rect x="4" y="4" width="1" height="1" fill="#C4B5FD">
+        <animate attributeName="fill" values="#C4B5FD;#FFFFFF;#C4B5FD" dur="2.4s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="5" y="3" width="1" height="1" fill="#C4B5FD"/>
+    </svg>
+  ),
+  audit: (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="2" y="0" width="4" height="1" fill="#C4B5FD"/>
+      <rect x="1" y="1" width="1" height="3" fill="#A78BFA"/>
+      <rect x="6" y="1" width="1" height="3" fill="#A78BFA"/>
+      <rect x="0" y="1" width="1" height="2" fill="#8B5CF6"/>
+      <rect x="7" y="1" width="1" height="2" fill="#8B5CF6"/>
+      <rect x="1" y="4" width="1" height="1" fill="#6D28D9"/>
+      <rect x="6" y="4" width="1" height="1" fill="#6D28D9"/>
+      <rect x="2" y="5" width="1" height="1" fill="#4C1D95"/>
+      <rect x="5" y="5" width="1" height="1" fill="#4C1D95"/>
+      <rect x="3" y="6" width="2" height="1" fill="#2E1065"/>
+      <rect x="2" y="3" width="1" height="1" fill="#C4B5FD"/>
+      <rect x="3" y="4" width="1" height="1" fill="#C4B5FD">
+        <animate attributeName="fill" values="#C4B5FD;#FFFFFF;#C4B5FD" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="4" y="3" width="1" height="1" fill="#C4B5FD"/>
+      <rect x="5" y="2" width="1" height="1" fill="#C4B5FD"/>
+    </svg>
+  ),
+  reviewers: (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="3" y="1" width="2" height="1" fill="#C4B5FD"/>
+      <rect x="3" y="2" width="2" height="1" fill="#A78BFA"/>
+      <rect x="2" y="3" width="4" height="1" fill="#8B5CF6"/>
+      <rect x="3" y="4" width="2" height="1" fill="#6D28D9"/>
+      <rect x="0" y="1" width="2" height="1" fill="#4C1D95"/>
+      <rect x="0" y="2" width="2" height="1" fill="#4C1D95"/>
+      <rect x="0" y="3" width="2" height="1" fill="#2E1065"/>
+      <rect x="6" y="1" width="2" height="1" fill="#4C1D95"/>
+      <rect x="6" y="2" width="2" height="1" fill="#4C1D95"/>
+      <rect x="6" y="3" width="2" height="1" fill="#2E1065"/>
+      <rect x="0" y="5" width="8" height="1" fill="#4C1D95" opacity="0.4"/>
+      <rect x="1" y="6" width="6" height="1" fill="#6D28D9" opacity="0.3"/>
+      <rect x="4" y="0" width="1" height="1" fill="#C4B5FD" opacity="0.6">
+        <animate attributeName="opacity" values="0.6;1;0.6" dur="1.8s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  ),
+};
+
+const BUYER_ACHIEVEMENT_ICONS = {
+  framework: (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="1" y="0" width="5" height="1" fill="#14768A"/>
+      <rect x="1" y="1" width="1" height="5" fill="#14768A"/>
+      <rect x="6" y="0" width="1" height="5" fill="#14768A"/>
+      <rect x="2" y="2" width="5" height="1" fill="#1A9DB5"/>
+      <rect x="2" y="3" width="1" height="4" fill="#1A9DB5"/>
+      <rect x="7" y="2" width="1" height="5" fill="#1A9DB5"/>
+      <rect x="2" y="7" width="6" height="1" fill="#1A9DB5"/>
+      <rect x="3" y="4" width="3" height="1" fill="#22B8CF" opacity="0.6"/>
+      <rect x="3" y="6" width="3" height="1" fill="#22B8CF" opacity="0.6"/>
+      <rect x="4" y="4" width="1" height="1" fill="#80E0E8">
+        <animate attributeName="fill" values="#80E0E8;#FFFFFF;#80E0E8" dur="2.4s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="5" y="3" width="1" height="1" fill="#80E0E8"/>
+    </svg>
+  ),
+  audit: (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="2" y="0" width="4" height="1" fill="#80E0E8"/>
+      <rect x="1" y="1" width="1" height="3" fill="#5CD0DC"/>
+      <rect x="6" y="1" width="1" height="3" fill="#5CD0DC"/>
+      <rect x="0" y="1" width="1" height="2" fill="#22B8CF"/>
+      <rect x="7" y="1" width="1" height="2" fill="#22B8CF"/>
+      <rect x="1" y="4" width="1" height="1" fill="#1A9DB5"/>
+      <rect x="6" y="4" width="1" height="1" fill="#1A9DB5"/>
+      <rect x="2" y="5" width="1" height="1" fill="#14768A"/>
+      <rect x="5" y="5" width="1" height="1" fill="#14768A"/>
+      <rect x="3" y="6" width="2" height="1" fill="#0A3D4A"/>
+      <rect x="2" y="3" width="1" height="1" fill="#80E0E8"/>
+      <rect x="3" y="4" width="1" height="1" fill="#80E0E8">
+        <animate attributeName="fill" values="#80E0E8;#FFFFFF;#80E0E8" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="4" y="3" width="1" height="1" fill="#80E0E8"/>
+      <rect x="5" y="2" width="1" height="1" fill="#80E0E8"/>
+    </svg>
+  ),
+  reviewers: (
+    <svg width="28" height="28" viewBox="0 0 8 8" style={{ imageRendering: 'pixelated' }}>
+      <rect x="3" y="1" width="2" height="1" fill="#80E0E8"/>
+      <rect x="3" y="2" width="2" height="1" fill="#5CD0DC"/>
+      <rect x="2" y="3" width="4" height="1" fill="#22B8CF"/>
+      <rect x="3" y="4" width="2" height="1" fill="#1A9DB5"/>
+      <rect x="0" y="1" width="2" height="1" fill="#14768A"/>
+      <rect x="0" y="2" width="2" height="1" fill="#14768A"/>
+      <rect x="0" y="3" width="2" height="1" fill="#0A3D4A"/>
+      <rect x="6" y="1" width="2" height="1" fill="#14768A"/>
+      <rect x="6" y="2" width="2" height="1" fill="#14768A"/>
+      <rect x="6" y="3" width="2" height="1" fill="#0A3D4A"/>
+      <rect x="0" y="5" width="8" height="1" fill="#14768A" opacity="0.4"/>
+      <rect x="1" y="6" width="6" height="1" fill="#1A9DB5" opacity="0.3"/>
+      <rect x="4" y="0" width="1" height="1" fill="#80E0E8" opacity="0.6">
+        <animate attributeName="opacity" values="0.6;1;0.6" dur="1.8s" repeatCount="indefinite"/>
+      </rect>
+    </svg>
+  ),
+};
+
+function getScoreColors(tcId) {
+  const brand = tcId === "mediacore" ? "#8B5CF6" : "#22B8CF";
+  return { "Depth": "#f59e0b", "Freshness": "#38bdf8", "Coverage": "#a78bfa", "Overall Score": brand };
+}
+const SCORE_COLORS = getScoreColors("arcline");
+
+function ScoreRadialBar(props) {
+  const colors = props.colors || SCORE_COLORS;
+  const isActive = !props.selected || props.payload?.label === props.selected;
+  return (
+    <Sector {...props}
+      fill={colors[props.payload?.label] || props.fill}
+      opacity={isActive ? 1 : 0.12}
+      style={{ transition: "opacity 0.3s ease" }}
+    />
+  );
+}
+
+function TrustScoreRadialChart({ data, selected, colors }) {
+  const c = colors || SCORE_COLORS;
+  const chartData = data.map(d => ({ ...d, fill: c[d.label] }));
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-[28px] font-bold text-text-primary">Trust Scorecard</h1>
-          <p className="text-sm text-text-secondary mt-1">Trust Center health and performance</p>
-          <div className="flex gap-2 mt-2">
-            <span className="text-xs px-2.5 py-1 rounded-full border border-badge-bronze/40 text-badge-bronze bg-badge-bronze/10">Response Hero (Bronze)</span>
-            <span className="text-xs px-2.5 py-1 rounded-full border border-badge-silver/40 text-badge-silver bg-badge-silver/10">Always Fresh (Silver)</span>
+    <RadialBarChart width={260} height={240} cx="50%" cy="50%"
+      innerRadius={30} outerRadius={110} barSize={16}
+      data={chartData} startAngle={90} endAngle={-270}>
+      <RadialBar
+        background={{ fill: "#334155", opacity: 0.25 }}
+        dataKey="value" cornerRadius={8}
+        shape={<ScoreRadialBar selected={selected} colors={c} />}
+        label={{ position: "insideStart", fill: "#fff", fontSize: 11, fontWeight: 600,
+          formatter: (v, _name, _props, index) => {
+            if (!selected) return `${v}%`;
+            return selected === data[index]?.label ? `${v}%` : "";
+          }
+        }}
+      />
+    </RadialBarChart>
+  );
+}
+
+function ScorecardDashboard() {
+  const tc = useTc();
+  const tcId = tc?.id || "arcline";
+  const chartColors = useMemo(() => getChartColors(tcId), [tcId]);
+  const scoreColors = useMemo(() => getScoreColors(tcId), [tcId]);
+  const buyerIcons = tcId === "mediacore" ? BUYER_ICONS_PURPLE : BUYER_ACHIEVEMENT_ICONS;
+  const { contentGaps, addContentGap } = useCart();
+  const navigate = useNavigate();
+  const [expandedCategory, setExpandedCategory] = useState(null);
+  const [gapSort, setGapSort] = useState("votes");
+  const [gapVotes, setGapVotes] = useState({});
+  const [compareSearch, setCompareSearch] = useState("");
+  const [categoryView, setCategoryView] = useState("list");
+  const [docView, setDocView] = useState("list");
+  const [selectedScore, setSelectedScore] = useState(null);
+  const [gapModalOpen, setGapModalOpen] = useState(false);
+  const [gapTitle, setGapTitle] = useState("");
+  const [gapDesc, setGapDesc] = useState("");
+  const [gapCategory, setGapCategory] = useState("");
+  const [gapSubmitted, setGapSubmitted] = useState(false);
+  const [gapMatchConfirmed, setGapMatchConfirmed] = useState(null);
+  const [gapSnackbar, setGapSnackbar] = useState(null); // snackbar message
+
+  /* ── Section 1: Trust Score data ── */
+  const trustScore = { overall: 82, coverage: 94, freshness: 88, depth: 76 };
+  const scoreSummary = "Strong posture with minor gaps in data residency and incident response documentation.";
+  /* Inner → Outer ring order. Legend renders reversed (outermost at top). */
+  const radialData = [
+    { label: "Depth", value: trustScore.depth, blurb: "Multi-source evidence per topic",
+      detail: "Measures evidence layers per topic. Single FAQ = 1pt, FAQ + document = 2pt, FAQ + doc + certification = 3pt. Strongest in Access Management, weakest in Incident Response." },
+    { label: "Freshness", value: trustScore.freshness, blurb: "All docs updated within 90 days",
+      detail: "Weighted by document importance — SOC 2 reports and pen tests weighted 3×. Currently 2 documents are due for refresh. 0 expired documents." },
+    { label: "Coverage", value: trustScore.coverage, blurb: "326 security topics with documented answers",
+      detail: "Measured against SIG Lite (256 questions), CAIQ (197 questions), and VSA (136 questions) with de-duplication. 20 topics remaining across Data Residency, Incident Response, and Physical Security." },
+    { label: "Overall Score", value: trustScore.overall, blurb: "Composite of coverage, freshness, and depth",
+      detail: "Weighted composite: Coverage 40%, Freshness 30%, Depth 30%. Score improved +22 points over the last 6 months. Ranks in the top 12% of 850+ Conveyor Trust Centers." },
+  ];
+  const scoreTips = {
+    "Overall Score": "Composite of Coverage (40%), Freshness (30%), and Depth (30%). Coverage measures documented answers against standard frameworks. Freshness weights recent documents higher. Depth rewards multi-source evidence (FAQ + doc + cert).",
+    "Coverage": "94% of 326 common security review topics have documented answers. Measured against SIG Lite (256 questions), CAIQ (197 questions), and VSA (136 questions) with de-duplication.",
+    "Freshness": "Weighted average of document age. SOC 2 reports, pen test results, and certifications weighted 3×. Score: 100% = all docs < 90 days. Current: 88% — 2 documents due for refresh.",
+    "Depth": "Measures evidence layers per topic. Single FAQ = 1pt, FAQ + document = 2pt, FAQ + document + certification = 3pt. Current: 76% — strongest in Access Management, weakest in Incident Response.",
+  };
+
+  /* ── Section 2: Category Breakdown ── */
+  const categories = [
+    { name: "Access Management", score: 89, controls: 12, docs: 8, qaRate: 94, tags: ["SSO", "MFA", "RBAC", "SCIM", "Audit Logs"] },
+    { name: "Application Security", score: 82, controls: 10, docs: 6, qaRate: 88, tags: ["SAST", "DAST", "Dependency Scanning", "Code Review"] },
+    { name: "Data Privacy & Residency", score: 76, controls: 8, docs: 5, qaRate: 79, tags: ["GDPR", "DPA", "Data Classification", "Encryption at Rest"] },
+    { name: "Infrastructure & Hosting", score: 91, controls: 14, docs: 9, qaRate: 96, tags: ["AWS", "SOC 2 Scope", "Network Segmentation", "WAF", "DDoS Protection"] },
+    { name: "Incident Response", score: 68, controls: 6, docs: 3, qaRate: 71, tags: ["IR Plan", "Breach Notification", "Post-Incident Review"] },
+    { name: "Vendor Risk Management", score: 88, controls: 9, docs: 7, qaRate: 91, tags: ["Sub-processor List", "Vendor Assessments", "DPA Tracking"] },
+    { name: "Business Continuity", score: 85, controls: 7, docs: 6, qaRate: 87, tags: ["BCP", "DR Testing", "RTO/RPO", "Backup Strategy"] },
+  ];
+  const frameworks = [
+    { name: "SIG Lite", pct: 92 }, { name: "CAIQ", pct: 87 }, { name: "VSA", pct: 83 }, { name: "Custom Q's", pct: 78 },
+  ];
+  const NETWORK_AVG_SCORES = { "Access Management": 72, "Application Security": 70, "Data Privacy & Residency": 68, "Infrastructure & Hosting": 75, "Incident Response": 66, "Vendor Risk Management": 71, "Business Continuity": 69 };
+  const categoryRadarData = categories.map(cat => ({
+    category: cat.name.length > 14 ? cat.name.split(" ").slice(0, 2).join(" ") : cat.name,
+    thisTC: cat.score,
+    networkAvg: NETWORK_AVG_SCORES[cat.name] || 70,
+  }));
+
+  /* ── Section 3: Content Gaps (from shared CartContext) ── */
+  const gapStatusConfig = { open: { label: "Open", color: "text-red-400", dot: "bg-red-400" }, review: { label: "In Review", color: "text-yellow-400", dot: "bg-yellow-400" }, drafted: { label: "Response Drafted", color: "text-green-400", dot: "bg-green-400" } };
+  const sortedGaps = useMemo(() => {
+    const g = [...contentGaps];
+    if (gapSort === "votes") g.sort((a, b) => (b.votes + (gapVotes[b.id] || 0)) - (a.votes + (gapVotes[a.id] || 0)));
+    else if (gapSort === "newest") g.reverse();
+    else if (gapSort === "status") g.sort((a, b) => a.status.localeCompare(b.status));
+    return g;
+  }, [contentGaps, gapSort, gapVotes]);
+  const handleVote = (id, dir) => setGapVotes(p => ({ ...p, [id]: (p[id] || 0) === dir ? 0 : dir }));
+
+  const GAP_CATEGORIES = ["Data Privacy", "Certifications", "Vendor Risk", "Incident Response", "Application Security", "Access Management", "Infrastructure", "Encryption & Key Mgmt", "Business Continuity", "Other"];
+
+  // Fuzzy match: find existing gaps whose topic overlaps with what user is typing
+  const gapMatches = useMemo(() => {
+    if (gapTitle.length < 3) return [];
+    const words = gapTitle.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+    return contentGaps.filter(g => {
+      const t = g.topic.toLowerCase();
+      return words.some(w => t.includes(w));
+    }).slice(0, 3);
+  }, [gapTitle, contentGaps]);
+
+  const resetGapModal = () => {
+    setGapModalOpen(false);
+    setGapTitle("");
+    setGapDesc("");
+    setGapCategory("");
+    setGapSubmitted(false);
+    setGapMatchConfirmed(null);
+  };
+
+  const showGapSnackbar = (msg) => {
+    setGapSnackbar(msg);
+    setTimeout(() => setGapSnackbar(null), 4000);
+  };
+
+  const handleSubmitGap = () => {
+    if (!gapTitle.trim()) return;
+    addContentGap({ topic: gapTitle.trim(), category: gapCategory || "Other" });
+    setGapSort("newest");
+    resetGapModal();
+    showGapSnackbar("Question submitted! It's now at the top of Content Gaps.");
+  };
+
+  const handleConfirmMatch = (gapId) => {
+    handleVote(gapId, 1);
+    resetGapModal();
+    showGapSnackbar("Upvote added to an existing question.");
+  };
+
+  /* ── Section 4: How This TC Compares ── */
+  const ranking = { percentile: 12, total: 850 };
+  const dimensions = [
+    { label: "Response Time", thisTC: "1.8 hr", avg: "4.2 hr", best: "0.3 hr", pct: 78, icon: Timer },
+    { label: "Content Coverage", thisTC: "94%", avg: "76%", best: "99%", pct: 85, icon: Shield },
+    { label: "Doc Freshness", thisTC: "3 days", avg: "28 days", best: "< 1 day", pct: 91, icon: RefreshCw },
+    { label: "AI Answer Accuracy", thisTC: "96%", avg: "81%", best: "99%", pct: 82, icon: Target },
+    { label: "Visitor Traffic (90d)", thisTC: "1,240", avg: "380", best: "8,500", pct: 65, icon: Users },
+    { label: "Questions Answered", thisTC: "2,847", avg: "620", best: "12,400", pct: 73, icon: MessageSquare },
+  ];
+  const trendData = [
+    { month: "Oct", score: 60 }, { month: "Nov", score: 67 }, { month: "Dec", score: 72 },
+    { month: "Jan", score: 76 }, { month: "Feb", score: 78 }, { month: "Mar", score: 82 },
+  ];
+
+  /* ── Section 5: Trust Highlights (buyer-facing) ── */
+  const achievements = [
+    { title: "Framework Coverage", value: "92%", desc: "SIG Lite pre-fill rate", detail: "4 frameworks supported · CAIQ 87% · VSA 83%", icon: "framework" },
+    { title: "Audit Streak", value: "4 years", desc: "Consecutive clean SOC 2", detail: "Zero qualified opinions since 2022", icon: "audit" },
+    { title: "Active Reviewers", value: "47", desc: "Companies reviewed this quarter", detail: "1,240 unique visitors · 89% first-contact resolution", icon: "reviewers" },
+  ];
+
+  /* ── Section 7: Analytics ── */
+  const analytics = {
+    satisfaction: { score: 4.2, total: 1847, helpful: 72, partial: 19, not: 9 },
+    resolution: { firstContact: 89, avgLength: 2.3, escalation: 11, aiTime: "1.2s", adminTime: "1.8hr" },
+    topDocs: [
+      { name: "SOC 2 Type II Report (2026)", views: 487 },
+      { name: "Security Whitepaper", views: 312 },
+      { name: "Sub-processor List", views: 289 },
+      { name: "Penetration Test Summary", views: 201 },
+      { name: "Data Processing Agreement", views: 178 },
+    ],
+    behavior: { avgSession: "4.7 min", pages: 3.2, returnRate: 34, bounceRate: 18 },
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* ═══ HEADER ═══ */}
+      <div>
+        <h1 className="text-[28px] font-bold text-text-primary">{tc?.name || "Arcline"} Trust Scorecard</h1>
+        <p className="text-sm text-text-secondary mt-1">Data-driven trust posture, content quality, and benchmarks</p>
+      </div>
+
+      {/* ═══ SECTION 1: TRUST SCORE OVERVIEW ═══ */}
+      <SaveableSection title="Trust Score Overview" desc="Overall trust score with coverage, freshness, and depth breakdown">
+      <div className="bg-bg-surface rounded-xl border border-border-default">
+        <div className="px-5 py-4 border-b border-border-default">
+          <h2 className="text-lg font-semibold text-text-primary">Overview</h2>
+        </div>
+        <div className="p-6 space-y-5">
+        <div className="flex items-center gap-2">
+          {/* Radial chart */}
+          <div className="shrink-0">
+            <TrustScoreRadialChart data={radialData} selected={selectedScore} colors={scoreColors} />
           </div>
-        </div>
-      </div>
-
-      <div className="bg-bg-surface rounded-xl p-6 border border-border-default mb-6">
-        <ContributionGraph weeks={52} cellSize={11} gap={2} seed={77} label="Trust Center Health - Last 12 Months" showMonths showLegend />
-        <div className="grid grid-cols-4 gap-4 mt-5">
-          {adminStats.map(s => (
-            <div key={s.label} className="text-center bg-bg-primary/40 rounded-xl p-3 border border-border-default/50">
-              <p className="text-xl font-bold text-text-primary">{s.value}</p>
-              <p className="text-xs text-text-secondary">{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-bg-surface rounded-xl border border-border-default mb-6">
-        <div className="px-5 py-4 border-b border-border-default"><h2 className="text-lg font-semibold text-text-primary">Gap Requests</h2></div>
-        {gapRequests.map(req => (
-          <div key={req.id} className="border-b border-border-default/50 last:border-0">
-            <button className="w-full flex items-center justify-between px-5 py-4 hover:bg-bg-hover transition-colors text-left"
-              onClick={() => setExpandedRow(expandedRow === req.id ? null : req.id)}>
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <span className="text-sm font-medium text-text-primary truncate">{req.title}</span>
-                <span className="text-xs text-text-muted shrink-0">— {req.requester} ({req.company})</span>
-              </div>
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="text-xs text-text-muted">{req.time}</span>
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${priorityColors[req.priority]}`}>
-                  {req.priority.charAt(0).toUpperCase() + req.priority.slice(1)}
-                </span>
-                {req.priority === "high" && <button className="px-3 py-1 text-xs rounded-lg bg-brand-500 text-bg-primary font-medium hover:bg-brand-400 transition-colors" onClick={e => e.stopPropagation()}>Respond</button>}
-                <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${expandedRow === req.id ? "rotate-180" : ""}`} />
-              </div>
-            </button>
-            <AnimatePresence>
-              {expandedRow === req.id && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                  <div className="px-5 pb-4">
-                    <div className="bg-bg-primary/40 rounded-lg p-4 flex gap-3">
-                      <Coco size={28} state="idle" className="shrink-0" />
-                      <div><p className="text-xs font-medium text-brand-500 mb-1">Coco's Context</p><p className="text-sm text-text-secondary leading-relaxed">{req.context}</p></div>
+          {/* Legend + summary */}
+          <div className="flex-1 min-w-0">
+            {/* Custom legend */}
+            <div className="space-y-1 mb-3 pt-1">
+              {[...radialData].reverse().map(d => {
+                const isActive = selectedScore === d.label;
+                const isDimmed = selectedScore && !isActive;
+                return (
+                  <div key={d.label}
+                    onClick={() => setSelectedScore(prev => prev === d.label ? null : d.label)}
+                    className={`rounded-lg px-3 py-2.5 cursor-pointer transition-all ${isActive ? "bg-bg-primary/60 border border-border-default/50" : "border border-transparent hover:bg-bg-primary/30"}`}
+                    style={{ opacity: isDimmed ? 0.35 : 1, transition: "opacity 0.3s ease" }}>
+                    <div className="flex items-center gap-3">
+                      <span className="w-3 h-3 rounded-full shrink-0 transition-transform" style={{ background: scoreColors[d.label], transform: isActive ? "scale(1.3)" : "scale(1)" }} />
+                      <span className={`text-sm transition-colors ${isActive ? "text-text-primary font-medium" : "text-text-secondary"}`}>{d.label}</span>
+                      <Tooltip text={scoreTips[d.label]}><Info className="w-3.5 h-3.5 text-text-muted cursor-help shrink-0" /></Tooltip>
+                      <span className="text-sm font-bold text-text-primary ml-auto">{d.value}%</span>
                     </div>
+                    <AnimatePresence mode="wait">
+                      {isActive ? (
+                        <motion.p key="detail" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                          className="text-[11px] text-text-secondary leading-relaxed ml-6 mt-1.5 overflow-hidden">{d.detail}</motion.p>
+                      ) : !selectedScore ? (
+                        <motion.p key="blurb" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                          className="text-[10px] text-text-muted ml-6 mt-0.5 overflow-hidden">{d.blurb}</motion.p>
+                      ) : null}
+                    </AnimatePresence>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-2 gap-6 mb-6">
-        <div className="bg-bg-surface rounded-xl p-5 border border-border-default">
-          <div className="flex items-center gap-2 mb-4"><Sparkles className="w-5 h-5 text-brand-500" /><h3 className="text-base font-semibold text-text-primary">Coco Insights</h3></div>
-          <div className="bg-brand-500/5 rounded-lg p-4 border border-brand-600/20">
-            <p className="text-sm text-text-primary leading-relaxed">🔍 Visitors asked about <strong className="text-brand-400">data residency 47 times</strong> this month, but your KB only has 2 answers. Want me to draft 5 more FAQs?</p>
-            <button className="mt-3 px-3 py-1.5 text-xs rounded-lg bg-brand-500 text-bg-primary font-medium hover:bg-brand-400 transition-colors">Draft FAQs</button>
+                );
+              })}
+            </div>
           </div>
         </div>
-        <div className="bg-bg-surface rounded-xl p-5 border border-border-default">
-          <h3 className="text-base font-semibold text-text-primary mb-4">Content Gaps</h3>
-          <div className="space-y-3">
-            {contentGaps.map(gap => (
-              <div key={gap.topic}>
-                <div className="flex items-center justify-between mb-1"><span className="text-xs text-text-secondary">{gap.topic}</span><span className="text-xs text-text-muted">{gap.count}q</span></div>
-                <ProgressBar value={(gap.count / maxGap) * 100} color={gap.count > 30 ? "var(--color-status-error)" : gap.count > 20 ? "var(--color-status-warning)" : "var(--color-brand-500)"} />
+        {/* Trust Highlights */}
+        <div className="border-t border-border-default/50 pt-4">
+          <h3 className="text-sm font-semibold text-text-primary mb-3">Trust Highlights</h3>
+          <div className="grid grid-cols-3 gap-3">
+            {achievements.map(a => (
+              <div key={a.title} className="bg-bg-primary/40 rounded-xl px-4 py-4 border border-border-default/50 flex items-start gap-3">
+                <div className="w-10 h-10 rounded-lg bg-brand-500/10 border border-brand-500/20 shrink-0 flex items-center justify-center">
+                  {buyerIcons[a.icon]}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] text-text-muted truncate">{a.title}</p>
+                  <span className="text-lg font-bold text-text-primary leading-tight">{a.value}</span>
+                  <span className="text-[10px] text-text-muted ml-1.5">{a.desc}</span>
+                  <p className="text-[10px] text-text-muted/70 mt-0.5">{a.detail}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
+      </div>
+      </SaveableSection>
 
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold text-text-primary mb-4">Your Badges</h2>
-        <div className="grid grid-cols-3 gap-4">
-          {adminBadges.map(b => (
-            <div key={b.name} className="bg-bg-surface rounded-xl p-5 border border-border-default">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2"><Award className="w-5 h-5" style={{ color: b.color }} /><span className="text-sm font-semibold text-text-primary">{b.name}</span></div>
-                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full border" style={{ borderColor: b.color + "60", color: b.color }}>{b.tier}</span>
+      {/* ═══ SECTION 2: CATEGORY BREAKDOWN ═══ */}
+      <SaveableSection
+        title={`Category Scores — ${categoryView === "list" ? "List View" : categoryView === "radar" ? "Radar View" : "Framework Coverage"}`}
+        desc={categoryView === "list" ? "Security domain scores with controls and Q&A rates" : categoryView === "radar" ? "Radar chart comparing category scores vs network average" : "Framework questionnaire coverage with answerable percentages"}
+        type={categoryView === "frameworks" ? "image" : categoryView === "radar" ? "image" : "table"}>
+      <div className="bg-bg-surface rounded-xl border border-border-default">
+        <div className="px-5 py-4 border-b border-border-default flex items-center gap-3">
+          <h2 className="text-lg font-semibold text-text-primary">Category Scores</h2>
+          <div className="flex gap-1 bg-bg-primary/60 rounded-lg p-0.5 border border-border-default/50">
+            {[{ key: "list", label: "List" }, { key: "radar", label: "Radar" }, { key: "frameworks", label: "Frameworks" }].map(v => (
+              <button key={v.key} onClick={() => setCategoryView(v.key)}
+                className={`text-[10px] px-2.5 py-1 rounded-md transition-colors ${categoryView === v.key ? "bg-brand-500/15 text-brand-400 font-medium" : "text-text-muted hover:text-text-secondary"}`}>
+                {v.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* List view */}
+        {categoryView === "list" && (
+          <>
+            {categories.map(cat => (
+              <div key={cat.name} className="border-b border-border-default/50 last:border-0">
+                <button className="w-full flex items-center gap-4 px-5 py-4 hover:bg-bg-hover transition-colors text-left"
+                  onClick={() => setExpandedCategory(expandedCategory === cat.name ? null : cat.name)}>
+                  <ChevronDown className={`w-4 h-4 text-text-muted shrink-0 transition-transform ${expandedCategory === cat.name ? "rotate-180" : "-rotate-90"}`} />
+                  <span className="text-sm font-medium text-text-primary flex-1">{cat.name}</span>
+                  {cat.score < 70 && <AlertTriangle className="w-4 h-4 text-yellow-400 shrink-0" />}
+                  <span className={`text-sm font-bold shrink-0 ${cat.score >= 75 ? "text-brand-400" : cat.score >= 50 ? "text-yellow-400" : "text-red-400"}`}>{cat.score} / 100</span>
+                  <div className="w-32 shrink-0">
+                    <ProgressBar value={cat.score} color={cat.score >= 75 ? "var(--color-brand-500)" : cat.score >= 50 ? "var(--color-status-warning)" : "var(--color-status-error)"} height={5} />
+                  </div>
+                </button>
+                <AnimatePresence>
+                  {expandedCategory === cat.name && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                      <div className="px-5 pb-4 pl-12">
+                        <p className="text-xs text-text-muted mb-3">{cat.controls} controls documented · {cat.docs} supporting docs · {cat.qaRate}% Q&A rate</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {cat.tags.map(t => (
+                            <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center gap-1">
+                              <Check className="w-2.5 h-2.5" /> {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-              <p className="text-xs text-text-secondary mb-3">{b.label || `${b.progress}/${b.target}`}</p>
-              <ProgressBar value={(b.progress / b.target) * 100} color={b.color} />
+            ))}
+          </>
+        )}
+
+        {/* Radar view */}
+        {categoryView === "radar" && (
+          <div className="px-5 py-4">
+            <ResponsiveContainer width="100%" height={320}>
+              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={categoryRadarData}>
+                <PolarGrid stroke={chartColors.border} />
+                <PolarAngleAxis dataKey="category" tick={{ fill: chartColors.textMuted, fontSize: 10.5 }} />
+                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar name="Network Avg" dataKey="networkAvg" stroke={chartColors.textMuted}
+                  fill={chartColors.textMuted} fillOpacity={0.08} strokeWidth={1.5} strokeDasharray="4 3" />
+                <Radar name={tc?.name || "Arcline"} dataKey="thisTC" stroke={chartColors.brand}
+                  fill={chartColors.brand} fillOpacity={0.18} strokeWidth={2}
+                  dot={{ r: 3, fill: chartColors.brand }} />
+                <RechartsTooltip content={<ChartTooltip formatter={(v) => `${v}/100`} />} />
+              </RadarChart>
+            </ResponsiveContainer>
+            <div className="flex items-center gap-4 mt-2 justify-center">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-brand-500" />
+                <span className="text-[10px] text-text-muted">{tc?.name || "Arcline"}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full border border-text-muted border-dashed" />
+                <span className="text-[10px] text-text-muted">Network Average</span>
+              </div>
             </div>
-          ))}
+          </div>
+        )}
+
+        {/* Frameworks view */}
+        {categoryView === "frameworks" && (
+          <div className="px-5 py-4">
+            <ResponsiveContainer width="100%" height={200}>
+              <ComposedChart
+                data={frameworks.map(fw => ({ ...fw, ceiling: 100 }))}
+                margin={{ top: 10, right: 16, left: -10, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke={chartColors.border} horizontal vertical={false} />
+                <XAxis dataKey="name" tick={{ fill: chartColors.textMuted, fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis domain={[0, 100]} tick={{ fill: chartColors.textMuted, fontSize: 10 }} axisLine={false} tickLine={false}
+                  tickFormatter={v => `${v}%`} />
+                <RechartsTooltip content={<ChartTooltip formatter={(v, name) => {
+                  if (name === "ceiling") return null;
+                  return `${v}% answerable`;
+                }} />} />
+                <Bar dataKey="pct" name="Answerable" fill={chartColors.brand} radius={[6, 6, 0, 0]} barSize={44}
+                  background={{ fill: '#1E1E2A', radius: [6, 6, 0, 0] }}
+                  label={{ position: 'top', fill: chartColors.textPrimary, fontSize: 12, fontWeight: 600, formatter: v => `${v}%` }} />
+                <Line type="monotone" dataKey="ceiling" stroke={chartColors.brandLight} strokeDasharray="6 4"
+                  strokeWidth={1} dot={false} activeDot={false} legendType="none" />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        {/* Coco callout — only on Frameworks view */}
+        {categoryView === "frameworks" && (
+          <div className="px-5 pb-4 pt-1">
+            <div className="flex items-center gap-3 bg-brand-500/5 rounded-lg px-3 py-2.5 border border-brand-600/20">
+              <Coco size={24} state="idle" className="shrink-0" />
+              <p className="text-xs text-brand-400 flex-1">"I can pre-fill <strong>92%</strong> of a SIG Lite from this Trust Center — want me to start?"</p>
+              <button onClick={() => navigate("/trust-center/agent", { state: { skipToUpload: true } })}
+                className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg border border-brand-500/40 text-brand-400 text-[11px] font-medium hover:bg-brand-500/10 transition-colors">
+                Start with Coco <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      </SaveableSection>
+
+      {/* ═══ SECTION 3: CONTENT GAPS ═══ */}
+      <div className="bg-bg-surface rounded-xl border border-border-default">
+        <div className="px-5 py-4 border-b border-border-default flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-text-primary">Content Gaps</h2>
+            <p className="text-xs text-text-muted mt-0.5">{contentGaps.filter(g => g.status === "open").length} open gaps · 47 resolved</p>
+          </div>
+          <button onClick={() => setGapModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-500 text-bg-primary text-xs font-medium hover:bg-brand-400 transition-colors">
+            <Plus className="w-3.5 h-3.5" /> Submit a question
+          </button>
+        </div>
+        <div className="px-5 pt-3 flex items-center justify-between gap-3">
+          <p className="text-xs text-text-muted">Topics visitors have asked about that don't yet have complete answers. Vote to help prioritize.</p>
+          <div className="flex gap-1.5 shrink-0">
+            {[{ key: "votes", label: "Most Voted" }, { key: "newest", label: "Newest" }, { key: "status", label: "Status" }].map(s => (
+              <button key={s.key} onClick={() => setGapSort(s.key)}
+                className={`text-[10px] px-2.5 py-1 rounded-full border transition-colors ${gapSort === s.key ? "bg-brand-500/15 border-brand-500/30 text-brand-400" : "border-border-default text-text-muted hover:text-text-secondary"}`}>
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="divide-y divide-border-default/50">
+          {sortedGaps.map(gap => {
+            const st = gapStatusConfig[gap.status];
+            const userVote = gapVotes[gap.id] || 0;
+            const netVotes = gap.votes + userVote;
+            return (
+              <div key={gap.id} className="flex items-start gap-3 px-5 py-3.5">
+                {/* Vote buttons */}
+                <div className="flex flex-col items-center gap-0.5 pt-0.5">
+                  <button onClick={() => handleVote(gap.id, 1)} className={`p-0.5 rounded transition-colors ${userVote === 1 ? "text-brand-400" : "text-text-muted hover:text-text-secondary"}`}>
+                    <ChevronUp className="w-4 h-4" />
+                  </button>
+                  <span className="text-xs font-bold text-text-primary">{netVotes}</span>
+                  <button onClick={() => handleVote(gap.id, -1)} className={`p-0.5 rounded transition-colors ${userVote === -1 ? "text-red-400" : "text-text-muted hover:text-text-secondary"}`}>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </div>
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-text-primary">{gap.topic}</p>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1">
+                    <span className="text-[10px] text-text-muted">{gap.category}</span>
+                    <span className="text-[10px] text-text-muted">·</span>
+                    <span className="text-[10px] text-text-muted">First asked: {gap.firstAsked}</span>
+                    <span className="text-[10px] text-text-muted">·</span>
+                    <span className="text-[10px] text-text-muted">Asked {gap.asked}×</span>
+                  </div>
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <span className={`inline-flex items-center gap-1 text-[10px] font-medium ${st.color}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} /> {st.label}
+                    </span>
+                    {gap.eta && <span className="text-[10px] text-text-muted">· ETA: {gap.eta}</span>}
+                    {gap.watchers > 0 && <span className="text-[10px] text-text-muted">· {gap.watchers} watching</span>}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {/* Gap analytics */}
+        <div className="px-5 py-3 border-t border-border-default flex flex-wrap items-center gap-x-6 gap-y-1">
+          <span className="text-xs text-text-secondary">Gap Resolution Rate: <strong className="text-text-primary">79.7%</strong> (47 of 59 total)</span>
+          <span className="text-xs text-text-secondary">Avg. Time to Resolve: <strong className="text-text-primary">6.2 days</strong></span>
+        </div>
+        <div className="px-5 pb-4">
+          <div className="bg-brand-500/5 rounded-lg px-3 py-2 border border-brand-600/20 flex items-center gap-2">
+            <AiSparkle size={16} animate color="brand" />
+            <p className="text-xs text-text-secondary">Don't see your question? <button onClick={() => navigate("/trust-center/agent")} className="text-brand-400 font-medium hover:underline">Ask Coco →</button> and if it can't answer, it'll automatically create a gap request.</p>
+          </div>
         </div>
       </div>
+
+      {/* ── Gap Snackbar ── */}
+      {createPortal(
+        <AnimatePresence>
+          {gapSnackbar && (
+            <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }}
+              className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2 px-4 py-3 rounded-xl bg-bg-surface border border-brand-500/30 shadow-2xl">
+              <Check className="w-4 h-4 text-brand-400 shrink-0" />
+              <span className="text-sm text-text-primary font-medium">{gapSnackbar}</span>
+              <button onClick={() => setGapSnackbar(null)} className="ml-2 p-0.5 text-text-muted hover:text-text-primary transition-colors"><X className="w-3.5 h-3.5" /></button>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+      document.body)}
+
+      {/* ── Submit a Question Modal ── */}
+      {createPortal(
+      <AnimatePresence>
+        {gapModalOpen && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            onClick={(e) => { if (e.target === e.currentTarget) resetGapModal(); }}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+              onClick={e => e.stopPropagation()}
+              className="bg-bg-surface border border-border-default rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-border-default flex items-center justify-between">
+                <h3 className="text-base font-semibold text-text-primary">Submit a Question</h3>
+                <button onClick={resetGapModal} className="p-1 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-hover transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {!gapSubmitted && !gapMatchConfirmed ? (
+                <div className="px-6 py-5 space-y-4">
+                  {/* Title */}
+                  <div>
+                    <label className="text-xs font-medium text-text-secondary mb-1.5 block">Question title</label>
+                    <input value={gapTitle} onChange={e => setGapTitle(e.target.value)}
+                      placeholder="e.g. What are your data retention policies?"
+                      className="w-full bg-bg-primary border border-border-default rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-500/50" />
+                  </div>
+
+                  {/* Coco similar question detection */}
+                  {gapMatches.length > 0 && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
+                      className="bg-brand-500/5 rounded-lg border border-brand-600/20 p-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Coco size={20} state="idle" className="shrink-0" />
+                        <p className="text-[11px] text-brand-400 font-medium">Coco found similar questions already asked:</p>
+                      </div>
+                      {gapMatches.map(m => (
+                        <button key={m.id} onClick={() => handleConfirmMatch(m.id)}
+                          className="w-full flex items-center gap-3 p-2.5 rounded-lg bg-bg-primary/60 border border-border-default/50 text-left hover:border-brand-500/40 transition-colors group">
+                          <div className="flex flex-col items-center gap-0.5 shrink-0">
+                            <ChevronUp className="w-3.5 h-3.5 text-text-muted group-hover:text-brand-400 transition-colors" />
+                            <span className="text-[10px] font-bold text-text-primary">{m.votes}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium text-text-primary truncate">{m.topic}</p>
+                            <p className="text-[10px] text-text-muted">{m.category} · Asked {m.asked}×</p>
+                          </div>
+                          <span className="text-[10px] text-brand-400 font-medium shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">Upvote this →</span>
+                        </button>
+                      ))}
+                      <p className="text-[10px] text-text-muted">Click to upvote an existing question, or continue below to submit a new one.</p>
+                    </motion.div>
+                  )}
+
+                  {/* Description */}
+                  <div>
+                    <label className="text-xs font-medium text-text-secondary mb-1.5 block">Details <span className="text-text-muted font-normal">(optional)</span></label>
+                    <textarea value={gapDesc} onChange={e => setGapDesc(e.target.value)} rows={3}
+                      placeholder="Provide more context about what you're looking for..."
+                      className="w-full bg-bg-primary border border-border-default rounded-lg px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-500/50 resize-none" />
+                  </div>
+
+                  {/* Category dropdown */}
+                  <div>
+                    <label className="text-xs font-medium text-text-secondary mb-1.5 block">Category</label>
+                    <select value={gapCategory} onChange={e => setGapCategory(e.target.value)}
+                      className="w-full bg-bg-primary border border-border-default rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand-500/50 appearance-none cursor-pointer">
+                      <option value="">Select a category...</option>
+                      {GAP_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-3 pt-1">
+                    <button type="button" onClick={() => handleSubmitGap()} disabled={!gapTitle.trim()}
+                      className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-brand-500 text-bg-primary text-sm font-medium hover:bg-brand-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                      <Send className="w-3.5 h-3.5" /> Submit question
+                    </button>
+                    <button onClick={resetGapModal}
+                      className="px-4 py-2.5 rounded-lg border border-border-default text-sm text-text-secondary hover:text-text-primary transition-colors">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : gapMatchConfirmed ? (
+                /* Confirmed upvote on existing question */
+                <div className="px-6 py-8 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-brand-500/15 flex items-center justify-center mx-auto">
+                    <ChevronUp className="w-6 h-6 text-brand-400" />
+                  </div>
+                  <h4 className="text-base font-semibold text-text-primary">Upvote added!</h4>
+                  <p className="text-xs text-text-muted max-w-xs mx-auto">
+                    Your vote has been added to the existing question. You'll be notified when the vendor responds.
+                  </p>
+                  <button onClick={resetGapModal}
+                    className="mt-2 px-5 py-2 rounded-lg bg-brand-500 text-bg-primary text-sm font-medium hover:bg-brand-400 transition-colors">
+                    Done
+                  </button>
+                </div>
+              ) : (
+                /* Successfully submitted new question */
+                <div className="px-6 py-8 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-brand-500/15 flex items-center justify-center mx-auto">
+                    <Check className="w-6 h-6 text-brand-400" />
+                  </div>
+                  <h4 className="text-base font-semibold text-text-primary">Question submitted!</h4>
+                  <p className="text-xs text-text-muted max-w-xs mx-auto">
+                    Your question has been added to the Content Gaps list. You'll be notified when the vendor publishes an answer.
+                  </p>
+                  <button onClick={resetGapModal}
+                    className="mt-2 px-5 py-2 rounded-lg bg-brand-500 text-bg-primary text-sm font-medium hover:bg-brand-400 transition-colors">
+                    Done
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>,
+      document.body)}
+
+      {/* ═══ SECTION 4: HOW THIS TC COMPARES ═══ */}
+      <SaveableSection title="Trust Center Benchmarks" desc="Ranking, dimension comparison, and score trend vs network" type="table">
+      <div className="bg-bg-surface rounded-xl border border-border-default">
+        {/* 1. Header */}
+        <div className="px-5 py-4 border-b border-border-default">
+          <h2 className="text-lg font-semibold text-text-primary">How {tc?.name || "Arcline"} Compares</h2>
+          <p className="text-xs text-text-muted mt-0.5">Benchmarked against {ranking.total}+ Conveyor Trust Centers</p>
+        </div>
+
+        {/* 2. Compare with another vendor */}
+        <div className="px-5 py-4 border-b border-border-default">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 text-sm text-text-primary font-medium bg-bg-primary/60 px-3 py-2 rounded-lg border border-border-default/50">
+              <Building2 className="w-4 h-4 text-brand-500" /> {tc?.name || "Arcline"}
+            </div>
+            <span className="text-xs text-text-muted font-medium">vs</span>
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
+              <input value={compareSearch} onChange={e => setCompareSearch(e.target.value)}
+                placeholder="Search for a company to compare..."
+                className="w-full bg-bg-primary/60 border border-border-default/50 rounded-lg pl-8 pr-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-500/50" />
+            </div>
+            <button className="px-4 py-2 text-xs font-medium rounded-lg border border-brand-500/40 text-brand-400 hover:bg-brand-500/10 transition-colors flex items-center gap-1.5">
+              Compare in Coco <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div className="flex gap-3 mt-2">
+            <span className="text-[10px] text-text-muted">Recent:</span>
+            {["Globex Inc.", "Initech"].map(c => (
+              <button key={c} className="text-[10px] text-brand-400 hover:underline">{tc?.name || "Arcline"} vs. {c}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* 3. Overall Ranking + Score Trend (combined) */}
+        <div className="px-5 py-5">
+          <div className="bg-bg-primary/40 rounded-xl border border-border-default/50 overflow-hidden">
+            <div className="flex items-stretch">
+              {/* Left: Ranking stat */}
+              <div className="w-[220px] shrink-0 p-5 flex flex-col justify-center border-r border-border-default/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <BarChart3 className="w-5 h-5 text-brand-500" />
+                  <span className="text-3xl font-bold text-brand-400">Top {ranking.percentile}%</span>
+                </div>
+                <p className="text-[11px] text-text-secondary leading-relaxed mb-3">of {ranking.total}+ Conveyor Trust Centers across all dimensions</p>
+                <div className="flex items-center gap-1.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-brand-400" />
+                  <span className="text-[11px] text-brand-400 font-medium">+22 pts since Oct</span>
+                </div>
+              </div>
+              {/* Right: Trend chart */}
+              <div className="flex-1 p-4">
+                <p className="text-[10px] text-text-muted mb-2">Score Trend — Last 6 Months</p>
+                <ResponsiveContainer width="100%" height={140}>
+                  <AreaChart data={trendData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="scoreTrendGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={chartColors.brand} stopOpacity={0.35} />
+                        <stop offset="95%" stopColor={chartColors.brand} stopOpacity={0.02} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke={chartColors.border} vertical={false} />
+                    <XAxis dataKey="month" tick={{ fill: chartColors.textMuted, fontSize: 10 }} axisLine={false} tickLine={false} />
+                    <YAxis domain={[40, 100]} tick={{ fill: chartColors.textMuted, fontSize: 10 }} axisLine={false} tickLine={false} />
+                    <RechartsTooltip content={<ChartTooltip formatter={(v) => `${v}/100`} />} />
+                    <Area type="monotone" dataKey="score" stroke={chartColors.brand} strokeWidth={2.5}
+                      fill="url(#scoreTrendGradient)"
+                      dot={{ r: 3, fill: chartColors.brand, stroke: chartColors.surface, strokeWidth: 2 }}
+                      activeDot={{ r: 5, fill: chartColors.brandLight, stroke: chartColors.brand, strokeWidth: 2 }} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Dimension comparison table */}
+        <div className="px-5 pb-4">
+          <div className="rounded-xl border border-border-default/50 overflow-hidden">
+            <div className="grid grid-cols-[1fr_80px_80px_80px_100px] gap-2 px-4 py-2.5 bg-bg-primary/40 text-[10px] font-medium text-text-muted">
+              <span></span><span className="text-center">This TC</span><span className="text-center">Avg</span><span className="text-center">Best</span><span className="text-center">Percentile</span>
+            </div>
+            {dimensions.map(d => {
+              const Icon = d.icon;
+              return (
+                <div key={d.label} className="grid grid-cols-[1fr_80px_80px_80px_100px] gap-2 items-center px-4 py-2.5 border-t border-border-default/30">
+                  <div className="flex items-center gap-2"><Icon className="w-3.5 h-3.5 text-text-muted" /><span className="text-xs text-text-secondary">{d.label}</span></div>
+                  <span className="text-xs font-semibold text-text-primary text-center">{d.thisTC}</span>
+                  <span className="text-[11px] text-text-muted text-center">{d.avg}</span>
+                  <span className="text-[11px] text-text-muted text-center">{d.best}</span>
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex-1"><ProgressBar value={d.pct} height={4} /></div>
+                    <span className="text-[10px] text-text-muted w-8">{d.pct}th</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+      </div>
+      </SaveableSection>
+
     </div>
   );
 }
@@ -2913,9 +4789,24 @@ function ProfilePanel({ onClose }) {
         </div>
         <div className="p-6 space-y-6">
           <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-2xl bg-bg-elevated border border-border-default flex items-center justify-center"><Coco size={64} state="idle" /></div>
+            <div className="w-20 h-20 rounded-2xl bg-bg-elevated border border-border-default flex items-center justify-center">
+              <svg width="52" height="52" viewBox="0 0 7 7" style={{ imageRendering: 'pixelated' }} xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="0" width="1" height="1" fill="#A0A0B0"/>
+                <rect x="1" y="1" width="5" height="1" fill="#9090A0"/>
+                <rect x="1" y="2" width="5" height="1" fill="#808090"/>
+                <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+                <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+                <rect x="1" y="3" width="5" height="1" fill="#808090"/>
+                <rect x="1" y="4" width="5" height="1" fill="#707080"/>
+                <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+                <rect x="0" y="3" width="1" height="1" fill="#9090A0"/>
+                <rect x="6" y="3" width="1" height="1" fill="#9090A0"/>
+                <rect x="1" y="5" width="1" height="1" fill="#606070"/>
+                <rect x="5" y="5" width="1" height="1" fill="#606070"/>
+              </svg>
+            </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-text-primary">Jordan Chen</h3>
+              <h3 className="text-xl font-bold text-text-primary">Ivana Tso</h3>
               <p className="text-sm text-text-secondary">Security Analyst at BigCorp</p>
               <div className="flex items-center gap-2 mt-1 text-badge-bronze"><Flame className="w-4 h-4" /><span className="text-sm font-semibold">14-day streak</span><span className="text-xs text-text-muted ml-1">· Best: 32</span></div>
             </div>
@@ -2983,6 +4874,21 @@ function ConveyorLogo({ size = 20, color = "currentColor" }) {
   );
 }
 
+// Arcline logo SVG (Arc Swoosh — Cyan)
+function ArclineLogo({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="40" height="40" rx="8" fill="#122E32"/>
+      <path d="M8 26C8 26 12 10 20 10C28 10 32 26 32 26" stroke="url(#arcGrad)" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
+      <circle cx="20" cy="22" r="3" fill="#80E0E8"/>
+      <line x1="8" y1="30" x2="32" y2="30" stroke="#22B8CF" strokeWidth="2" strokeLinecap="round" opacity="0.4"/>
+      <defs><linearGradient id="arcGrad" x1="8" y1="18" x2="32" y2="18" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#22B8CF"/><stop offset="0.5" stopColor="#80E0E8"/><stop offset="1" stopColor="#22B8CF"/>
+      </linearGradient></defs>
+    </svg>
+  );
+}
+
 // Mediacore logo SVG (from Mediacore Logo.svg)
 function MediacoreLogo({ size = 20 }) {
   return (
@@ -3005,20 +4911,21 @@ function MediacoreLogo({ size = 20 }) {
 // Trust Center data for switcher
 const TRUST_CENTERS = [
   {
-    id: "conveyor",
-    name: "Conveyor",
-    subtitle: "Security & Compliance",
-    logo: "conveyor",
-    accent: "oklch(0.67 0.14 168)", // fixed green - does not change with theme
+    id: "arcline",
+    name: "Arcline",
+    subtitle: "Workflow Automation",
+    logo: "arcline",
+    accent: "oklch(0.65 0.12 200)", // fixed cyan - does not change with theme
     stats: { docs: 42, faqs: 128, certs: 6 },
-    // Brand theme - oklch hue/chroma pairs
     theme: {
-      brandHue: 168, brandChroma: [0.04, 0.07, 0.12, 0.15, 0.15, 0.14, 0.12, 0.10, 0.08, 0.06, 0.04],
-      accentHue: 90, accentChroma: [0.05, 0.10, 0.15, 0.17, 0.18, 0.16, 0.14, 0.12, 0.10, 0.07],
+      brandHue: 200,
+      brandChroma: [0.03, 0.05, 0.08, 0.10, 0.12, 0.12, 0.10, 0.08, 0.06, 0.04, 0.03],
+      accentHue: 60,
+      accentChroma: [0.04, 0.08, 0.12, 0.16, 0.18, 0.16, 0.14, 0.12, 0.10, 0.07],
     },
-    mcpDomain: "trust.conveyor.com/conveyor",
-    greeting: "Hey there! Welcome to Conveyor's Trust Center. I'm Coco - your cowork agent for security reviews.",
-    tcTitle: "Conveyor Trust Center",
+    mcpDomain: "trust.conveyor.com/arcline",
+    greeting: "Hey there! Welcome to Arcline's Trust Center. I'm Coco - your cowork agent for security reviews.",
+    tcTitle: "Arcline Trust Center",
     tcSubtitle: "Transparent security for our customers and partners",
   },
   {
@@ -3051,8 +4958,9 @@ function applyTcTheme(tc) {
 
   const root = document.documentElement;
   // Use the hue from Conveyor (168) vs MediaCore (288) to decide lightness
-  const isConveyor = t.brandHue < 200;
-  const bL = isConveyor ? lightness : lightnessBrand;
+  // Use the hue to decide lightness curve
+  const useDefaultLightness = t.brandHue <= 200;
+  const bL = useDefaultLightness ? lightness : lightnessBrand;
 
   steps.forEach((s, i) => {
     root.style.setProperty(`--color-brand-${s}`, `oklch(${bL[i]} ${t.brandChroma[i]} ${t.brandHue})`);
@@ -3064,6 +4972,18 @@ function applyTcTheme(tc) {
   root.style.setProperty("--brand-glow-sm", `oklch(${bL[5]} ${t.brandChroma[5]} ${t.brandHue} / 0.1)`);
   root.style.setProperty("--brand-glow-md", `oklch(${bL[5]} ${t.brandChroma[5]} ${t.brandHue} / 0.15)`);
   root.style.setProperty("--brand-glow-lg", `oklch(${bL[5]} ${t.brandChroma[5]} ${t.brandHue} / 0.12)`);
+
+  // Light mode overrides — shift brand-400/500/600 darker so they're readable on white
+  const isLight = root.classList.contains("light-mode");
+  if (isLight) {
+    const lightShift = useDefaultLightness
+      ? { 4: 0.52, 5: 0.45, 6: 0.38 }  // Arcline teal — darken significantly
+      : { 4: 0.45, 5: 0.38, 6: 0.32 };  // MediaCore purple — darken significantly
+    Object.entries(lightShift).forEach(([idx, l]) => {
+      const i = parseInt(idx);
+      root.style.setProperty(`--color-brand-${steps[i]}`, `oklch(${l} ${t.brandChroma[i]} ${t.brandHue})`);
+    });
+  }
 }
 
 function TrustCenterSwitcher({ activeTc, onSwitch }) {
@@ -3076,11 +4996,13 @@ function TrustCenterSwitcher({ activeTc, onSwitch }) {
         onClick={() => setOpen(!open)}
         className="w-10 h-10 rounded-xl border border-border-default flex items-center justify-center cursor-pointer hover:border-border-bright transition-colors overflow-hidden"
         aria-label={`Current: ${current.name}. Click to switch.`}
-        style={{ background: current.id === "mediacore" ? "#333366" : undefined }}
+        style={{ background: current.id === "mediacore" ? "#333366" : current.id === "arcline" ? "#122E32" : undefined }}
       >
-        {current.logo === "conveyor"
-          ? <div style={{ color: current.accent }}><ConveyorLogo size={22} color="currentColor" /></div>
-          : <MediacoreLogo size={28} />
+        {current.logo === "arcline"
+          ? <ArclineLogo size={28} />
+          : current.logo === "mediacore"
+          ? <MediacoreLogo size={28} />
+          : <div style={{ color: current.accent }}><ConveyorLogo size={22} color="currentColor" /></div>
         }
       </button>
 
@@ -3105,10 +5027,12 @@ function TrustCenterSwitcher({ activeTc, onSwitch }) {
                   className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-bg-hover transition-colors ${tc.id === activeTc ? "bg-bg-hover" : ""}`}
                 >
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 overflow-hidden"
-                    style={{ background: tc.logo === "mediacore" ? "#333366" : undefined, border: tc.id === activeTc ? `2px solid ${tc.accent}` : "2px solid transparent" }}>
-                    {tc.logo === "conveyor"
-                      ? <div style={{ color: tc.accent }}><ConveyorLogo size={18} color="currentColor" /></div>
-                      : <MediacoreLogo size={24} />
+                    style={{ background: tc.logo === "mediacore" ? "#333366" : tc.logo === "arcline" ? "#122E32" : undefined, border: tc.id === activeTc ? `2px solid ${tc.accent}` : "2px solid transparent" }}>
+                    {tc.logo === "arcline"
+                      ? <ArclineLogo size={24} />
+                      : tc.logo === "mediacore"
+                      ? <MediacoreLogo size={24} />
+                      : <div style={{ color: tc.accent }}><ConveyorLogo size={18} color="currentColor" /></div>
                     }
                   </div>
                   <div className="flex-1 min-w-0">
@@ -3134,8 +5058,8 @@ function TrustCenterSwitcher({ activeTc, onSwitch }) {
   );
 }
 
-const ROUTE_MAP = { "trust-center": "/", "agent": "/agent", "acme": "/scorecard" };
-const VIEW_FROM_PATH = { "/": "trust-center", "/agent": "agent", "/scorecard": "acme" };
+const ROUTE_MAP = { "trust-center": "/trust-center", "agent": "/trust-center/agent", "scorecard": "/trust-center/scorecard" };
+const VIEW_FROM_PATH = { "/trust-center": "trust-center", "/trust-center/agent": "agent", "/trust-center/scorecard": "scorecard" };
 
 function Sidebar({ onOpenProfile, activeTc, onSwitchTc }) {
   const navigate = useNavigate();
@@ -3145,7 +5069,7 @@ function Sidebar({ onOpenProfile, activeTc, onSwitchTc }) {
   const navItems = [
     { id: "trust-center", icon: Home, label: "Trust Center", useCoco: false },
     { id: "agent", icon: Bot, label: "Agent", useCoco: true },
-    { id: "acme", icon: Building2, label: "Trust Scorecard", useCoco: false },
+    { id: "scorecard", icon: Building2, label: "Trust Scorecard", useCoco: false },
   ];
 
   return (
@@ -3174,17 +5098,32 @@ function Sidebar({ onOpenProfile, activeTc, onSwitchTc }) {
       ); })()}
 
       {/* User profile avatar */}
-      {(() => { const { dark: dk } = useTheme(); return (
-        <button onClick={onOpenProfile} aria-label="Open profile"
-          className={`w-10 h-10 rounded-full border flex items-center justify-center transition-colors ${
-            dk
-              ? "bg-gradient-to-br from-brand-600 to-brand-900 border-border-default hover:border-brand-600/60"
-              : "bg-gradient-to-br from-brand-500 to-brand-600 border-brand-500/30 hover:border-brand-500/60"
-          }`}
-          title="Jordan Chen">
-          <span className={`text-xs font-semibold leading-none ${dk ? "text-white" : "text-white"}`}>JC</span>
-        </button>
-      ); })()}
+      <button onClick={onOpenProfile} aria-label="Open profile"
+        className="w-10 h-10 rounded-full border border-border-default hover:border-text-muted/40 flex items-center justify-center transition-colors bg-bg-surface"
+        title="Ivana Tso">
+        <svg width="17" height="14" viewBox="0 0 12 10" style={{ imageRendering: 'pixelated' }} xmlns="http://www.w3.org/2000/svg">
+          {/* I */}
+          <rect x="0" y="0" width="5" height="1" fill="#A0A0B0"/>
+          <rect x="2" y="1" width="1" height="1" fill="#9090A0"/>
+          <rect x="2" y="2" width="1" height="1" fill="#9090A0"/>
+          <rect x="2" y="3" width="1" height="1" fill="#808090"/>
+          <rect x="2" y="4" width="1" height="1" fill="#808090"/>
+          <rect x="2" y="5" width="1" height="1" fill="#707080"/>
+          <rect x="2" y="6" width="1" height="1" fill="#707080"/>
+          <rect x="2" y="7" width="1" height="1" fill="#606070"/>
+          <rect x="0" y="8" width="5" height="1" fill="#606070"/>
+          {/* T */}
+          <rect x="7" y="0" width="5" height="1" fill="#A0A0B0"/>
+          <rect x="9" y="1" width="1" height="1" fill="#9090A0"/>
+          <rect x="9" y="2" width="1" height="1" fill="#9090A0"/>
+          <rect x="9" y="3" width="1" height="1" fill="#808090"/>
+          <rect x="9" y="4" width="1" height="1" fill="#808090"/>
+          <rect x="9" y="5" width="1" height="1" fill="#707080"/>
+          <rect x="9" y="6" width="1" height="1" fill="#707080"/>
+          <rect x="9" y="7" width="1" height="1" fill="#606070"/>
+          <rect x="9" y="8" width="1" height="1" fill="#606070"/>
+        </svg>
+      </button>
     </div>
   );
 }
@@ -3197,7 +5136,7 @@ function CocoCompletionBanner() {
   const { cocoNotification, dismissCocoNotification } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
-  const isAgent = location.pathname === "/agent";
+  const isAgent = location.pathname === "/trust-center/agent";
   const show = cocoNotification && !isAgent;
 
   return (
@@ -3216,7 +5155,7 @@ function CocoCompletionBanner() {
               <p className="text-sm font-medium text-brand-400">{cocoNotification.message}</p>
               <p className="text-[11px] text-text-muted mt-0.5">Click to review results</p>
             </div>
-            <button onClick={() => { navigate("/agent"); dismissCocoNotification(); }}
+            <button onClick={() => { navigate("/trust-center/agent"); dismissCocoNotification(); }}
               className="px-3 py-1.5 rounded-lg bg-brand-500 text-bg-primary text-xs font-medium hover:bg-brand-400 transition-colors shrink-0">
               View
             </button>
@@ -3231,22 +5170,175 @@ function CocoCompletionBanner() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   WELCOME PAGE - character selection
+   ═══════════════════════════════════════════════════════════════ */
+
+function WelcomePage({ onComplete }) {
+  const [selectedId, setSelectedId] = useState("sort");
+  const [transitioning, setTransitioning] = useState(false);
+
+  const characters = Object.entries(COCO_CHARACTERS);
+
+  function handleContinue() {
+    if (!selectedId) return;
+    setTransitioning(true);
+    setTimeout(() => onComplete(selectedId), 800);
+  }
+
+  return (
+    <div className="h-screen w-screen flex items-center justify-center bg-bg-primary relative overflow-hidden">
+      {/* Subtle background glow */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 600px 400px at 30% 20%, var(--brand-glow-lg), transparent), radial-gradient(ellipse 500px 500px at 70% 80%, rgba(51,198,159,0.03), transparent)"
+        }} />
+
+      {/* Main content */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={transitioning ? { opacity: 0, scale: 0.96 } : { opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="relative z-10 w-full max-w-[680px] px-8"
+      >
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-bg-elevated border border-border-default text-[11px] font-medium text-text-secondary mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-500" style={{ animation: "cocoPulse 2s ease-in-out infinite" }} />
+            Access granted
+          </div>
+          <h1 className="text-[28px] font-bold text-text-primary mb-2 tracking-tight">
+            Welcome, <span className="text-brand-400">Ivana</span>
+          </h1>
+          <p className="text-sm text-text-secondary leading-relaxed max-w-[440px] mx-auto">
+            Pick a Coco companion to guide you through your security review. Your character will appear throughout the Trust Center.
+          </p>
+        </div>
+
+        {/* Section label */}
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-text-muted text-center mb-4">Choose your Coco</p>
+
+        {/* Character grid */}
+        <div className="grid grid-cols-3 gap-3 mb-8">
+          {characters.map(([id, char]) => (
+            <button
+              key={id}
+              onClick={() => setSelectedId(id)}
+              className={`relative rounded-2xl border-2 p-5 pt-6 text-center transition-all duration-200 cursor-pointer outline-none
+                ${selectedId === id
+                  ? "border-brand-400 bg-brand-500/5 shadow-[0_0_0_1px_var(--color-brand-400),0_8px_24px_rgba(34,184,207,0.1)]"
+                  : "border-border-default bg-bg-surface hover:border-border-bright hover:bg-bg-hover hover:-translate-y-0.5"
+                }`}
+            >
+              {/* Check indicator */}
+              <div className={`absolute top-2 right-2 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200
+                ${selectedId === id ? "border-brand-400 bg-brand-400" : "border-border-default bg-bg-surface"}`}>
+                <svg viewBox="0 0 10 10" fill="none" className="w-2.5 h-2.5" style={{ opacity: selectedId === id ? 1 : 0 }}>
+                  <path d="M2 5L4.5 7.5L8 3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+
+              {/* Coco SVG */}
+              <div className="w-[72px] h-[72px] mx-auto mb-3 flex items-center justify-center">
+                {char.renderSvg(72)}
+              </div>
+
+              <div className="text-[13px] font-semibold text-text-primary">{char.name}</div>
+              <div className="text-[11px] text-text-muted font-medium">{char.role}</div>
+
+              {/* Default badge */}
+              {char.isDefault && (
+                <div className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide text-brand-400 bg-brand-500/10 border border-brand-500/20">
+                  Default
+                </div>
+              )}
+
+              {/* Top accent line when selected */}
+              {selectedId === id && (
+                <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
+                  style={{ background: "linear-gradient(90deg, transparent, var(--color-brand-400), transparent)" }} />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Continue button */}
+        <div className="text-center">
+          <button
+            onClick={handleContinue}
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-200 bg-brand-400 text-bg-primary hover:bg-brand-500 hover:-translate-y-0.5 shadow-[0_4px_16px_rgba(34,184,207,0.25)]"
+          >
+            Enter Trust Center
+            <span className="transition-transform duration-200">{"\u2192"}</span>
+          </button>
+
+          <p className="text-[11px] text-text-muted mt-6">
+            You can change your Coco anytime from your profile settings.
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Transition overlay */}
+      <AnimatePresence>
+        {transitioning && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-bg-primary"
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 20 }}
+              className="w-24 h-24 flex items-center justify-center"
+            >
+              {COCO_CHARACTERS[selectedId || "sort"].renderSvg(96)}
+            </motion.div>
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="mt-4 text-sm font-medium text-text-secondary"
+            >
+              Loading your Trust Center...
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
    APP SHELL - layout with routing
    ═══════════════════════════════════════════════════════════════ */
 
 function AppShell() {
   const [profileOpen, setProfileOpen] = useState(false);
-  const [activeTc, setActiveTc] = useState("conveyor");
+  const [activeTc, setActiveTc] = useState("arcline");
   const navigate = useNavigate();
   const location = useLocation();
-  const isAgent = location.pathname === "/agent";
+  const isAgent = location.pathname === "/trust-center/agent";
 
   const currentTc = TRUST_CENTERS.find(tc => tc.id === activeTc) || TRUST_CENTERS[0];
 
-  // Apply theme CSS variables when trust center changes
+  // Apply theme CSS variables when trust center or dark/light mode changes
+  const { dark: isDark } = useTheme();
   useEffect(() => {
     applyTcTheme(currentTc);
-  }, [currentTc]);
+    document.title = `${currentTc.name} Trust Center — Powered by Conveyor`;
+    // Dynamic favicon
+    const link = document.querySelector("link[rel='icon']") || document.createElement("link");
+    link.rel = "icon";
+    link.type = "image/svg+xml";
+    if (currentTc.logo === "arcline") {
+      link.href = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="8" fill="%23122E32"/><path d="M8 26C8 26 12 10 20 10C28 10 32 26 32 26" stroke="%2322B8CF" stroke-width="3.5" stroke-linecap="round" fill="none"/><circle cx="20" cy="22" r="3" fill="%2380E0E8"/><line x1="8" y1="30" x2="32" y2="30" stroke="%2322B8CF" stroke-width="2" stroke-linecap="round" opacity="0.4"/></svg>')}`;
+    } else if (currentTc.logo === "mediacore") {
+      link.href = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="8" fill="%23333366"/><path d="M27.38 11.36L20.24 16.61c-.17.12-.41.12-.58-.01l-7-5.24c-.8-.59-1.94-.02-1.94.98v13.9a2.65 2.65 0 0 0 2.65 2.65h13.31a2.65 2.65 0 0 0 2.64-2.65V12.34c0-.72-.59-1.22-1.22-1.22-.25 0-.5.07-.72.24Z" fill="%236C63FF"/><rect x="23.94" y="16.08" width="2.75" height="10.49" rx="1.38" fill="white" opacity=".8"/><circle cx="25.31" cy="17.45" r="1.38" fill="white"/><rect x="19.61" y="19.37" width="2.75" height="7.2" rx="1.38" fill="white" opacity=".8"/><circle cx="20.99" cy="20.75" r="1.38" fill="white"/><rect x="15.28" y="22.39" width="2.75" height="4.18" rx="1.38" fill="white" opacity=".8"/><circle cx="16.66" cy="23.76" r="1.38" fill="white"/></svg>')}`;
+    } else {
+      link.href = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" rx="3" fill="%23666"/><text x="8" y="11.5" text-anchor="middle" fill="white" font-size="10" font-family="system-ui">' + (currentTc.name?.[0] || 'T') + '</text></svg>')}`;
+    }
+    document.head.appendChild(link);
+  }, [currentTc, isDark]);
 
   return (
     <TcContext.Provider value={currentTc}>
@@ -3266,8 +5358,8 @@ function AppShell() {
                 <motion.div key={location.pathname} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.2 }}>
                   <Routes location={location}>
                     <Route path="/" element={<TrustCenterHome />} />
-                    <Route path="/scorecard" element={<AcmeCorpDashboard />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="/scorecard" element={<ScorecardDashboard />} />
+                    <Route path="*" element={<Navigate to="/trust-center" replace />} />
                   </Routes>
                 </motion.div>
               </AnimatePresence>
@@ -3276,7 +5368,7 @@ function AppShell() {
         </main>
 
         {/* Persistent right-side cart panel */}
-        <CartPanel onNavigateToAgent={() => navigate("/agent")} />
+        <CartPanel onNavigateToAgent={(state) => navigate("/trust-center/agent", state ? { state } : undefined)} />
       </div>
 
       {/* Coco completion banner */}
@@ -3296,20 +5388,55 @@ function AppShell() {
 export default function App() {
   const [dark, setDark] = useState(true);
   const toggle = useCallback(() => setDark(d => !d), []);
+  const [cocoCharacter, setCocoCharacter] = useState(null);
 
   useEffect(() => {
     document.documentElement.classList.toggle("light-mode", !dark);
   }, [dark]);
 
+  // Apply default TC theme on mount so welcome page gets correct brand colors (teal for Arcline)
+  useEffect(() => {
+    applyTcTheme(TRUST_CENTERS[0]);
+  }, []);
+
+  function handleWelcomeComplete(characterId) {
+    setCocoCharacter(characterId);
+  }
+
   return (
     <ThemeContext.Provider value={{ dark, toggle }}>
+    <CocoCharacterContext.Provider value={cocoCharacter || "sort"}>
     <CartProvider>
     <BrowserRouter>
-      <div className={`h-screen flex text-text-primary overflow-hidden ${dark ? "bg-bg-primary" : "light-mode bg-white"}`}>
-        <AppShell />
-      </div>
+      <Routes>
+        {/* Welcome page is the root route */}
+        <Route path="/" element={
+          cocoCharacter ? (
+            <Navigate to="/trust-center" replace />
+          ) : (
+            <div className={`h-screen flex text-text-primary overflow-hidden ${dark ? "bg-bg-primary" : "light-mode bg-white"}`}>
+              <WelcomePage onComplete={handleWelcomeComplete} />
+            </div>
+          )
+        } />
+
+        {/* Trust Center and all sub-routes */}
+        <Route path="/trust-center/*" element={
+          cocoCharacter ? (
+            <div className={`h-screen flex text-text-primary overflow-hidden ${dark ? "bg-bg-primary" : "light-mode bg-white"}`}>
+              <AppShell />
+            </div>
+          ) : (
+            <Navigate to="/" replace />
+          )
+        } />
+
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </BrowserRouter>
     </CartProvider>
+    </CocoCharacterContext.Provider>
     </ThemeContext.Provider>
   );
 }

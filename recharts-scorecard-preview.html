@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trust Scorecard — Recharts Visualization Preview</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.7/Recharts.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0D0D12;
+    color: #E4E4ED;
+    padding: 32px;
+  }
+  .page-header { max-width: 780px; margin: 0 auto 32px; }
+  .page-header h1 { font-size: 24px; font-weight: 700; color: #F0F0F8; margin-bottom: 4px; }
+  .page-header p { font-size: 13px; color: #7A7A8E; }
+  .grid { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .card {
+    background: #16161E;
+    border: 1px solid #2A2A3A;
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .card-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #33C69F;
+    margin-bottom: 4px;
+  }
+  .card h2 { font-size: 16px; font-weight: 600; color: #F0F0F8; margin-bottom: 16px; }
+  .card h2 span { font-weight: 400; font-size: 13px; color: #7A7A8E; margin-left: 8px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .subtitle { font-size: 12px; color: #7A7A8E; margin-bottom: 12px; }
+
+  /* Custom tooltip style */
+  .custom-tooltip {
+    background: #1E1E2A !important;
+    border: 1px solid #2A2A3A !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+  }
+  .custom-tooltip .label { font-size: 12px; font-weight: 600; color: #F0F0F8; margin-bottom: 4px; }
+  .custom-tooltip .value { font-size: 11px; color: #A0A0B8; }
+  .custom-tooltip .value strong { color: #33C69F; font-weight: 600; }
+
+  .recharts-default-tooltip {
+    background: #1E1E2A !important;
+    border: 1px solid #2A2A3A !important;
+    border-radius: 8px !important;
+  }
+  .recharts-tooltip-label { color: #F0F0F8 !important; font-size: 12px !important; font-weight: 600 !important; }
+  .recharts-tooltip-item { color: #A0A0B8 !important; font-size: 11px !important; }
+
+  .legend-row { display: flex; align-items: center; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #7A7A8E; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(51, 198, 159, 0.05);
+    border: 1px solid rgba(51, 198, 159, 0.15);
+    border-radius: 8px;
+    font-size: 11px;
+    color: #33C69F;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Recharts Visualization Preview</h1>
+  <p>7 suggested Recharts upgrades for the Trust Scorecard, rendered with your prototype's dark theme and Conveyor Green palette.</p>
+</div>
+
+<div id="root"></div>
+
+<script type="text/babel">
+const {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend,
+  PieChart, Pie, Cell,
+  BarChart, Bar,
+  ComposedChart, Scatter, Line,
+  Treemap,
+  RadialBarChart, RadialBar,
+} = Recharts;
+
+/* ── Color palette ── */
+const BRAND = '#33C69F';
+const BRAND_DIM = '#2AA886';
+const BRAND_LIGHT = '#7AE8CB';
+const SURFACE = '#16161E';
+const BG = '#0D0D12';
+const BORDER = '#2A2A3A';
+const TEXT_PRIMARY = '#F0F0F8';
+const TEXT_SECONDARY = '#A0A0B8';
+const TEXT_MUTED = '#7A7A8E';
+const YELLOW = '#f59e0b';
+const RED = '#ef4444';
+const BLUE = '#38bdf8';
+const PURPLE = '#a78bfa';
+
+/* ── Custom Tooltip ── */
+function CustomTooltip({ active, payload, label, formatter }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="custom-tooltip">
+      {label && <div className="label">{label}</div>}
+      {payload.map((p, i) => (
+        <div key={i} className="value">
+          {p.name}: <strong>{formatter ? formatter(p.value, p.name) : p.value}</strong>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   1. AREA CHART — Score Trend
+   ═══════════════════════════════════════════════════════════ */
+function ScoreTrendArea() {
+  const data = [
+    { month: 'Oct', score: 60 }, { month: 'Nov', score: 67 },
+    { month: 'Dec', score: 72 }, { month: 'Jan', score: 76 },
+    { month: 'Feb', score: 78 }, { month: 'Mar', score: 82 },
+  ];
+  return (
+    <div className="card">
+      <div className="card-label">Suggestion 1 — Replaces DIV bar chart</div>
+      <h2>Score Trend — Last 6 Months <span>AreaChart with gradient fill</span></h2>
+      <ResponsiveContainer width="100%" height={220}>
+        <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <defs>
+            <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={BRAND} stopOpacity={0.35} />
+              <stop offset="95%" stopColor={BRAND} stopOpacity={0.02} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
+          <XAxis dataKey="month" tick={{ fill: TEXT_MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
+          <YAxis domain={[40, 100]} tick={{ fill: TEXT_MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
+          <Tooltip content={<CustomTooltip formatter={(v) => `${v}/100`} />} />
+          <Area type="monotone" dataKey="score" stroke={BRAND} strokeWidth={2.5}
+            fill="url(#scoreGradient)" dot={{ r: 4, fill: BRAND, stroke: SURFACE, strokeWidth: 2 }}
+            activeDot={{ r: 6, fill: BRAND_LIGHT, stroke: BRAND, strokeWidth: 2 }} />
+        </AreaChart>
+      </ResponsiveContainer>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={BRAND} strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        <span style={{ fontSize: 12, color: BRAND, fontWeight: 600 }}>+22 points improvement since October</span>
+      </div>
+      <div className="note">The gradient fill creates a sense of growth and momentum. Hover tooltips show exact scores. Much richer than flat bars.</div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   2. RADAR CHART — Category Breakdown
+   ═══════════════════════════════════════════════════════════ */
+function CategoryRadar() {
+  const data = [
+    { category: 'Access Mgmt', thisTC: 89, networkAvg: 72 },
+    { category: 'App Security', thisTC: 82, networkAvg: 70 },
+    { category: 'Data Privacy', thisTC: 76, networkAvg: 68 },
+    { category: 'Infrastructure', thisTC: 91, networkAvg: 75 },
+    { category: 'Incident Resp.', thisTC: 68, networkAvg: 66 },
+    { category: 'Vendor Risk', thisTC: 88, networkAvg: 71 },
+    { category: 'Business Cont.', thisTC: 85, networkAvg: 69 },
+  ];
+  return (
+    <div className="card">
+      <div className="card-label">Suggestion 2 — Pairs with expandable category list</div>
+      <h2>Category Breakdown <span>RadarChart with network overlay</span></h2>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+        <ResponsiveContainer width="100%" height={300}>
+          <RadarChart cx="50%" cy="50%" outerRadius="72%" data={data}>
+            <PolarGrid stroke={BORDER} />
+            <PolarAngleAxis dataKey="category" tick={{ fill: TEXT_MUTED, fontSize: 10.5 }} />
+            <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
+            <Radar name="Network Average" dataKey="networkAvg" stroke={TEXT_MUTED}
+              fill={TEXT_MUTED} fillOpacity={0.1} strokeWidth={1.5} strokeDasharray="4 3" />
+            <Radar name="Acme Corp" dataKey="thisTC" stroke={BRAND}
+              fill={BRAND} fillOpacity={0.2} strokeWidth={2} dot={{ r: 3, fill: BRAND }} />
+            <Tooltip content={<CustomTooltip formatter={(v) => `${v}/100`} />} />
+          </RadarChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="legend-row">
+        <div className="legend-item"><div className="legend-dot" style={{ background: BRAND }} /> Acme Corp</div>
+        <div className="legend-item"><div className="legend-dot" style={{ background: TEXT_MUTED, border: '1px dashed ' + TEXT_MUTED }} /> Network Average</div>
+      </div>
+      <div className="note">Instant visual fingerprint — the dip at "Incident Resp." is immediately obvious. The dashed network average overlay lets visitors benchmark at a glance.</div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   3. PIE CHART (Donut) — Visitor Satisfaction
+   ═══════════════════════════════════════════════════════════ */
+function SatisfactionDonut() {
+  const data = [
+    { name: 'Helpful', value: 72 },
+    { name: 'Partial', value: 19 },
+    { name: 'Not helpful', value: 9 },
+  ];
+  const COLORS = [BRAND, YELLOW, RED];
+  return (
+    <div className="card">
+      <div className="card-label">Suggestion 3 — Replaces text-only breakdown</div>
+      <h2>Visitor Satisfaction <span>Donut PieChart with center label</span></h2>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+        <div style={{ position: 'relative', width: 180, height: 180 }}>
+          <ResponsiveContainer width={180} height={180}>
+            <PieChart>
+              <Pie data={data} cx="50%" cy="50%" innerRadius={55} outerRadius={80}
+                dataKey="value" startAngle={90} endAngle={-270}
+                paddingAngle={2} stroke="none">
+                {data.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
+              </Pie>
+              <Tooltip content={<CustomTooltip formatter={(v) => `${v}%`} />} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div style={{
+            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+            textAlign: 'center', pointerEvents: 'none'
+          }}>
+            <div style={{ fontSize: 28, fontWeight: 700, color: TEXT_PRIMARY, lineHeight: 1 }}>4.2</div>
+            <div style={{ fontSize: 11, color: TEXT_MUTED, marginTop: 2 }}>/ 5.0</div>
+          </div>
+        </div>
+        <div>
+          <div style={{ fontSize: 12, color: TEXT_MUTED, marginBottom: 12 }}>Based on 1,847 rated interactions</div>
+          {data.map((d, i) => (
+            <div key={d.name} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: COLORS[i], flexShrink: 0 }} />
+              <span style={{ fontSize: 12, color: TEXT_SECONDARY, width: 80 }}>{d.name}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: TEXT_PRIMARY }}>{d.value}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="note">The donut gives instant visual weight — green dominates. Score centered inside eliminates redundancy. Much more scannable than three text labels.</div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   4. HORIZONTAL BAR CHART — Document Engagement
+   ═══════════════════════════════════════════════════════════ */
+function DocumentEngagement() {
+  const data = [
+    { name: 'SOC 2 Type II Report', views: 487 },
+    { name: 'Security Whitepaper', views: 312 },
+    { name: 'Sub-processor List', views: 289 },
+    { name: 'Pen Test Summary', views: 201 },
+    { name: 'Data Processing Agmt', views: 178 },
+  ];
+  return (
+    <div className="card">
+      <div className="card-label">Suggestion 4 — Replaces plain numbered list</div>
+      <h2>Document Engagement <span>Horizontal BarChart</span></h2>
+      <ResponsiveContainer width="100%" height={200}>
+        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 20, left: 10, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={BORDER} horizontal={false} />
+          <XAxis type="number" tick={{ fill: TEXT_MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
+          <YAxis type="category" dataKey="name" width={140} tick={{ fill: TEXT_SECONDARY, fontSize: 11 }} axisLine={false} tickLine={false} />
+          <Tooltip content={<CustomTooltip formatter={(v) => `${v} views`} />} />
+          <Bar dataKey="views" fill={BRAND} radius={[0, 4, 4, 0]} barSize={18}
+            background={{ fill: '#1E1E2A', radius: [0, 4, 4, 0] }} />
+        </BarChart>
+      </ResponsiveContainer>
+      <div style={{ display: 'flex', gap: 24, marginTop: 8 }}>
+        <span style={{ fontSize: 11, color: TEXT_MUTED }}>Total Downloads: <strong style={{ color: TEXT_SECONDARY }}>1,847</strong></span>
+        <span style={{ fontSize: 11, color: TEXT_MUTED }}>Unique Downloaders: <strong style={{ color: TEXT_SECONDARY }}>412</strong></span>
+      </div>
+      <div className="note">Relative bar lengths make the SOC 2 report's dominance immediately obvious. Hover for exact counts. Track backgrounds show the scale context.</div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   5. TREEMAP — Visitor Entry Points
+   ═══════════════════════════════════════════════════════════ */
+function EntryPointsTreemap() {
+  const data = [
+    { name: 'Direct Link — 52%', size: 52, fill: BRAND },
+    { name: 'Search — 28%', size: 28, fill: BLUE },
+    { name: 'Referral — 20%', size: 20, fill: PURPLE },
+  ];
+
+  const CustomContent = ({ x, y, width, height, name, fill }) => {
+    if (width < 10 || height < 10) return null;
+    return (
+      <g>
+        <rect x={x} y={y} width={width} height={height} rx={6}
+          fill={fill} fillOpacity={0.2} stroke={fill} strokeWidth={1.5} strokeOpacity={0.4} />
+        {width > 60 && height > 30 && (
+          <>
+            <text x={x + width / 2} y={y + height / 2 - 6} textAnchor="middle" fill={fill}
+              fontSize={12} fontWeight={600}>{name.split(' — ')[0]}</text>
+            <text x={x + width / 2} y={y + height / 2 + 12} textAnchor="middle" fill={fill}
+              fontSize={16} fontWeight={700} opacity={0.9}>{name.split(' — ')[1]}</text>
+          </>
+        )}
+      </g>
+    );
+  };
+
+  return (
+    <div className="card">
+      <div className="card-label">Suggestion 5 — Replaces plain text percentages</div>
+      <h2>Top Entry Points <span>Treemap</span></h2>
+      <ResponsiveContainer width="100%" height={140}>
+        <Treemap data={data} dataKey="size" nameKey="name" content={<CustomContent />}
+          animationDuration={800} />
+      </ResponsiveContainer>
+      <div className="note">Proportional area encoding — Direct Link clearly dominates. Distinctive visual that breaks up the grid of stat cards. Compact and information-dense.</div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   6. BAR CHART — Framework Coverage
+   ═══════════════════════════════════════════════════════════ */
+function FrameworkCoverage() {
+  const data = [
+    { name: 'SIG Lite', pct: 92, questions: 256, answered: 236 },
+    { name: 'CAIQ', pct: 87, questions: 197, answered: 171 },
+    { name: 'VSA', pct: 83, questions: 136, answered: 113 },
+    { name: "Custom Q's", pct: 78, questions: 89, answered: 69 },
+  ];
+  return (
+    <div className="card">
+      <div className="card-label">Suggestion 6 — Replaces custom progress bars</div>
+      <h2>Framework Coverage <span>BarChart with reference line at 100%</span></h2>
+      <ResponsiveContainer width="100%" height={200}>
+        <ComposedChart data={data} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={BORDER} horizontal vertical={false} />
+          <XAxis dataKey="name" tick={{ fill: TEXT_MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
+          <YAxis domain={[0, 100]} tick={{ fill: TEXT_MUTED, fontSize: 10 }}
+            axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+          <Tooltip content={
+            <CustomTooltip formatter={(v, name) => {
+              const item = data.find(d => d.pct === v);
+              if (item) return `${v}% (${item.answered} of ${item.questions} questions)`;
+              return `${v}%`;
+            }} />
+          } />
+          <Bar dataKey="pct" fill={BRAND} radius={[6, 6, 0, 0]} barSize={48}
+            background={{ fill: '#1E1E2A', radius: [6, 6, 0, 0] }}
+            label={{ position: 'top', fill: TEXT_PRIMARY, fontSize: 12, fontWeight: 600, formatter: v => `${v}%` }} />
+          <Line type="monotone" dataKey={() => 100} stroke={BRAND_LIGHT} strokeDasharray="6 4"
+            strokeWidth={1} dot={false} activeDot={false} legendType="none" />
+        </ComposedChart>
+      </ResponsiveContainer>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 8, marginTop: 8,
+        background: 'rgba(51, 198, 159, 0.05)', border: '1px solid rgba(51, 198, 159, 0.15)',
+        borderRadius: 8, padding: '8px 12px'
+      }}>
+        <span style={{ fontSize: 12 }}>✨</span>
+        <span style={{ fontSize: 11, color: BRAND }}>"Coco can pre-fill 92% of a SIG Lite from this Trust Center"</span>
+      </div>
+      <div className="note">Bar heights with percentage labels give immediate comparison. The dashed 100% reference line shows the ceiling. Tooltip reveals question counts (236 of 256).</div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   7. COMPOSED CHART — Dimension Comparison
+   ═══════════════════════════════════════════════════════════ */
+function DimensionComparison() {
+  const data = [
+    { dim: 'Response', thisTC: 78, avg: 48, best: 97 },
+    { dim: 'Coverage', thisTC: 94, avg: 76, best: 99 },
+    { dim: 'Freshness', thisTC: 91, avg: 52, best: 98 },
+    { dim: 'AI Accuracy', thisTC: 96, avg: 81, best: 99 },
+    { dim: 'Traffic', thisTC: 65, avg: 35, best: 95 },
+    { dim: 'Questions', thisTC: 73, avg: 40, best: 92 },
+  ];
+  return (
+    <div className="card">
+      <div className="card-label">Suggestion 7 — Enhances the comparison table</div>
+      <h2>How Acme Corp Compares <span>ComposedChart — grouped bars + scatter</span></h2>
+      <p className="subtitle">Percentile rankings across 6 dimensions — benchmarked against 850+ Trust Centers</p>
+      <ResponsiveContainer width="100%" height={260}>
+        <ComposedChart data={data} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
+          <XAxis dataKey="dim" tick={{ fill: TEXT_MUTED, fontSize: 10.5 }} axisLine={false} tickLine={false} />
+          <YAxis domain={[0, 100]} tick={{ fill: TEXT_MUTED, fontSize: 10 }}
+            axisLine={false} tickLine={false} tickFormatter={v => `${v}th`} />
+          <Tooltip content={<CustomTooltip formatter={(v, name) => {
+            if (name === 'Network Best') return `${v}th percentile`;
+            return `${v}th percentile`;
+          }} />} />
+          <Bar dataKey="thisTC" name="Acme Corp" fill={BRAND} radius={[4, 4, 0, 0]} barSize={28}
+            fillOpacity={0.85} />
+          <Bar dataKey="avg" name="Network Avg" fill={TEXT_MUTED} radius={[4, 4, 0, 0]} barSize={28}
+            fillOpacity={0.35} />
+          <Scatter dataKey="best" name="Network Best" fill={BRAND_LIGHT}
+            shape={(props) => {
+              const { cx, cy } = props;
+              return (
+                <svg x={cx - 6} y={cy - 6} width={12} height={12}>
+                  <polygon points="6,0 7.5,4.5 12,4.5 8.5,7.5 9.5,12 6,9 2.5,12 3.5,7.5 0,4.5 4.5,4.5"
+                    fill={BRAND_LIGHT} opacity={0.9} />
+                </svg>
+              );
+            }}
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
+      <div className="legend-row">
+        <div className="legend-item"><div className="legend-dot" style={{ background: BRAND }} /> Acme Corp</div>
+        <div className="legend-item"><div className="legend-dot" style={{ background: TEXT_MUTED, opacity: 0.4 }} /> Network Average</div>
+        <div className="legend-item"><span style={{ color: BRAND_LIGHT, fontSize: 14 }}>★</span> Network Best</div>
+      </div>
+      <div className="note">Grouped bars let you instantly see the gap between this TC and the network average. Star markers show the ceiling (network best). The visual makes "Top 12%" feel tangible.</div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   APP
+   ═══════════════════════════════════════════════════════════ */
+function App() {
+  return (
+    <div className="grid">
+      <ScoreTrendArea />
+      <CategoryRadar />
+      <div className="two-col">
+        <SatisfactionDonut />
+        <DocumentEngagement />
+      </div>
+      <div className="two-col">
+        <EntryPointsTreemap />
+        <FrameworkCoverage />
+      </div>
+      <DimensionComparison />
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>

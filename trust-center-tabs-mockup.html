@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Center — Tabs Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* === THEME VARIABLES === */
+  :root {
+    /* Arcline (teal/cyan) — default */
+    --brand-50: #E6FAFB;
+    --brand-100: #C0F2F5;
+    --brand-200: #80E0E8;
+    --brand-300: #4DD4DE;
+    --brand-400: #22B8CF;
+    --brand-500: #1898B0;
+    --brand-600: #107888;
+    --brand-700: #0B5A66;
+    --brand-800: #073D45;
+    --brand-900: #041F24;
+    --accent: #FFD700;
+
+    /* Dark mode surfaces */
+    --bg-primary: #0D0D12;
+    --bg-surface: #16161E;
+    --bg-elevated: #1E1E2A;
+    --bg-hover: #252536;
+    --bg-card: #1A1A26;
+    --border-default: #2A2A3A;
+    --border-bright: #3A3A4F;
+    --text-primary: #E8E8ED;
+    --text-secondary: #9898A8;
+    --text-muted: #5E5E72;
+    --brand-glow: rgba(34, 184, 207, 0.06);
+
+  }
+
+  .theme-mediacore {
+    --brand-400: #6C63FF;
+    --brand-500: #5A52E0;
+    --brand-600: #4840C0;
+    --brand-700: #3530A0;
+    --brand-800: #252080;
+    --brand-glow: rgba(108, 99, 255, 0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  /* === MAIN CONTENT === */
+  .page-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 28px 80px;
+    width: 100%;
+  }
+
+  /* === STICKY HEADER === */
+  .sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--bg-primary);
+    padding: 24px 0 0;
+    margin-bottom: 24px;
+  }
+  .sticky-header::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background: var(--border-default);
+    margin-top: 20px;
+  }
+
+  /* === TOP TABS === */
+  .top-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .top-tabs-container {
+    display: inline-flex;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 2px;
+  }
+  .top-tab {
+    padding: 10px 24px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .top-tab:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+  .top-tab.active {
+    background: var(--brand-400);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(34, 184, 207, 0.25);
+  }
+
+  /* === SEARCH ROW === */
+  .search-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .product-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+  }
+  .product-filter:hover { border-color: var(--border-bright); }
+  .product-filter svg { width: 14px; height: 14px; color: var(--text-muted); }
+  .product-filter .chevron { width: 12px; height: 12px; }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+  }
+  .search-wrap .search-icon {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: var(--text-muted); pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 10px 50px 10px 44px;
+    border-radius: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    font-size: 13px;
+    color: var(--text-primary);
+    font-family: inherit;
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-input:focus { outline: none; border-color: var(--brand-400); }
+  .search-kbd {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    padding: 2px 7px; border-radius: 5px;
+    background: var(--bg-hover); border: 1px solid var(--border-default);
+    font-size: 11px; color: var(--text-muted); font-family: inherit;
+    pointer-events: none;
+  }
+
+  /* === SEARCH OVERLAY (backdrop) === */
+  .search-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    z-index: 38;
+  }
+  .search-overlay.open { display: block; }
+
+  /* === PRODUCT FILTER DROPDOWN === */
+  .product-filter { position: relative; }
+  .product-filter.open {
+    border-color: var(--brand-400);
+    color: var(--brand-400);
+  }
+  .product-filter.open .chevron { transform: rotate(180deg); }
+  .product-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 240px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    z-index: 45;
+  }
+  .product-dropdown.open { display: block; }
+  .product-dropdown-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--brand-400);
+    margin-bottom: 12px;
+  }
+  .product-checkbox {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 0;
+    cursor: pointer;
+    font-size: 13px; color: var(--text-primary); font-weight: 500;
+  }
+  .product-checkbox:hover { color: var(--brand-400); }
+  .product-checkbox .check {
+    width: 18px; height: 18px; border-radius: 4px;
+    border: 2px solid var(--border-bright);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .product-checkbox.checked .check {
+    background: var(--brand-400);
+    border-color: var(--brand-400);
+  }
+  .product-checkbox .check svg {
+    width: 12px; height: 12px; color: #fff;
+    display: none;
+  }
+  .product-checkbox.checked .check svg { display: block; }
+
+  /* === SEARCH RESULTS DROPDOWN === */
+  .search-results {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0; right: 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    z-index: 45;
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  .search-results.open { display: flex; }
+  .search-results-left {
+    width: 220px;
+    border-right: 1px solid var(--border-default);
+    padding: 16px;
+    flex-shrink: 0;
+  }
+  .search-results-right {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  .sr-section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .sr-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .sr-item:hover { background: var(--bg-hover); }
+  .sr-item-title {
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+  }
+  .sr-item-desc {
+    font-size: 11px; color: var(--text-muted); margin-top: 2px;
+  }
+  .sr-item + .sr-section-label { margin-top: 14px; }
+  .sr-doc-badge {
+    display: inline-block;
+    padding: 2px 6px; border-radius: 4px;
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    margin-right: 6px; vertical-align: 1px;
+  }
+  .sr-doc-badge.pdf,
+  .sr-doc-badge.docx,
+  .sr-doc-badge.xlsx,
+  .sr-doc-badge.cert { background: rgba(255,255,255,0.08); color: var(--text-secondary); }
+  .sr-ask-agent {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px;
+    margin-top: 10px;
+    border-top: 1px solid var(--border-default);
+    cursor: pointer;
+  }
+  .sr-ask-agent:hover { background: var(--bg-hover); border-radius: 0 0 12px 12px; }
+  .sr-ask-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 20px;
+    border: 1px solid var(--brand-400);
+    background: transparent;
+    color: var(--brand-400);
+    font-size: 12px; font-weight: 600;
+    white-space: nowrap; flex-shrink: 0;
+    cursor: pointer;
+  }
+  .sr-ask-btn svg { width: 14px; height: 14px; }
+  .sr-ask-text {
+    font-size: 13px; color: var(--text-secondary);
+    flex: 1;
+  }
+  .sr-ask-text strong { color: var(--brand-400); }
+  .sr-ask-arrow {
+    color: var(--text-muted); font-size: 16px; flex-shrink: 0;
+  }
+
+  /* === TAB PANELS === */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* === OVERVIEW TAB === */
+  .hero-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .hero-top {
+    display: flex;
+    gap: 24px;
+  }
+  .hero-left {
+    flex: 1;
+  }
+  .hero-title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .hero-logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--brand-800);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .hero-logo svg { width: 22px; height: 22px; }
+  .hero-title { font-size: 18px; font-weight: 700; }
+  .hero-desc {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .hero-desc a { color: var(--brand-400); text-decoration: none; }
+  .hero-stats {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .stat-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 10px;
+    background: var(--bg-elevated); border: 1px solid var(--border-default);
+    font-size: 12px; font-weight: 500; color: var(--text-secondary);
+  }
+  .stat-pill .num { color: var(--brand-400); font-weight: 700; }
+  .stat-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; }
+
+  .quick-links {
+    width: 200px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--border-default);
+    padding-left: 24px;
+  }
+  .quick-links-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--text-muted); margin-bottom: 14px;
+  }
+  .quick-link {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--brand-400); text-decoration: none;
+    padding: 6px 0; transition: opacity 0.2s;
+  }
+  .quick-link:hover { opacity: 0.8; }
+  .quick-link svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+  /* Two-column sections */
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 24px;
+  }
+  .section-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .section-title { font-size: 14px; font-weight: 600; }
+  .view-all {
+    font-size: 12px; font-weight: 500; color: var(--brand-400);
+    cursor: pointer; text-decoration: none;
+  }
+
+  /* Activity heatmap — Jan–Apr (17 weeks × 7 days) */
+  .activity-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .activity-label {
+    font-size: 12px; color: var(--text-secondary);
+  }
+  .activity-label strong { color: var(--brand-400); }
+  .activity-heatmap {
+    overflow-x: auto;
+  }
+  .activity-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 2px;
+    width: 100%;
+  }
+  .activity-cell {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    background: var(--bg-elevated);
+    transition: transform 0.15s, background 0.2s;
+    min-width: 0;
+  }
+  .activity-cell:hover { transform: scale(1.6); z-index: 2; position: relative; }
+  .activity-cell.l1 { background: color-mix(in srgb, var(--brand-400) 20%, var(--bg-elevated)); }
+  .activity-cell.l2 { background: color-mix(in srgb, var(--brand-400) 40%, var(--bg-elevated)); }
+  .activity-cell.l3 { background: color-mix(in srgb, var(--brand-400) 65%, var(--bg-elevated)); }
+  .activity-cell.l4 { background: var(--brand-400); }
+  .activity-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 8px;
+  }
+  .activity-months {
+    display: flex; gap: 0;
+    flex: 1;
+  }
+  .activity-months span {
+    font-size: 9px; color: var(--text-muted);
+    flex: 1; text-align: left;
+  }
+  .activity-legend {
+    display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
+  }
+  .activity-legend span { font-size: 9px; color: var(--text-muted); }
+  .legend-cell {
+    width: 10px; height: 10px; border-radius: 2px;
+    background: var(--bg-elevated);
+  }
+  .legend-cell.l1 { background: color-mix(in srgb, var(--brand-400) 20%, var(--bg-elevated)); }
+  .legend-cell.l2 { background: color-mix(in srgb, var(--brand-400) 40%, var(--bg-elevated)); }
+  .legend-cell.l3 { background: color-mix(in srgb, var(--brand-400) 65%, var(--bg-elevated)); }
+  .legend-cell.l4 { background: var(--brand-400); }
+
+  /* Certifications grid */
+  .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .cert-badge {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 6px;
+    line-height: 1.3;
+  }
+
+  /* Performance section */
+  .perf-section {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .perf-title {
+    font-size: 13px; font-weight: 600; color: var(--brand-400);
+    margin-bottom: 16px;
+  }
+  .perf-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .perf-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .perf-icon {
+    width: 44px; height: 44px; flex-shrink: 0;
+    image-rendering: pixelated;
+  }
+  .perf-info { flex: 1; min-width: 0; }
+  .perf-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  .perf-value { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+  .perf-sub { font-size: 11px; color: var(--text-muted); margin-left: 4px; font-weight: 400; }
+
+  /* Bottom two-col */
+  .logo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .logo-placeholder {
+    height: 40px;
+    border-radius: 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+  }
+
+  .subprocessor-list {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .subprocessor-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 10px;
+    background: var(--bg-elevated);
+    font-size: 13px;
+  }
+  .subprocessor-logo {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .subprocessor-logo img {
+    width: 22px; height: 22px; object-fit: contain;
+  }
+  .subprocessor-info { flex: 1; min-width: 0; }
+  .subprocessor-info .name { color: var(--text-primary); font-weight: 600; font-size: 13px; }
+  .subprocessor-info .usage { color: var(--text-secondary); font-size: 11px; margin-top: 2px; }
+  .subprocessor-location {
+    font-size: 10px; color: var(--text-muted); white-space: nowrap;
+    padding: 3px 8px; border-radius: 6px;
+    background: var(--bg-hover); flex-shrink: 0;
+  }
+
+  /* === DOCUMENTS & KNOWLEDGE TAB === */
+  .docs-top-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .engagement-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .engagement-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .engagement-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 600;
+  }
+  .engagement-title svg { width: 16px; height: 16px; color: var(--brand-400); }
+  .bulk-btn {
+    padding: 6px 14px; border-radius: 8px;
+    background: var(--bg-elevated); border: 1px solid var(--border-default);
+    font-size: 12px; font-weight: 500; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .bulk-btn:hover { border-color: var(--brand-400); color: var(--brand-400); }
+  .engagement-subtitle {
+    font-size: 11px; color: var(--text-muted); margin-bottom: 14px;
+  }
+  .doc-row {
+    display: flex; align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .doc-row:hover { background: var(--bg-hover); }
+  .doc-row .rank { width: 24px; font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+  .doc-row .name { flex: 1; font-size: 13px; color: var(--text-primary); font-weight: 500; }
+  .doc-row .count { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+  .doc-row .doc-arrow {
+    width: 16px; height: 16px; color: var(--text-muted); margin-left: 10px;
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .doc-row:hover .doc-arrow { opacity: 1; }
+  .engagement-footer {
+    margin-top: 14px; padding-top: 12px;
+    border-top: 1px solid var(--border-default);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .engagement-footer strong { color: var(--brand-400); font-weight: 600; }
+
+  /* KB FAQs */
+  .kb-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+  }
+  .faq-item {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+  }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-header {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .faq-badge {
+    display: inline-block;
+    padding: 3px 8px; border-radius: 6px;
+    font-size: 10px; font-weight: 600;
+    white-space: nowrap;
+    margin-top: 6px;
+  }
+  .faq-badge.access,
+  .faq-badge.appsec,
+  .faq-badge.data,
+  .faq-badge.infra,
+  .faq-badge.ir { background: rgba(34,184,207,0.12); color: var(--brand-400); }
+  .faq-question {
+    flex: 1; font-size: 13px; color: var(--text-primary); line-height: 1.5;
+  }
+  .faq-expand {
+    color: var(--text-muted); font-size: 16px; flex-shrink: 0;
+    margin-left: 8px;
+  }
+  .faq-answer {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+    padding: 12px 0 6px 0; display: none;
+  }
+  .faq-answer-inner {
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .faq-answer-text { flex: 1; }
+  .faq-item.open .faq-answer { display: block; }
+  .faq-item.open .faq-expand { transform: rotate(180deg); }
+  .faq-quote-btn {
+    padding: 5px 12px; border-radius: 6px;
+    background: var(--bg-elevated); border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; flex-shrink: 0; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .faq-quote-btn:hover { border-color: var(--brand-400); color: var(--brand-400); }
+
+  /* All Content section */
+  .all-content-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .all-content-title { font-size: 16px; font-weight: 600; }
+  .view-toggles {
+    display: flex; gap: 4px;
+  }
+  .view-toggle {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: none; border: 1px solid var(--border-default);
+    color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .view-toggle.active {
+    background: var(--bg-elevated);
+    border-color: var(--border-bright);
+    color: var(--text-primary);
+  }
+  .view-toggle svg { width: 16px; height: 16px; }
+
+  /* === FILE BROWSER === */
+  .fb-breadcrumb {
+    display: flex; align-items: center; gap: 4px;
+    margin-bottom: 14px; font-size: 12px;
+  }
+  .fb-crumb {
+    color: var(--brand-400); cursor: pointer; font-weight: 500;
+    padding: 2px 6px; border-radius: 4px; transition: background 0.15s;
+    background: none; border: none; font-family: inherit; font-size: 12px;
+  }
+  .fb-crumb:hover { background: var(--bg-hover); }
+  .fb-crumb.current { color: var(--text-primary); cursor: default; }
+  .fb-crumb.current:hover { background: none; }
+  .fb-crumb-sep { color: var(--text-muted); font-size: 11px; }
+
+  /* Grid view */
+  .fb-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .fb-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    padding: 18px;
+    transition: all 0.2s;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .fb-card:hover { border-color: var(--border-bright); background: var(--bg-hover); }
+  .fb-card-folder { cursor: pointer; align-items: center; text-align: center; padding: 24px 18px; }
+  .fb-card-folder .fb-card-icon svg { width: 42px; height: 42px; }
+  .fb-card-folder .fb-card-name { margin-top: 10px; }
+  .fb-card-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .fb-card-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .fb-card-icon svg { width: 24px; height: 24px; }
+  .fb-card-icon.doc-icon svg { color: var(--text-muted); }
+  .fb-card-lock svg { width: 14px; height: 14px; color: var(--text-muted); }
+  .file-badge {
+    padding: 3px 8px; border-radius: 5px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    background: rgba(255,255,255,0.08); color: var(--text-secondary);
+  }
+  .fb-card-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; line-height: 1.3; }
+  .fb-card-bottom { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .fb-card-date { font-size: 11px; color: var(--text-muted); }
+  .fb-add, .fb-add-sm {
+    padding: 4px 10px; border-radius: 6px;
+    background: var(--bg-elevated); border: 1px solid var(--border-default);
+    color: var(--text-secondary); font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .fb-add:hover, .fb-add-sm:hover { border-color: var(--brand-400); color: var(--brand-400); }
+  .add-btn {
+    padding: 5px 12px; border-radius: 6px;
+    background: var(--bg-elevated); border: 1px solid var(--border-default);
+    color: var(--text-secondary); font-size: 11px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;
+  }
+  .add-btn:hover { border-color: var(--brand-400); color: var(--brand-400); }
+
+  /* List view */
+  .fb-list { display: flex; flex-direction: column; gap: 2px; }
+  .fb-list-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: 8px;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .fb-list-row:hover { background: var(--bg-hover); }
+  .fb-list-row > span > svg, .fb-list-row > .folder-icon > svg, .fb-list-row > .doc-icon > svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .fb-list-row .folder-icon svg { color: var(--brand-400); }
+  .fb-list-row .doc-icon svg { color: var(--text-muted); }
+  .fb-list-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .fb-list-badge { margin-right: 8px; }
+  .fb-list-count { font-size: 11px; color: var(--text-muted); margin-right: 4px; }
+  .fb-list-lock { width: 16px; display: flex; align-items: center; }
+  .fb-list-lock svg { width: 14px; height: 14px; color: var(--text-muted); }
+  .fb-list-date { font-size: 12px; color: var(--text-muted); width: 80px; text-align: right; }
+  .fb-list-chevron { width: 14px; height: 14px; color: var(--text-muted); opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
+  .fb-list-chevron svg { width: 14px; height: 14px; }
+  .fb-list-row:hover .fb-list-chevron { opacity: 1; }
+  .fb-list-folder:hover .fb-list-chevron { opacity: 1; }
+
+  /* Column/path view (Finder style) */
+  .fb-columns {
+    display: flex;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    overflow-x: auto; overflow-y: hidden;
+    height: 380px;
+  }
+  .fb-col {
+    min-width: 220px; width: 220px;
+    border-right: 1px solid var(--border-default);
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .fb-col:last-child { border-right: none; flex: 1; min-width: 260px; }
+  .fb-col-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    cursor: pointer; transition: background 0.15s;
+    font-size: 13px; color: var(--text-primary);
+  }
+  .fb-col-item:hover { background: var(--bg-hover); }
+  .fb-col-item.active { background: var(--brand-400); color: #fff; border-radius: 0; }
+  .fb-col-item.active svg { color: #fff !important; fill: #fff; }
+  .fb-col-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .col-folder-icon svg { color: var(--brand-400); fill: var(--brand-400); }
+  .col-doc-icon svg { color: var(--text-muted); }
+  .fb-col-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+  .fb-col-count { font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+  .fb-col-item.active .fb-col-count { color: rgba(255,255,255,0.7); }
+  .fb-col-arrow { flex-shrink: 0; }
+  .fb-col-arrow svg { width: 12px; height: 12px; color: var(--text-muted); }
+  .fb-col-item.active .fb-col-arrow svg { color: rgba(255,255,255,0.6); }
+  .col-badge { flex-shrink: 0; }
+  .fb-col-item.active .col-badge { background: rgba(255,255,255,0.2); color: #fff; }
+
+  /* === UPDATES TAB === */
+  .updates-feed {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .update-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 24px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .update-card:hover { border-color: var(--brand-400); box-shadow: 0 0 0 1px var(--brand-400); }
+  .update-meta {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .update-type-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(34,184,207,0.12);
+    flex-shrink: 0;
+  }
+  .update-type-icon svg { width: 15px; height: 15px; color: var(--brand-400); }
+  .update-type-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--brand-400);
+  }
+  .update-date { font-size: 11px; color: var(--text-muted); }
+  .update-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .update-desc {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Update detail modal */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-content {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--bg-elevated); border: 1px solid var(--border-default);
+    color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { border-color: var(--brand-400); color: var(--brand-400); }
+  .modal-close svg { width: 16px; height: 16px; }
+  .modal-meta {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
+  }
+  .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; padding-right: 40px; }
+  .modal-body { font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
+  .modal-body p { margin-bottom: 12px; }
+  .modal-footer {
+    margin-top: 20px; padding-top: 16px;
+    border-top: 1px solid var(--border-default);
+    display: flex; gap: 8px;
+  }
+  .modal-btn {
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border-default);
+    background: var(--bg-elevated); color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .modal-btn:hover { border-color: var(--brand-400); color: var(--brand-400); }
+  .modal-btn.primary {
+    background: var(--brand-400); border-color: var(--brand-400);
+    color: #fff;
+  }
+  .modal-btn.primary:hover { opacity: 0.9; }
+
+  /* Theme switcher */
+  .theme-switch {
+    position: fixed; bottom: 16px; right: 16px;
+    display: flex; gap: 6px; z-index: 50;
+  }
+  .theme-btn {
+    padding: 6px 12px; border-radius: 8px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border-default);
+    background: var(--bg-elevated); color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+  .theme-btn.active {
+    border-color: var(--brand-400);
+    color: var(--brand-400);
+  }
+</style>
+</head>
+<body id="body">
+
+<div class="page-inner">
+
+  <!-- Sticky header: tabs + filter + search -->
+  <div class="sticky-header">
+    <div class="top-tabs">
+      <div class="top-tabs-container">
+        <button class="top-tab active" onclick="switchTab('overview')">Overview</button>
+        <button class="top-tab" onclick="switchTab('docs')">Documents &amp; Knowledge</button>
+        <button class="top-tab" onclick="switchTab('updates')">Updates</button>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <button class="product-filter" id="productFilterBtn" onclick="toggleProductFilter(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+        <span id="filterLabel">All Products</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+
+        <!-- Product filter dropdown -->
+        <div class="product-dropdown" id="productDropdown">
+          <div class="product-dropdown-title">Filter by Product</div>
+          <div class="product-checkbox checked" onclick="toggleProduct(event, this)"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>All Products</div>
+          <div class="product-checkbox checked" onclick="toggleProduct(event, this)"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Cloud Platform</div>
+          <div class="product-checkbox checked" onclick="toggleProduct(event, this)"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>On-Prem Server</div>
+          <div class="product-checkbox checked" onclick="toggleProduct(event, this)"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>API Gateway</div>
+          <div class="product-checkbox checked" onclick="toggleProduct(event, this)"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Data Analytics</div>
+          <div class="product-checkbox checked" onclick="toggleProduct(event, this)"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Mobile SDK</div>
+          <div class="product-checkbox checked" onclick="toggleProduct(event, this)"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>Identity Manager</div>
+        </div>
+      </button>
+
+      <div class="search-wrap" id="searchWrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search Documents, FAQs, Certifications, etc" oninput="handleSearch(this.value)" onfocus="handleSearch(this.value)">
+        <span class="search-kbd" id="searchKbd">⌘K</span>
+
+        <!-- Search results dropdown -->
+        <div class="search-results" id="searchResults">
+          <div class="search-results-left">
+            <div class="sr-section-label">Trust Center Sections (4)</div>
+            <div class="sr-item" id="srSections">
+              <div class="sr-item-title">Documents &amp; Knowledge Base</div>
+              <div class="sr-item-desc">Browse documents and security categories</div>
+            </div>
+            <div class="sr-item">
+              <div class="sr-item-title">Trusted By</div>
+              <div class="sr-item-desc">Companies that trust Arcline</div>
+            </div>
+            <div class="sr-item">
+              <div class="sr-item-title">Announcements</div>
+              <div class="sr-item-desc">Latest trust center announcements</div>
+            </div>
+            <div class="sr-item">
+              <div class="sr-item-title">Video Resources</div>
+              <div class="sr-item-desc">Security and compliance video content</div>
+            </div>
+          </div>
+          <div class="search-results-right">
+            <div class="sr-section-label">Documents (<span id="docCount">5</span>)</div>
+            <div class="sr-item"><div class="sr-item-title"><span class="sr-doc-badge cert">CERT</span>ISO 27001 Certificate</div></div>
+            <div class="sr-item"><div class="sr-item-title"><span class="sr-doc-badge pdf">PDF</span>SOC 2 Type II Report</div></div>
+            <div class="sr-item"><div class="sr-item-title"><span class="sr-doc-badge pdf">PDF</span>Security Whitepaper</div></div>
+            <div class="sr-item"><div class="sr-item-title"><span class="sr-doc-badge docx">DOCX</span>Data Processing Agreement</div></div>
+            <div class="sr-item"><div class="sr-item-title"><span class="sr-doc-badge xlsx">XLSX</span>Vendor Risk Assessment</div></div>
+          </div>
+          <div class="sr-ask-agent" id="srAskAgent" style="display:none;">
+            <button class="sr-ask-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Ask AI Agent</button>
+            <span class="sr-ask-text">Ask about '<strong id="srQuery"></strong>'</span>
+            <span class="sr-ask-arrow">›</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay to close dropdowns -->
+  <div class="search-overlay" id="searchOverlay" onclick="closeAllDropdowns()"></div>
+
+    <!-- ============ OVERVIEW TAB ============ -->
+    <div class="tab-panel active" id="tab-overview">
+
+      <!-- Hero card (merged with quick links) -->
+      <div class="hero-card">
+        <div class="hero-top">
+          <div class="hero-left">
+            <div class="hero-title-row">
+              <div class="hero-logo">
+                <svg viewBox="0 0 40 40" fill="none"><path d="M8 26C8 26 12 10 20 10C28 10 32 26 32 26" stroke="var(--brand-400)" stroke-width="3" stroke-linecap="round"/><circle cx="20" cy="22" r="2.5" fill="var(--brand-200)"/></svg>
+              </div>
+              <h2 class="hero-title" id="heroTitle">Arcline Trust Center</h2>
+            </div>
+            <p class="hero-desc">Everything you need to complete your security review is here. Browse documents, certifications, and compliance details with confidence. Our Trust Center is regularly updated to reflect the latest audit results, and subprocessor disclosures. Reach out at <a href="#">trust@arcline.com</a>.</p>
+            <div class="hero-stats">
+              <div class="stat-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg><span class="num">28</span> Documents</div>
+              <div class="stat-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span class="num">57</span> FAQs</div>
+              <div class="stat-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="num">6</span> Certifications</div>
+              <div class="stat-pill"><div class="dot"></div> Active: 8 minutes ago</div>
+            </div>
+          </div>
+          <div class="quick-links">
+            <div class="quick-links-title">Quick Links</div>
+            <a href="#" class="quick-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>Arcline Homepage</a>
+            <a href="#" class="quick-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>Privacy Policy</a>
+            <a href="#" class="quick-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>Status Page</a>
+            <a href="#" class="quick-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Report a vulnerability</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity + Certifications -->
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Trust Center Activity</span>
+            <a class="view-all">View All</a>
+          </div>
+          <div class="activity-top">
+            <p class="activity-label">New documents since your last visit: <strong>3</strong></p>
+            <div class="activity-legend">
+              <span>Less</span>
+              <div class="legend-cell"></div>
+              <div class="legend-cell l1"></div>
+              <div class="legend-cell l2"></div>
+              <div class="legend-cell l3"></div>
+              <div class="legend-cell l4"></div>
+              <span>More</span>
+            </div>
+          </div>
+          <div class="activity-heatmap">
+            <div class="activity-grid" id="activityGrid"></div>
+          </div>
+          <div class="activity-footer">
+            <div class="activity-months">
+              <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
+            </div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Certifications</span>
+            <a class="view-all">View All</a>
+          </div>
+          <div class="cert-grid">
+            <div class="cert-badge">SOC 2<br>Type II</div>
+            <div class="cert-badge">ISO<br>27001</div>
+            <div class="cert-badge">ISO<br>27701</div>
+            <div class="cert-badge">HIPAA</div>
+            <div class="cert-badge">GDPR</div>
+            <div class="cert-badge">SOC 3</div>
+            <div class="cert-badge">CSA<br>STAR</div>
+            <div class="cert-badge">PCI<br>DSS</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance -->
+      <div class="perf-section">
+        <div class="perf-title">Trust Center Performance</div>
+        <div class="perf-grid">
+          <div class="perf-card">
+            <svg class="perf-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="8" width="2" height="2" fill="var(--brand-400)"/><rect x="4" y="6" width="2" height="2" fill="var(--brand-400)"/><rect x="6" y="4" width="2" height="2" fill="var(--brand-400)"/><rect x="8" y="6" width="2" height="2" fill="var(--brand-400)"/><rect x="10" y="8" width="2" height="2" fill="var(--brand-400)"/><rect x="12" y="10" width="2" height="2" fill="var(--brand-400)"/><rect x="6" y="2" width="2" height="2" fill="var(--brand-300)"/><rect x="4" y="10" width="2" height="2" fill="var(--brand-400)" opacity="0.5"/><rect x="2" y="12" width="12" height="2" fill="var(--brand-400)" opacity="0.3"/></svg>
+            <div class="perf-info">
+              <div class="perf-label">Response Time</div>
+              <div class="perf-value">1.8 hr<span class="perf-sub">Average response time</span></div>
+            </div>
+          </div>
+          <div class="perf-card">
+            <svg class="perf-icon" viewBox="0 0 16 16" fill="none"><rect x="4" y="2" width="8" height="2" fill="var(--brand-400)"/><rect x="2" y="4" width="2" height="8" fill="var(--brand-400)"/><rect x="12" y="4" width="2" height="8" fill="var(--brand-400)"/><rect x="4" y="12" width="8" height="2" fill="var(--brand-400)"/><rect x="6" y="6" width="4" height="4" fill="var(--brand-300)"/><rect x="7" y="7" width="2" height="2" fill="var(--brand-400)"/></svg>
+            <div class="perf-info">
+              <div class="perf-label">Content Accuracy</div>
+              <div class="perf-value">96%<span class="perf-sub">AI answer accuracy</span></div>
+            </div>
+          </div>
+          <div class="perf-card">
+            <svg class="perf-icon" viewBox="0 0 16 16" fill="none"><rect x="6" y="2" width="4" height="2" fill="var(--brand-400)"/><rect x="4" y="4" width="2" height="2" fill="var(--brand-400)"/><rect x="10" y="4" width="2" height="2" fill="var(--brand-400)"/><rect x="6" y="6" width="4" height="2" fill="var(--brand-400)"/><rect x="6" y="8" width="4" height="2" fill="var(--brand-300)"/><rect x="4" y="10" width="2" height="4" fill="var(--brand-400)"/><rect x="10" y="10" width="2" height="4" fill="var(--brand-400)"/><rect x="6" y="12" width="4" height="2" fill="var(--brand-400)" opacity="0.5"/></svg>
+            <div class="perf-info">
+              <div class="perf-label">Questions Answered</div>
+              <div class="perf-value">2,847<span class="perf-sub">Total questions answered</span></div>
+            </div>
+          </div>
+          <div class="perf-card">
+            <svg class="perf-icon" viewBox="0 0 16 16" fill="none"><rect x="6" y="2" width="2" height="2" fill="var(--brand-300)"/><rect x="4" y="4" width="2" height="2" fill="var(--brand-400)"/><rect x="8" y="4" width="2" height="2" fill="var(--brand-400)"/><rect x="2" y="6" width="2" height="2" fill="var(--brand-400)"/><rect x="10" y="6" width="2" height="2" fill="var(--brand-400)"/><rect x="4" y="8" width="2" height="4" fill="var(--brand-400)"/><rect x="8" y="8" width="2" height="4" fill="var(--brand-400)"/><rect x="2" y="12" width="4" height="2" fill="var(--brand-400)" opacity="0.5"/><rect x="8" y="12" width="4" height="2" fill="var(--brand-400)" opacity="0.5"/></svg>
+            <div class="perf-info">
+              <div class="perf-label">Visitor Engagement</div>
+              <div class="perf-value">1,240<span class="perf-sub">Unique visitors (90 days)</span></div>
+            </div>
+          </div>
+          <div class="perf-card">
+            <svg class="perf-icon" viewBox="0 0 16 16" fill="none"><rect x="4" y="2" width="8" height="2" fill="var(--brand-400)"/><rect x="2" y="4" width="2" height="2" fill="var(--brand-400)"/><rect x="12" y="4" width="2" height="2" fill="var(--brand-400)"/><rect x="4" y="6" width="2" height="2" fill="var(--brand-300)"/><rect x="10" y="6" width="2" height="2" fill="var(--brand-300)"/><rect x="6" y="8" width="4" height="2" fill="var(--brand-400)"/><rect x="4" y="10" width="8" height="2" fill="var(--brand-400)" opacity="0.5"/><rect x="6" y="12" width="4" height="2" fill="var(--brand-400)" opacity="0.3"/></svg>
+            <div class="perf-info">
+              <div class="perf-label">Content Freshness</div>
+              <div class="perf-value">3 days<span class="perf-sub">Since last update</span></div>
+            </div>
+          </div>
+          <div class="perf-card">
+            <svg class="perf-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="12" width="2" height="2" fill="var(--brand-400)"/><rect x="2" y="10" width="2" height="2" fill="var(--brand-400)" opacity="0.5"/><rect x="5" y="8" width="2" height="6" fill="var(--brand-400)"/><rect x="5" y="6" width="2" height="2" fill="var(--brand-300)"/><rect x="8" y="6" width="2" height="8" fill="var(--brand-400)"/><rect x="8" y="4" width="2" height="2" fill="var(--brand-300)"/><rect x="11" y="2" width="2" height="12" fill="var(--brand-400)"/><rect x="11" y="0" width="2" height="2" fill="var(--brand-300)"/></svg>
+            <div class="perf-info">
+              <div class="perf-label">Update Frequency</div>
+              <div class="perf-value">8<span class="perf-sub">Updates this month</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trusted By + Subprocessors -->
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Trusted By</span>
+            <a class="view-all">View All</a>
+          </div>
+          <div class="logo-grid">
+            <div class="logo-placeholder"></div><div class="logo-placeholder"></div>
+            <div class="logo-placeholder"></div><div class="logo-placeholder"></div>
+            <div class="logo-placeholder"></div><div class="logo-placeholder"></div>
+            <div class="logo-placeholder"></div><div class="logo-placeholder"></div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">Subprocessors</span>
+            <a class="view-all">View Table</a>
+          </div>
+          <div class="subprocessor-list">
+            <div class="subprocessor-row">
+              <div class="subprocessor-logo"><img src="https://cdn.simpleicons.org/amazonaws/232F3E" alt="AWS"></div>
+              <div class="subprocessor-info">
+                <div class="name">Amazon Web Services</div>
+                <div class="usage">Cloud infrastructure, compute, storage, and hosting</div>
+              </div>
+              <span class="subprocessor-location">US-East, US-West</span>
+            </div>
+            <div class="subprocessor-row">
+              <div class="subprocessor-logo"><img src="https://cdn.simpleicons.org/datadog/632CA6" alt="Datadog"></div>
+              <div class="subprocessor-info">
+                <div class="name">Datadog</div>
+                <div class="usage">Application monitoring, logging, and observability</div>
+              </div>
+              <span class="subprocessor-location">US</span>
+            </div>
+            <div class="subprocessor-row">
+              <div class="subprocessor-logo"><img src="https://cdn.simpleicons.org/snowflake/29B5E8" alt="Snowflake"></div>
+              <div class="subprocessor-info">
+                <div class="name">Snowflake</div>
+                <div class="usage">Data warehousing and analytics processing</div>
+              </div>
+              <span class="subprocessor-location">US-East</span>
+            </div>
+            <div class="subprocessor-row">
+              <div class="subprocessor-logo"><img src="https://cdn.simpleicons.org/stripe/635BFF" alt="Stripe"></div>
+              <div class="subprocessor-info">
+                <div class="name">Stripe</div>
+                <div class="usage">Payment processing and billing management</div>
+              </div>
+              <span class="subprocessor-location">US, EU</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ DOCUMENTS & KNOWLEDGE TAB ============ -->
+    <div class="tab-panel" id="tab-docs">
+
+      <div class="docs-top-row">
+        <!-- Document Engagement — left column -->
+        <div class="engagement-card">
+          <div class="engagement-header">
+            <div class="engagement-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+              Document Engagement
+            </div>
+            <button class="bulk-btn">Bulk download</button>
+          </div>
+          <div class="engagement-subtitle">Most Viewed Documents (30 days)</div>
+          <div class="doc-row"><span class="rank">1.</span><span class="name">SOC 2 Type II Report (2026)</span><span class="count">487</span><svg class="doc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+          <div class="doc-row"><span class="rank">2.</span><span class="name">Security Whitepaper</span><span class="count">312</span><svg class="doc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+          <div class="doc-row"><span class="rank">3.</span><span class="name">Sub-processor List</span><span class="count">289</span><svg class="doc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+          <div class="doc-row"><span class="rank">4.</span><span class="name">Penetration Test Summary</span><span class="count">201</span><svg class="doc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+          <div class="doc-row"><span class="rank">5.</span><span class="name">Data Processing Agreement</span><span class="count">178</span><svg class="doc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+          <div class="doc-row"><span class="rank">6.</span><span class="name">Vendor Risk Assessment</span><span class="count">156</span><svg class="doc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+          <div class="doc-row"><span class="rank">7.</span><span class="name">Business Continuity Plan</span><span class="count">134</span><svg class="doc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+          <div class="doc-row"><span class="rank">8.</span><span class="name">Incident Response Policy</span><span class="count">112</span><svg class="doc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div>
+          <div class="engagement-footer">Downloads: <strong>1,847</strong> &nbsp;&nbsp; Unique: <strong>412</strong></div>
+        </div>
+
+        <!-- Knowledge Base — right column -->
+        <div class="kb-card">
+          <div class="engagement-header" style="margin-bottom:12px;">
+            <div class="engagement-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-400)" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+              Knowledge Base
+            </div>
+            <button class="bulk-btn">Bulk download</button>
+          </div>
+          <div class="faq-item open">
+            <div class="faq-header">
+              <span class="faq-question">How does Arcline manage user access controls?</span>
+              <span class="faq-expand">▾</span>
+            </div>
+            <span class="faq-badge access">Access Management</span>
+            <div class="faq-answer"><div class="faq-answer-inner"><span class="faq-answer-text">We implement role-based access control (RBAC) with least-privilege principles. All access is reviewed quarterly and requires manager approval.</span><button class="faq-quote-btn">+ Quote</button></div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-header">
+              <span class="faq-question">What is your secure development lifecycle?</span>
+              <span class="faq-expand">▾</span>
+            </div>
+            <span class="faq-badge appsec">Application Security</span>
+            <div class="faq-answer"><div class="faq-answer-inner"><span class="faq-answer-text">We follow OWASP guidelines with mandatory code reviews, SAST/DAST scanning, and annual penetration testing by independent third parties.</span><button class="faq-quote-btn">+ Quote</button></div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-header">
+              <span class="faq-question">Where is customer data stored and processed?</span>
+              <span class="faq-expand">▾</span>
+            </div>
+            <span class="faq-badge data">Data Privacy</span>
+            <div class="faq-answer"><div class="faq-answer-inner"><span class="faq-answer-text">Customer data is stored in AWS us-east-1 and eu-west-1 regions. Data processing locations are documented in our DPA.</span><button class="faq-quote-btn">+ Quote</button></div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-header">
+              <span class="faq-question">How is your infrastructure secured?</span>
+              <span class="faq-expand">▾</span>
+            </div>
+            <span class="faq-badge infra">Infrastructure</span>
+            <div class="faq-answer"><div class="faq-answer-inner"><span class="faq-answer-text">We use AWS with VPC isolation, encrypted storage (AES-256), and WAF protection. All infrastructure is managed via Terraform with drift detection.</span><button class="faq-quote-btn">+ Quote</button></div></div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-header">
+              <span class="faq-question">What is your incident response process?</span>
+              <span class="faq-expand">▾</span>
+            </div>
+            <span class="faq-badge ir">Incident Response</span>
+            <div class="faq-answer"><div class="faq-answer-inner"><span class="faq-answer-text">We maintain a documented IR plan with 24/7 on-call rotation. Customers are notified within 72 hours of confirmed breaches per GDPR requirements.</span><button class="faq-quote-btn">+ Quote</button></div></div>
+          </div>
+        </div>
+      </div><!-- /docs-top-row -->
+
+      <!-- All Content — file browser -->
+      <div class="all-content-header">
+        <span class="all-content-title">All Content</span>
+        <div class="view-toggles">
+          <button class="view-toggle active" title="Icons" onclick="setView('grid')"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+          <button class="view-toggle" title="List" onclick="setView('list')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+          <button class="view-toggle" title="Columns" onclick="setView('columns')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg></button>
+        </div>
+      </div>
+      <div class="fb-breadcrumb" id="fbBreadcrumb"></div>
+
+      <!-- Dynamic file browser views (rendered by JS) -->
+      <div class="fb-grid" id="fbGrid"></div>
+      <div class="fb-list" id="fbList" style="display:none"></div>
+      <div class="fb-columns" id="fbColumns" style="display:none"></div>
+    </div>
+
+    <!-- ============ UPDATES TAB ============ -->
+    <div class="tab-panel" id="tab-updates">
+      <div class="updates-feed">
+        <div class="update-card" onclick="openUpdate(0)">
+          <div class="update-meta">
+            <div class="update-type-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div>
+            <span class="update-type-label">New</span>
+            <span class="update-date">March 28, 2026</span>
+          </div>
+          <div class="update-title">New SOC 2 Type II Report Added</div>
+          <div class="update-desc">Our latest SOC 2 Type II audit report covering the period July 2025 – January 2026 is now available for download. This report was conducted by Deloitte and covers all five trust service criteria.</div>
+        </div>
+        <div class="update-card" onclick="openUpdate(1)">
+          <div class="update-meta">
+            <div class="update-type-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <span class="update-type-label">Updated</span>
+            <span class="update-date">March 22, 2026</span>
+          </div>
+          <div class="update-title">Security Whitepaper Refreshed</div>
+          <div class="update-desc">Updated our security whitepaper to reflect the latest infrastructure changes including our migration to a multi-region deployment and zero-trust network architecture.</div>
+        </div>
+        <div class="update-card" onclick="openUpdate(2)">
+          <div class="update-meta">
+            <div class="update-type-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div>
+            <span class="update-type-label">New</span>
+            <span class="update-date">March 15, 2026</span>
+          </div>
+          <div class="update-title">New Sub-processor: Datadog</div>
+          <div class="update-desc">Datadog has been added as a sub-processor for monitoring and observability services. Data processed includes application performance metrics and log data. Full details available in the updated sub-processor list.</div>
+        </div>
+        <div class="update-card" onclick="openUpdate(3)">
+          <div class="update-meta">
+            <div class="update-type-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <span class="update-type-label">Updated</span>
+            <span class="update-date">March 8, 2026</span>
+          </div>
+          <div class="update-title">Data Processing Agreement v3.2</div>
+          <div class="update-desc">Minor revisions to our DPA reflecting updated data retention policies and expanded EU representative information per GDPR requirements.</div>
+        </div>
+        <div class="update-card" onclick="openUpdate(4)">
+          <div class="update-meta">
+            <div class="update-type-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div>
+            <span class="update-type-label">Removed</span>
+            <span class="update-date">March 1, 2026</span>
+          </div>
+          <div class="update-title">Deprecated: Legacy Encryption Whitepaper</div>
+          <div class="update-desc">The 2024 encryption whitepaper has been replaced by the updated Security Whitepaper which now includes comprehensive encryption details.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Update detail modal -->
+<div class="modal-overlay" id="updateModal" onclick="closeModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="modal-meta" id="modalMeta"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="modal-btn" onclick="closeModal()">Close</button>
+      <button class="modal-btn primary">View Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- Theme switcher -->
+<div class="theme-switch">
+  <button class="theme-btn active" onclick="setTheme('arcline')">Arcline (Teal)</button>
+  <button class="theme-btn" onclick="setTheme('mediacore')">MediaCore (Purple)</button>
+</div>
+
+<script>
+  // ===== Tab switching =====
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // ===== Theme switching =====
+  function setTheme(theme) {
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    if (theme === 'mediacore') {
+      document.body.classList.add('theme-mediacore');
+      document.getElementById('heroTitle').textContent = 'MediaCore Trust Center';
+    } else {
+      document.body.classList.remove('theme-mediacore');
+      document.getElementById('heroTitle').textContent = 'Arcline Trust Center';
+    }
+  }
+
+  // ===== Product filter dropdown =====
+  function toggleProductFilter(e) {
+    e.stopPropagation();
+    const btn = document.getElementById('productFilterBtn');
+    const dd = document.getElementById('productDropdown');
+    const overlay = document.getElementById('searchOverlay');
+    const isOpen = dd.classList.contains('open');
+
+    closeAllDropdowns();
+    if (!isOpen) {
+      btn.classList.add('open');
+      dd.classList.add('open');
+      overlay.classList.add('open');
+    }
+  }
+
+  function toggleProduct(e, el) {
+    e.stopPropagation();
+    el.classList.toggle('checked');
+    // Update filter label with count
+    const allBoxes = document.querySelectorAll('.product-checkbox');
+    const checked = document.querySelectorAll('.product-checkbox.checked');
+    const label = document.getElementById('filterLabel');
+    if (checked.length === allBoxes.length || checked.length === 0) {
+      label.textContent = 'All Products';
+    } else {
+      label.textContent = checked.length + ' Product' + (checked.length !== 1 ? 's' : '');
+    }
+  }
+
+  // ===== Search results =====
+  const SEARCH_DATA = {
+    sections: [
+      { title: 'Documents & Knowledge Base', desc: 'Browse documents and security categories' },
+      { title: 'Trusted By', desc: 'Companies that trust Arcline' },
+      { title: 'Announcements', desc: 'Latest trust center announcements' },
+      { title: 'Video Resources', desc: 'Security and compliance video content' },
+    ],
+    docs: [
+      { name: 'ISO 27001 Certificate', type: 'cert' },
+      { name: 'SOC 2 Type II Report', type: 'pdf' },
+      { name: 'Security Whitepaper', type: 'pdf' },
+      { name: 'Data Processing Agreement', type: 'pdf' },
+      { name: 'Vendor Risk Assessment', type: 'xlsx' },
+      { name: 'Pentest Executive Summary', type: 'docx' },
+      { name: 'Business Continuity Plan', type: 'pdf' },
+      { name: 'Incident Response Policy', type: 'docx' },
+      { name: 'Sub-processor List', type: 'xlsx' },
+      { name: 'Information Security Policy', type: 'pdf' },
+      { name: 'CSA CAIQ v4', type: 'xlsx' },
+      { name: 'Privacy Policy', type: 'pdf' },
+    ]
+  };
+
+  function handleSearch(query) {
+    const results = document.getElementById('searchResults');
+    const overlay = document.getElementById('searchOverlay');
+    const askAgent = document.getElementById('srAskAgent');
+    const kbd = document.getElementById('searchKbd');
+
+    // Close product dropdown if open
+    document.getElementById('productDropdown').classList.remove('open');
+    document.getElementById('productFilterBtn').classList.remove('open');
+
+    if (query.length === 0) {
+      results.classList.remove('open');
+      overlay.classList.remove('open');
+      kbd.style.display = '';
+      askAgent.style.display = 'none';
+      return;
+    }
+
+    kbd.style.display = 'none';
+    const q = query.toLowerCase();
+
+    // Filter sections
+    const leftPane = results.querySelector('.search-results-left');
+    const filteredSections = SEARCH_DATA.sections.filter(s =>
+      s.title.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q)
+    );
+    leftPane.innerHTML = '<div class="sr-section-label">Trust Center Sections (' + filteredSections.length + ')</div>';
+    filteredSections.forEach(s => {
+      leftPane.innerHTML += '<div class="sr-item"><div class="sr-item-title">' + s.title + '</div><div class="sr-item-desc">' + s.desc + '</div></div>';
+    });
+
+    // Filter docs
+    const rightPane = results.querySelector('.search-results-right');
+    const filteredDocs = SEARCH_DATA.docs.filter(d => d.name.toLowerCase().includes(q));
+    rightPane.innerHTML = '<div class="sr-section-label">Documents (' + filteredDocs.length + ')</div>';
+    filteredDocs.forEach(d => {
+      rightPane.innerHTML += '<div class="sr-item"><div class="sr-item-title"><span class="sr-doc-badge ' + d.type + '">' + d.type.toUpperCase() + '</span>' + d.name + '</div></div>';
+    });
+
+    // Show ask agent with query
+    askAgent.style.display = 'flex';
+    document.getElementById('srQuery').textContent = query;
+
+    results.classList.add('open');
+    overlay.classList.add('open');
+  }
+
+  function closeAllDropdowns() {
+    document.getElementById('productDropdown').classList.remove('open');
+    document.getElementById('productFilterBtn').classList.remove('open');
+    document.getElementById('searchResults').classList.remove('open');
+    document.getElementById('searchOverlay').classList.remove('open');
+    document.getElementById('searchKbd').style.display = '';
+  }
+
+  // Close on Escape + ⌘K shortcut
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('updateModal');
+      if (modal.classList.contains('open')) { closeModal(); return; }
+      closeAllDropdowns();
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      document.getElementById('searchInput').focus();
+    }
+  });
+
+  // ===== Update detail modal =====
+  const UPDATES = [
+    { type: 'new', icon: 'plus', date: 'March 28, 2026', title: 'New SOC 2 Type II Report Added',
+      body: 'Our latest SOC 2 Type II audit report covering the period July 2025 \u2013 January 2026 is now available for download. This report was conducted by Deloitte and covers all five trust service criteria.\n\nKey highlights include zero critical findings, improved controls around data encryption at rest, and expanded coverage of our incident response procedures. The report is available in the Documents section for immediate download.' },
+    { type: 'updated', icon: 'eye', date: 'March 22, 2026', title: 'Security Whitepaper Refreshed',
+      body: 'Updated our security whitepaper to reflect the latest infrastructure changes including our migration to a multi-region deployment and zero-trust network architecture.\n\nNew sections cover our container security strategy, service mesh implementation, and updated key management practices. The previous version has been archived and is still accessible upon request.' },
+    { type: 'new', icon: 'plus', date: 'March 15, 2026', title: 'New Sub-processor: Datadog',
+      body: 'Datadog has been added as a sub-processor for monitoring and observability services. Data processed includes application performance metrics and log data. Full details available in the updated sub-processor list.\n\nDatadog processes data in US-based facilities and has been assessed against our vendor security requirements. Their SOC 2 Type II report and security documentation are available upon request.' },
+    { type: 'updated', icon: 'eye', date: 'March 8, 2026', title: 'Data Processing Agreement v3.2',
+      body: 'Minor revisions to our DPA reflecting updated data retention policies and expanded EU representative information per GDPR requirements.\n\nChanges include a new 90-day data retention window for analytics data (reduced from 180 days), updated Standard Contractual Clauses reflecting the latest EU Commission decisions, and designation of our new EU representative based in Dublin.' },
+    { type: 'removed', icon: 'trash', date: 'March 1, 2026', title: 'Deprecated: Legacy Encryption Whitepaper',
+      body: 'The 2024 encryption whitepaper has been replaced by the updated Security Whitepaper which now includes comprehensive encryption details.\n\nAll encryption-related content from the legacy document has been incorporated into sections 4 and 5 of the new Security Whitepaper. If you previously referenced the old document in compliance reviews, please update your references accordingly.' },
+  ];
+
+  function openUpdate(idx) {
+    const u = UPDATES[idx];
+    const modal = document.getElementById('updateModal');
+    const iconSvgs = {
+      plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+      eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+      trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>',
+    };
+    document.getElementById('modalMeta').innerHTML =
+      '<div class="update-type-icon">' + iconSvgs[u.icon] + '</div>' +
+      '<span class="update-type-label">' + u.type + '</span>' +
+      '<span class="update-date">' + u.date + '</span>';
+    document.getElementById('modalTitle').textContent = u.title;
+    document.getElementById('modalBody').innerHTML = u.body.split('\n\n').map(p => '<p>' + p + '</p>').join('');
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(e) {
+    if (e && e.target !== e.currentTarget && !e.target.closest('.modal-close')) return;
+    document.getElementById('updateModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ===== FILE SYSTEM DATA =====
+  const FILE_SYSTEM = [
+    { type: 'folder', name: 'Compliance Reports', children: [
+      { type: 'file', name: 'SOC 2 Type II Report', fileType: 'pdf', date: 'Feb 2026', locked: true },
+      { type: 'file', name: 'SOC 3 Report', fileType: 'pdf', date: 'Feb 2026', locked: false },
+      { type: 'file', name: 'ISO 27001 Certificate', fileType: 'cert', date: 'Dec 2025', locked: false },
+      { type: 'file', name: 'ISO 27701 Certificate', fileType: 'cert', date: 'Nov 2025', locked: false },
+      { type: 'file', name: 'HIPAA Compliance Letter', fileType: 'pdf', date: 'Jan 2026', locked: true },
+      { type: 'file', name: 'CSA STAR Self-Assessment', fileType: 'xlsx', date: 'Mar 2026', locked: false },
+      { type: 'file', name: 'PCI DSS AOC', fileType: 'pdf', date: 'Oct 2025', locked: true },
+    ]},
+    { type: 'folder', name: 'Policies', children: [
+      { type: 'file', name: 'Information Security Policy', fileType: 'pdf', date: 'Mar 2026', locked: false },
+      { type: 'file', name: 'Incident Response Policy', fileType: 'docx', date: 'Jan 2026', locked: false },
+      { type: 'file', name: 'Business Continuity Plan', fileType: 'pdf', date: 'Feb 2026', locked: false },
+      { type: 'file', name: 'Disaster Recovery Plan', fileType: 'pdf', date: 'Feb 2026', locked: true },
+      { type: 'file', name: 'Acceptable Use Policy', fileType: 'pdf', date: 'Dec 2025', locked: false },
+      { type: 'file', name: 'Data Retention Policy', fileType: 'pdf', date: 'Nov 2025', locked: false },
+      { type: 'file', name: 'Access Control Policy', fileType: 'docx', date: 'Jan 2026', locked: false },
+      { type: 'file', name: 'Change Management Policy', fileType: 'docx', date: 'Mar 2026', locked: false },
+    ]},
+    { type: 'folder', name: 'Legal', children: [
+      { type: 'file', name: 'Data Processing Agreement', fileType: 'pdf', date: 'Mar 2026', locked: false },
+      { type: 'file', name: 'Standard NDA Template', fileType: 'docx', date: 'Jan 2026', locked: false },
+      { type: 'file', name: 'Terms of Service', fileType: 'pdf', date: 'Feb 2026', locked: false },
+      { type: 'file', name: 'Privacy Policy', fileType: 'pdf', date: 'Mar 2026', locked: false },
+      { type: 'file', name: 'Sub-processor List', fileType: 'xlsx', date: 'Mar 2026', locked: false },
+      { type: 'file', name: 'GDPR Compliance Statement', fileType: 'pdf', date: 'Dec 2025', locked: false },
+    ]},
+    { type: 'folder', name: 'Penetration Testing', children: [
+      { type: 'file', name: 'Pentest Report – Q1 2026', fileType: 'pdf', date: 'Mar 2026', locked: true },
+      { type: 'file', name: 'Pentest Report – Q4 2025', fileType: 'pdf', date: 'Dec 2025', locked: true },
+      { type: 'file', name: 'Pentest Executive Summary', fileType: 'docx', date: 'Mar 2026', locked: false },
+      { type: 'file', name: 'Remediation Tracker', fileType: 'xlsx', date: 'Mar 2026', locked: true },
+    ]},
+    { type: 'folder', name: 'Questionnaires', children: [
+      { type: 'file', name: 'SIG Lite Questionnaire', fileType: 'xlsx', date: 'Feb 2026', locked: false },
+      { type: 'file', name: 'CSA CAIQ v4', fileType: 'xlsx', date: 'Mar 2026', locked: false },
+      { type: 'file', name: 'Custom Questionnaire Template', fileType: 'xlsx', date: 'Jan 2026', locked: false },
+      { type: 'file', name: 'HECVAT Full', fileType: 'xlsx', date: 'Nov 2025', locked: false },
+    ]},
+    // Standalone files (not in folders)
+    { type: 'file', name: 'Security Whitepaper', fileType: 'pdf', date: 'Mar 2026', locked: false },
+    { type: 'file', name: 'Vendor Risk Assessment', fileType: 'xlsx', date: 'Mar 2026', locked: true },
+    { type: 'file', name: 'Architecture Diagram', fileType: 'pdf', date: 'Feb 2026', locked: false },
+    { type: 'file', name: 'Encryption at Rest Overview', fileType: 'pdf', date: 'Jan 2026', locked: false },
+    { type: 'file', name: 'Network Security Overview', fileType: 'pdf', date: 'Feb 2026', locked: false },
+    { type: 'file', name: 'Employee Security Training Log', fileType: 'xlsx', date: 'Mar 2026', locked: true },
+    { type: 'file', name: 'Annual Risk Assessment Summary', fileType: 'pdf', date: 'Dec 2025', locked: false },
+    { type: 'file', name: 'Third-Party Audit Letter', fileType: 'pdf', date: 'Feb 2026', locked: true },
+    { type: 'file', name: 'Cloud Infrastructure FAQ', fileType: 'docx', date: 'Jan 2026', locked: false },
+    { type: 'file', name: 'SSO Integration Guide', fileType: 'pdf', date: 'Nov 2025', locked: false },
+    { type: 'file', name: 'API Security Best Practices', fileType: 'pdf', date: 'Mar 2026', locked: false },
+    { type: 'file', name: 'Product Security Roadmap', fileType: 'pdf', date: 'Mar 2026', locked: true },
+    { type: 'file', name: 'Bug Bounty Program Overview', fileType: 'pdf', date: 'Feb 2026', locked: false },
+  ];
+
+  // Current navigation path (array of folder names)
+  let currentPath = [];
+  let currentView = 'grid';
+
+  // SVG icon helpers
+  const ICONS = {
+    folder: '<svg viewBox="0 0 24 24" fill="var(--brand-400)" stroke="none"><path d="M2 6a2 2 0 012-2h5l2 2h9a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>',
+    chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>',
+  };
+
+  function getItemsAtPath(path) {
+    let items = FILE_SYSTEM;
+    for (const seg of path) {
+      const folder = items.find(i => i.type === 'folder' && i.name === seg);
+      if (folder) items = folder.children;
+      else return [];
+    }
+    return items;
+  }
+
+  function getFileCount(item) {
+    if (item.type === 'file') return 1;
+    return item.children.reduce((sum, c) => sum + getFileCount(c), 0);
+  }
+
+  // ===== Breadcrumb =====
+  function renderBreadcrumb() {
+    const bc = document.getElementById('fbBreadcrumb');
+    if (currentPath.length === 0) { bc.innerHTML = ''; return; }
+    let html = '<span class="fb-crumb" onclick="navigateTo(-1)">All Content</span>';
+    currentPath.forEach((seg, i) => {
+      html += '<span class="fb-crumb-sep">›</span>';
+      if (i < currentPath.length - 1) {
+        html += '<span class="fb-crumb" onclick="navigateTo(' + i + ')">' + seg + '</span>';
+      } else {
+        html += '<span class="fb-crumb current">' + seg + '</span>';
+      }
+    });
+    bc.innerHTML = html;
+  }
+
+  function navigateTo(idx) {
+    if (idx < 0) currentPath = [];
+    else currentPath = currentPath.slice(0, idx + 1);
+    renderCurrentView();
+  }
+
+  function openFolder(name) {
+    currentPath.push(name);
+    renderCurrentView();
+  }
+
+  // ===== Grid view =====
+  function renderGrid() {
+    const items = getItemsAtPath(currentPath);
+    const el = document.getElementById('fbGrid');
+    el.innerHTML = items.map(item => {
+      if (item.type === 'folder') {
+        const count = getFileCount(item);
+        return '<div class="fb-card fb-card-folder" onclick="openFolder(\'' + item.name.replace(/'/g, "\\'") + '\')">' +
+          '<div class="fb-card-icon folder-icon">' + ICONS.folder + '</div>' +
+          '<div class="fb-card-name">' + item.name + '</div>' +
+          '<div class="fb-card-meta">' + count + ' item' + (count !== 1 ? 's' : '') + '</div>' +
+        '</div>';
+      } else {
+        return '<div class="fb-card">' +
+          '<div class="fb-card-top">' +
+            '<div class="fb-card-icon doc-icon">' + ICONS.doc + '</div>' +
+            (item.locked ? '<span class="fb-card-lock">' + ICONS.lock + '</span>' : '') +
+          '</div>' +
+          '<div class="fb-card-name">' + item.name + '</div>' +
+          '<div class="fb-card-bottom"><span class="file-badge ' + item.fileType + '">' + item.fileType.toUpperCase() + '</span><span class="fb-card-date">' + item.date + '</span></div>' +
+          '<button class="add-btn fb-add">+ Add</button>' +
+        '</div>';
+      }
+    }).join('');
+  }
+
+  // ===== List view =====
+  function renderList() {
+    const items = getItemsAtPath(currentPath);
+    const el = document.getElementById('fbList');
+    el.innerHTML = items.map(item => {
+      if (item.type === 'folder') {
+        const count = getFileCount(item);
+        return '<div class="fb-list-row fb-list-folder" onclick="openFolder(\'' + item.name.replace(/'/g, "\\'") + '\')">' +
+          '<span class="folder-icon">' + ICONS.folder + '</span>' +
+          '<span class="fb-list-name">' + item.name + '</span>' +
+          '<span class="fb-list-count">' + count + ' items</span>' +
+          '<span class="fb-list-chevron">' + ICONS.chevron + '</span>' +
+        '</div>';
+      } else {
+        return '<div class="fb-list-row">' +
+          '<span class="doc-icon">' + ICONS.doc + '</span>' +
+          '<span class="fb-list-name">' + item.name + '</span>' +
+          '<span class="fb-list-badge"><span class="file-badge ' + item.fileType + '">' + item.fileType.toUpperCase() + '</span></span>' +
+          (item.locked ? '<span class="fb-list-lock">' + ICONS.lock + '</span>' : '<span class="fb-list-lock"></span>') +
+          '<span class="fb-list-date">' + item.date + '</span>' +
+          '<button class="add-btn fb-add-sm">+ Add</button>' +
+        '</div>';
+      }
+    }).join('');
+  }
+
+  // ===== Columns view (Finder-style) =====
+  let columnSelections = []; // indices of selected item per column
+
+  function renderColumns() {
+    const el = document.getElementById('fbColumns');
+    // Build columns from root
+    let html = '';
+    let items = FILE_SYSTEM;
+    // Column 0: root
+    html += buildColumn(items, 0);
+    // Additional columns based on selections
+    for (let depth = 0; depth < columnSelections.length; depth++) {
+      const selIdx = columnSelections[depth];
+      if (selIdx == null || !items[selIdx] || items[selIdx].type !== 'folder') break;
+      items = items[selIdx].children;
+      html += buildColumn(items, depth + 1);
+    }
+    el.innerHTML = html;
+  }
+
+  function buildColumn(items, depth) {
+    const selIdx = columnSelections[depth] ?? -1;
+    let html = '<div class="fb-col">';
+    items.forEach((item, i) => {
+      const isActive = i === selIdx;
+      const cls = 'fb-col-item' + (isActive ? ' active' : '');
+      if (item.type === 'folder') {
+        const count = getFileCount(item);
+        html += '<div class="' + cls + '" onclick="selectColumn(' + depth + ',' + i + ')">' +
+          '<span class="col-folder-icon">' + ICONS.folder + '</span>' +
+          '<span class="fb-col-name">' + item.name + '</span>' +
+          '<span class="fb-col-count">' + count + '</span>' +
+          '<span class="fb-col-arrow">' + ICONS.chevron + '</span>' +
+        '</div>';
+      } else {
+        html += '<div class="' + cls + '" onclick="selectColumn(' + depth + ',' + i + ')">' +
+          '<span class="col-doc-icon">' + ICONS.doc + '</span>' +
+          '<span class="fb-col-name">' + item.name + '</span>' +
+          '<span class="file-badge ' + item.fileType + ' col-badge">' + item.fileType.toUpperCase() + '</span>' +
+        '</div>';
+      }
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function selectColumn(depth, idx) {
+    // Truncate selections after this depth, set new selection
+    columnSelections = columnSelections.slice(0, depth);
+    columnSelections[depth] = idx;
+    renderColumns();
+    // Scroll to reveal new column
+    const el = document.getElementById('fbColumns');
+    setTimeout(() => el.scrollLeft = el.scrollWidth, 50);
+  }
+
+  // ===== View switching =====
+  function setView(mode) {
+    currentView = mode;
+    const btns = document.querySelectorAll('.view-toggle');
+    btns.forEach((b, i) => b.classList.toggle('active',
+      (mode === 'grid' && i === 0) || (mode === 'list' && i === 1) || (mode === 'columns' && i === 2)
+    ));
+    document.getElementById('fbGrid').style.display = mode === 'grid' ? '' : 'none';
+    document.getElementById('fbList').style.display = mode === 'list' ? '' : 'none';
+    document.getElementById('fbColumns').style.display = mode === 'columns' ? '' : 'none';
+    renderCurrentView();
+  }
+
+  function renderCurrentView() {
+    renderBreadcrumb();
+    if (currentView === 'grid') renderGrid();
+    else if (currentView === 'list') renderList();
+    else { columnSelections = []; renderColumns(); }
+  }
+
+  // Initial render
+  renderCurrentView();
+
+  // ===== FAQ accordion =====
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-header').addEventListener('click', (e) => {
+      if (e.target.classList.contains('faq-add-btn')) return;
+      item.classList.toggle('open');
+    });
+  });
+
+  // ===== Activity heatmap — 17 weeks × 7 days (Jan–Apr) =====
+  const grid = document.getElementById('activityGrid');
+  function seededRand(seed) { let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+  for (let week = 0; week < 17; week++) {
+    for (let day = 0; day < 7; day++) {
+      const cell = document.createElement('div');
+      const r = seededRand(week * 7 + day + 42);
+      const boost = week / 17;
+      let level = 0;
+      if (r < 0.18 + boost * 0.25) level = 1;
+      if (r < 0.10 + boost * 0.18) level = 2;
+      if (r < 0.05 + boost * 0.12) level = 3;
+      if (r < 0.02 + boost * 0.07) level = 4;
+      if (day >= 5 && level > 0) level = Math.max(0, level - 1);
+      cell.className = 'activity-cell' + (level > 0 ? ' l' + level : '');
+      grid.appendChild(cell);
+    }
+  }
+</script>
+
+</body>
+</html>
