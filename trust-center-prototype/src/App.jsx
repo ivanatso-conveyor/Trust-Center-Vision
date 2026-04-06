@@ -1237,7 +1237,7 @@ const FILE_SYSTEM = [
   { type: 'file', name: 'Bug Bounty Program Overview', fileType: 'pdf', date: 'Feb 2026', locked: false },
 ];
 
-const UPDATES = [
+const UPDATES_ARCLINE = [
   { type: 'new', date: 'March 28, 2026', title: 'New SOC 2 Type II Report Added',
     body: 'Our latest SOC 2 Type II audit report covering the period July 2025 – January 2026 is now available for download. This report was conducted by Deloitte and covers all five trust service criteria.\n\nKey highlights include zero critical findings, improved controls around data encryption at rest, and expanded coverage of our incident response procedures. The report is available in the Documents section for immediate download.' },
   { type: 'updated', date: 'March 22, 2026', title: 'Security Whitepaper Refreshed',
@@ -1250,38 +1250,221 @@ const UPDATES = [
     body: 'The 2024 encryption whitepaper has been replaced by the updated Security Whitepaper which now includes comprehensive encryption details.\n\nAll encryption-related content from the legacy document has been incorporated into sections 4 and 5 of the new Security Whitepaper. If you previously referenced the old document in compliance reviews, please update your references accordingly.' },
 ];
 
-const SEARCH_DATA = {
-  sections: [
-    { title: 'Documents & Knowledge Base', desc: 'Browse documents and security categories' },
-    { title: 'Trusted By', desc: 'Companies that trust Arcline' },
-    { title: 'Announcements', desc: 'Latest trust center announcements' },
-    { title: 'Video Resources', desc: 'Security and compliance video content' },
-  ],
-  docs: [
-    { name: 'ISO 27001 Certificate', type: 'cert' },
-    { name: 'SOC 2 Type II Report', type: 'pdf' },
-    { name: 'Security Whitepaper', type: 'pdf' },
-    { name: 'Data Processing Agreement', type: 'pdf' },
-    { name: 'Vendor Risk Assessment', type: 'xlsx' },
-    { name: 'Pentest Executive Summary', type: 'docx' },
-    { name: 'Business Continuity Plan', type: 'pdf' },
-    { name: 'Incident Response Policy', type: 'docx' },
-    { name: 'Sub-processor List', type: 'xlsx' },
-    { name: 'Information Security Policy', type: 'pdf' },
-    { name: 'CSA CAIQ v4', type: 'xlsx' },
-    { name: 'Privacy Policy', type: 'pdf' },
-  ]
-};
+const SEARCH_DOCS_ARCLINE = [
+  { name: 'ISO 27001 Certificate', type: 'cert' },
+  { name: 'SOC 2 Type II Report', type: 'pdf' },
+  { name: 'Security Whitepaper', type: 'pdf' },
+  { name: 'Data Processing Agreement', type: 'pdf' },
+  { name: 'Vendor Risk Assessment', type: 'xlsx' },
+  { name: 'Pentest Executive Summary', type: 'docx' },
+  { name: 'Business Continuity Plan', type: 'pdf' },
+  { name: 'Incident Response Policy', type: 'docx' },
+  { name: 'Sub-processor List', type: 'xlsx' },
+  { name: 'Information Security Policy', type: 'pdf' },
+  { name: 'CSA CAIQ v4', type: 'xlsx' },
+  { name: 'Privacy Policy', type: 'pdf' },
+];
+
+const SEARCH_DOCS_MEDIACORE = [
+  { name: 'SOC 2 Type II (Broadcast Platform)', type: 'pdf' },
+  { name: 'ISO 27001 Certificate', type: 'cert' },
+  { name: 'Media Platform Security Overview', type: 'pdf' },
+  { name: 'Broadcast Partner DPA', type: 'pdf' },
+  { name: 'DRM & Content Protection Statement', type: 'pdf' },
+  { name: 'CDN & Edge Security Architecture', type: 'pdf' },
+  { name: 'Live-Streaming Incident Runbook', type: 'docx' },
+  { name: 'Ad-Tech Subprocessor Register', type: 'xlsx' },
+  { name: 'Privacy Policy (Viewers & Partners)', type: 'pdf' },
+  { name: 'WCAG & Accessibility Attestation', type: 'pdf' },
+  { name: 'CSA CAIQ v4 (Media)', type: 'xlsx' },
+  { name: 'Penetration Test Summary — OTT APIs', type: 'docx' },
+];
+
+function getSearchData(tcName, tcId) {
+  return {
+    sections: [
+      { title: 'Documents & Knowledge Base', desc: 'Browse documents and security categories' },
+      { title: 'Trusted By', desc: `Companies that trust ${tcName}` },
+      { title: 'Announcements', desc: 'Latest trust center announcements' },
+      { title: 'Video Resources', desc: 'Security and compliance video content' },
+    ],
+    docs: tcId === 'mediacore' ? SEARCH_DOCS_MEDIACORE : SEARCH_DOCS_ARCLINE,
+  };
+}
+
+const PRODUCT_LINES_MEDIACORE = [
+  'Live Linear', 'VOD & Catch-up', 'Server-Side Ad Insertion',
+  'Analytics & Measurement', 'DRM & Licensing', 'Partner APIs',
+];
+
+const UPDATES_MEDIACORE = [
+  { type: 'new', date: 'April 2, 2026', title: 'EU Data Residency Pack for Broadcast Partners',
+    body: 'We published a consolidated package covering Frankfurt and Dublin regions for linear and VOD workloads, including updated SCC references and a refreshed subprocessor map for EU ad decisioning.\n\nThe pack replaces the January draft and aligns with our new 48-hour breach notification commitment for premium tier customers. Download the zip from Compliance Reports → Legal addendum folder.' },
+  { type: 'updated', date: 'March 26, 2026', title: 'Media Platform Security Overview v4',
+    body: 'The overview now documents our multi-CDN strategy, tokenized playback URLs, and key rotation for studio-grade DRM. We added a section on synthetic monitoring for SSAI stitch points.\n\nPartner security teams asked for clearer diagrams—see the new Global CDN & Origin Architecture PDF in the root of All Content.' },
+  { type: 'new', date: 'March 18, 2026', title: 'New Subprocessor: Mux (Video Infrastructure)',
+    body: 'Mux is listed for transcoding and quality-of-experience metrics. Customer content passes through encrypted pipelines; Mux does not retain full-resolution mezzanine files after processing.\n\nTheir SOC 2 Type II and pen-test summary are linked from the Ad-Tech Subprocessor Register spreadsheet.' },
+  { type: 'updated', date: 'March 9, 2026', title: 'Live-Streaming Incident Runbook v2.1',
+    body: 'Runbook updates cover coordinated comms with distribution partners during playback incidents, including status page templates and RPO targets for origin failover.\n\nEscalation paths now include our 24/7 Broadcast NOC bridge for tier-1 events.' },
+  { type: 'removed', date: 'March 1, 2026', title: 'Retired: Legacy Flash Delivery FAQ',
+    body: 'All Flash-era delivery guidance has been removed. Use the DRM & Content Protection Statement and the CDN & Edge Security Architecture documents instead.\n\nIf your questionnaire still cites the old FAQ ID, replace it with section 3 of the Media Platform Security Overview.' },
+];
+
+const TOP_DOCS_MEDIACORE = [
+  { name: 'SOC 2 Type II (Broadcast Platform)', views: 512 },
+  { name: 'Media Platform Security Overview', views: 341 },
+  { name: 'Ad-Tech Subprocessor Register', views: 276 },
+  { name: 'Penetration Test Summary — OTT APIs', views: 214 },
+  { name: 'Broadcast Partner DPA', views: 189 },
+  { name: 'DRM & Content Protection Statement', views: 167 },
+  { name: 'Live-Streaming Incident Runbook', views: 143 },
+  { name: 'CDN & Edge Security Architecture', views: 121 },
+];
+
+const PERF_METRICS_ARCLINE = [
+  { label: 'Response Time', value: '1.8 hr', sub: 'Average response time' },
+  { label: 'Content Accuracy', value: '96%', sub: 'AI answer accuracy' },
+  { label: 'Questions Answered', value: '2,847', sub: 'Total questions answered' },
+  { label: 'Visitor Engagement', value: '1,240', sub: 'Unique visitors (90 days)' },
+  { label: 'Content Freshness', value: '3 days', sub: 'Since last update' },
+  { label: 'Update Frequency', value: '8', sub: 'Updates this month' },
+];
+
+const PERF_METRICS_MEDIACORE = [
+  { label: 'Response Time', value: '2.2 hr', sub: 'Average response time' },
+  { label: 'Content Accuracy', value: '94%', sub: 'AI answer accuracy' },
+  { label: 'Questions Answered', value: '1,903', sub: 'Total questions answered' },
+  { label: 'Visitor Engagement', value: '886', sub: 'Unique visitors (90 days)' },
+  { label: 'Content Freshness', value: '5 days', sub: 'Since last update' },
+  { label: 'Update Frequency', value: '6', sub: 'Updates this month' },
+];
+
+const TRUSTED_BY_MEDIACORE = [
+  { name: 'Netflix', logo: 'https://cdn.simpleicons.org/netflix/E50914' },
+  { name: 'Spotify', logo: 'https://cdn.simpleicons.org/spotify/1DB954' },
+  { name: 'Twitch', logo: 'https://cdn.simpleicons.org/twitch/9146FF' },
+  { name: 'Hulu', logo: 'https://cdn.simpleicons.org/hulu/1CE783' },
+  { name: 'Dailymotion', logo: 'https://cdn.simpleicons.org/dailymotion/0066DC' },
+  { name: 'SoundCloud', logo: 'https://cdn.simpleicons.org/soundcloud/FF5500' },
+  { name: 'Deezer', logo: 'https://cdn.simpleicons.org/deezer/FEAA2D' },
+  { name: 'Vimeo', logo: 'https://cdn.simpleicons.org/vimeo/1AB7EA' },
+];
+
+const TRUSTED_BY_ARCLINE = [
+  { name: 'Salesforce', logo: 'https://cdn.simpleicons.org/salesforce/00A1E0' },
+  { name: 'Workday', logo: 'https://cdn.simpleicons.org/workday/0056D2' },
+  { name: 'ServiceNow', logo: 'https://cdn.simpleicons.org/servicenow/62D84E' },
+  { name: 'SAP', logo: 'https://cdn.simpleicons.org/sap/0FAAFF' },
+  { name: 'Oracle', logo: 'https://cdn.simpleicons.org/oracle/F80000' },
+  { name: 'Cisco', logo: 'https://cdn.simpleicons.org/cisco/1BA0D7' },
+  { name: 'Adobe', logo: 'https://cdn.simpleicons.org/adobe/FF0000' },
+  { name: 'Autodesk', logo: 'https://cdn.simpleicons.org/autodesk/0696D7' },
+];
+
+const SUBPROCESSORS_MEDIACORE = [
+  { name: 'Fastly', usage: 'Edge compute and live linear caching at the network edge', location: 'Global', logo: 'https://cdn.simpleicons.org/fastly/FF282D' },
+  { name: 'Akamai', usage: 'Media delivery, token auth, and origin shielding', location: 'Global', logo: 'https://cdn.simpleicons.org/akamai/0096D6' },
+  { name: 'Cloudflare', usage: 'DNS, WAF, and bot management in front of public APIs', location: 'Global', logo: 'https://cdn.simpleicons.org/cloudflare/F38020' },
+  { name: 'Amazon Web Services', usage: 'Origin storage, transcoding queues, and analytics lakes', location: 'US, EU, APAC', logo: 'https://cdn.simpleicons.org/amazonaws/232F3E' },
+];
+
+const SUBPROCESSORS_ARCLINE = [
+  { name: 'Amazon Web Services', usage: 'Production workloads, secrets management, and encrypted object storage', location: 'US-East, EU-West', logo: 'https://cdn.simpleicons.org/amazonaws/232F3E' },
+  { name: 'Okta', usage: 'Workforce and customer identity, SSO, and MFA for the platform', location: 'US, EU', logo: 'https://cdn.simpleicons.org/okta/007DC1' },
+  { name: 'PagerDuty', usage: 'Incident paging, on-call schedules, and status communications', location: 'US', logo: 'https://cdn.simpleicons.org/pagerduty/06AC38' },
+  { name: 'Twilio', usage: 'Transactional notifications, verification, and support channels', location: 'US, EU', logo: 'https://cdn.simpleicons.org/twilio/F22F46' },
+];
+
+const CERTS_MEDIACORE = [
+  { src: '/badges/gdpr.png', label: 'GDPR' },
+  { src: '/badges/iso-27001.png', label: 'ISO 27001' },
+  { src: '/badges/iso-27701.svg', label: 'ISO 27701' },
+  { src: '/badges/nist.png', label: 'NIST CSF' },
+  { src: '/badges/cmmc.png', label: 'CMMC L2' },
+  { src: '/badges/hds.png', label: 'HDS' },
+];
+
+const CERTS_ARCLINE = [
+  { src: '/badges/iso-27001.png', label: 'ISO 27001' },
+  { src: '/badges/nist.png', label: 'NIST 800-53' },
+  { src: '/badges/gdpr.png', label: 'GDPR' },
+  { src: '/badges/iso-27701.svg', label: 'ISO 27701' },
+  { src: '/badges/cmmc.png', label: 'CMMC' },
+  { src: '/badges/acn.png', label: 'CSA STAR' },
+];
+
+/** MediaCore-specific file tree (same shape as FILE_SYSTEM; different labels for key assets). */
+function getFileSystemForTc(tcId) {
+  if (tcId !== 'mediacore') return FILE_SYSTEM;
+  const tree = structuredClone(FILE_SYSTEM);
+  const compliance = tree.find((i) => i.type === 'folder' && i.name === 'Compliance Reports');
+  if (compliance?.children) {
+    const soc2 = compliance.children.find((c) => c.name === 'SOC 2 Type II Report');
+    if (soc2) soc2.name = 'SOC 2 Type II (Broadcast Platform)';
+    const hipaa = compliance.children.find((c) => c.name === 'HIPAA Compliance Letter');
+    if (hipaa) hipaa.name = 'MPAA / TPN Alignment Summary';
+  }
+  const policies = tree.find((i) => i.type === 'folder' && i.name === 'Policies');
+  if (policies?.children) {
+    const ir = policies.children.find((c) => c.name === 'Incident Response Policy');
+    if (ir) ir.name = 'Live-Streaming Incident Runbook';
+    const bcm = policies.children.find((c) => c.name === 'Business Continuity Plan');
+    if (bcm) bcm.name = 'Broadcast Continuity & Origin Failover Plan';
+  }
+  const legal = tree.find((i) => i.type === 'folder' && i.name === 'Legal');
+  if (legal?.children) {
+    const dpa = legal.children.find((c) => c.name === 'Data Processing Agreement');
+    if (dpa) dpa.name = 'Broadcast Partner DPA';
+    const sub = legal.children.find((c) => c.name === 'Sub-processor List');
+    if (sub) sub.name = 'Ad-Tech Subprocessor Register';
+  }
+  const pentest = tree.find((i) => i.type === 'folder' && i.name === 'Penetration Testing');
+  if (pentest) pentest.name = 'AppSec & API Testing';
+  if (pentest?.children) {
+    const ex = pentest.children.find((c) => c.name === 'Pentest Executive Summary');
+    if (ex) ex.name = 'Pentest Executive Summary — OTT APIs';
+  }
+  const rootFile = (n) => tree.find((i) => i.type === 'file' && i.name === n);
+  const w = rootFile('Security Whitepaper');
+  if (w) w.name = 'Media Platform Security Overview';
+  const arch = rootFile('Architecture Diagram');
+  if (arch) arch.name = 'Global CDN & Origin Architecture';
+  const enc = rootFile('Encryption at Rest Overview');
+  if (enc) enc.name = 'DRM & Content Protection Statement';
+  const net = rootFile('Network Security Overview');
+  if (net) net.name = 'CDN & Edge Security Architecture';
+  return tree;
+}
+
+function getFaqsForTc(tc) {
+  const n = tc.name;
+  if (tc.id === 'mediacore') {
+    return [
+      { category: 'Access Management', q: `How does ${n} manage user access controls?`, a: 'Studio, syndication, and ad-ops roles are enforced through SSO with short-lived API tokens. Emergency access expires in four hours and is reviewed in weekly access reports.' },
+      { category: 'Application Security', q: 'How do you secure playback and partner APIs?', a: 'We run a secure SDLC with mandatory reviews, SAST in CI, and regular third-party tests focused on token issuance, DRM hooks, and SSAI endpoints.' },
+      { category: 'Data Privacy', q: 'Where is viewer and partner data processed?', a: 'Metadata and analytics are processed in AWS and GCP regions disclosed in our Broadcast Partner DPA. EU linear traffic can be pinned to Frankfurt or Dublin upon contract.' },
+      { category: 'Infrastructure', q: 'How is the delivery stack protected?', a: 'Multi-CDN egress, mutual TLS between origins and edges, AES-256 at rest, and continuous config drift checks across Terraform-managed infrastructure.' },
+      { category: 'Incident Response', q: 'What happens during a streaming or API incident?', a: 'Our Live-Streaming Incident Runbook defines NOC bridges, partner comms templates, and customer notification targets—typically within 48 hours for confirmed data impact on the premium tier.' },
+    ];
+  }
+  return [
+    { category: 'Access Management', q: `How does ${n} manage user access controls?`, a: 'We implement role-based access control (RBAC) with least-privilege principles. All access is reviewed quarterly and requires manager approval.' },
+    { category: 'Application Security', q: 'What is your secure development lifecycle?', a: 'We follow OWASP guidelines with mandatory code reviews, SAST/DAST scanning, and annual penetration testing by independent third parties.' },
+    { category: 'Data Privacy', q: 'Where is customer data stored and processed?', a: 'Customer data is stored in AWS us-east-1 and eu-west-1 regions. Data processing locations are documented in our DPA.' },
+    { category: 'Infrastructure', q: 'How is your infrastructure secured?', a: 'We use AWS with VPC isolation, encrypted storage (AES-256), and WAF protection. All infrastructure is managed via Terraform with drift detection.' },
+    { category: 'Incident Response', q: 'What is your incident response process?', a: 'We maintain a documented IR plan with 24/7 on-call rotation. Customers are notified within 72 hours of confirmed breaches per GDPR requirements.' },
+  ];
+}
 
 function getFileCount(item) {
   if (item.type === 'file') return 1;
   return item.children.reduce((sum, c) => sum + getFileCount(c), 0);
 }
 
-function getItemsAtPath(path) {
-  let items = FILE_SYSTEM;
+function getItemsAtPath(root, path) {
+  let items = root;
   for (const seg of path) {
-    const folder = items.find(i => i.type === 'folder' && i.name === seg);
+    const folder = items.find((i) => i.type === 'folder' && i.name === seg);
     if (folder) items = folder.children;
     else return [];
   }
@@ -1295,6 +1478,10 @@ function TrustCenterHome() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchResultsOpen, setSearchResultsOpen] = useState(false);
+  const productLineList = useMemo(
+    () => (tc.id === "mediacore" ? PRODUCT_LINES_MEDIACORE : PRODUCT_LINES),
+    [tc.id],
+  );
   const [productChecks, setProductChecks] = useState(() => PRODUCT_LINES.map(() => true));
   const [productDropdownOpen, setProductDropdownOpen] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState(0);
@@ -1308,24 +1495,37 @@ function TrustCenterHome() {
   const searchRef = useRef(null);
   const columnsRef = useRef(null);
 
-  const faqs = [
-    { category: "Access Management", q: `How does ${tc.name} manage user access controls?`, a: "We implement role-based access control (RBAC) with least-privilege principles. All access is reviewed quarterly and requires manager approval." },
-    { category: "Application Security", q: "What is your secure development lifecycle?", a: "We follow OWASP guidelines with mandatory code reviews, SAST/DAST scanning, and annual penetration testing by independent third parties." },
-    { category: "Data Privacy", q: "Where is customer data stored and processed?", a: "Customer data is stored in AWS us-east-1 and eu-west-1 regions. Data processing locations are documented in our DPA." },
-    { category: "Infrastructure", q: "How is your infrastructure secured?", a: "We use AWS with VPC isolation, encrypted storage (AES-256), and WAF protection. All infrastructure is managed via Terraform with drift detection." },
-    { category: "Incident Response", q: "What is your incident response process?", a: "We maintain a documented IR plan with 24/7 on-call rotation. Customers are notified within 72 hours of confirmed breaches per GDPR requirements." },
-  ];
+  const fileRoot = useMemo(() => getFileSystemForTc(tc.id), [tc.id]);
+  const updates = tc.id === "mediacore" ? UPDATES_MEDIACORE : UPDATES_ARCLINE;
+  const searchData = useMemo(() => getSearchData(tc.name, tc.id), [tc.name, tc.id]);
+  const faqs = useMemo(() => getFaqsForTc(tc), [tc.id, tc.name]);
+  const topDocs = useMemo(
+    () =>
+      tc.id === "mediacore"
+        ? TOP_DOCS_MEDIACORE
+        : [
+            { name: "SOC 2 Type II Report (2026)", views: 487 },
+            { name: "Security Whitepaper", views: 312 },
+            { name: "Sub-processor List", views: 289 },
+            { name: "Penetration Test Summary", views: 201 },
+            { name: "Data Processing Agreement", views: 178 },
+            { name: "Vendor Risk Assessment", views: 156 },
+            { name: "Business Continuity Plan", views: 134 },
+            { name: "Incident Response Policy", views: 112 },
+          ],
+    [tc.id],
+  );
+  const trustedByCompanies = tc.id === "mediacore" ? TRUSTED_BY_MEDIACORE : TRUSTED_BY_ARCLINE;
+  const subprocessors = tc.id === "mediacore" ? SUBPROCESSORS_MEDIACORE : SUBPROCESSORS_ARCLINE;
+  const certGrid = tc.id === "mediacore" ? CERTS_MEDIACORE : CERTS_ARCLINE;
 
-  const topDocs = [
-    { name: "SOC 2 Type II Report (2026)", views: 487 },
-    { name: "Security Whitepaper", views: 312 },
-    { name: "Sub-processor List", views: 289 },
-    { name: "Penetration Test Summary", views: 201 },
-    { name: "Data Processing Agreement", views: 178 },
-    { name: "Vendor Risk Assessment", views: 156 },
-    { name: "Business Continuity Plan", views: 134 },
-    { name: "Incident Response Policy", views: 112 },
-  ];
+  useEffect(() => {
+    setCurrentPath([]);
+    setColumnSelections([]);
+    setExpandedFaq(0);
+    setSelectedUpdate(null);
+    setProductChecks((tc.id === "mediacore" ? PRODUCT_LINES_MEDIACORE : PRODUCT_LINES).map(() => true));
+  }, [tc.id]);
 
   // Product filter label
   const allChecked = productChecks.every(Boolean);
@@ -1369,15 +1569,15 @@ function TrustCenterHome() {
 
   // Search filtering
   const filteredSections = useMemo(() => {
-    if (!searchQuery) return SEARCH_DATA.sections;
+    if (!searchQuery) return searchData.sections;
     const q = searchQuery.toLowerCase();
-    return SEARCH_DATA.sections.filter(s => s.title.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q));
-  }, [searchQuery]);
+    return searchData.sections.filter(s => s.title.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q));
+  }, [searchQuery, searchData.sections]);
   const filteredDocs = useMemo(() => {
-    if (!searchQuery) return SEARCH_DATA.docs;
+    if (!searchQuery) return searchData.docs;
     const q = searchQuery.toLowerCase();
-    return SEARCH_DATA.docs.filter(d => d.name.toLowerCase().includes(q));
-  }, [searchQuery]);
+    return searchData.docs.filter(d => d.name.toLowerCase().includes(q));
+  }, [searchQuery, searchData.docs]);
 
   // Heatmap data (17 weeks x 7 days)
   const heatmapData = useMemo(() => {
@@ -1385,7 +1585,7 @@ function TrustCenterHome() {
     const cells = [];
     for (let week = 0; week < 17; week++) {
       for (let day = 0; day < 7; day++) {
-        const r = seededRand(week * 7 + day + 42);
+        const r = seededRand(week * 7 + day + 42 + (tc.id === "mediacore" ? 131 : 0));
         const boost = week / 17;
         let level = 0;
         if (r < 0.18 + boost * 0.25) level = 1;
@@ -1397,10 +1597,10 @@ function TrustCenterHome() {
       }
     }
     return cells;
-  }, []);
+  }, [tc.id]);
 
   // File browser helpers
-  const currentItems = useMemo(() => getItemsAtPath(currentPath), [currentPath]);
+  const currentItems = useMemo(() => getItemsAtPath(fileRoot, currentPath), [fileRoot, currentPath]);
   const openFolder = (name) => { setCurrentPath(prev => [...prev, name]); };
   const navigateTo = (idx) => { if (idx < 0) setCurrentPath([]); else setCurrentPath(prev => prev.slice(0, idx + 1)); };
 
@@ -1412,8 +1612,8 @@ function TrustCenterHome() {
 
   // Build columns data
   const columnsData = useMemo(() => {
-    const cols = [FILE_SYSTEM];
-    let items = FILE_SYSTEM;
+    const cols = [fileRoot];
+    let items = fileRoot;
     for (let d = 0; d < columnSelections.length; d++) {
       const selIdx = columnSelections[d];
       if (selIdx == null || !items[selIdx] || items[selIdx].type !== 'folder') break;
@@ -1421,23 +1621,20 @@ function TrustCenterHome() {
       cols.push(items);
     }
     return cols;
-  }, [columnSelections]);
+  }, [columnSelections, fileRoot]);
 
-  // Performance cards with pixel art icons
-  const perfCards = [
-    { label: "Response Time", value: "1.8 hr", sub: "Average response time",
-      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="2" y="8" width="2" height="2" fill="var(--color-brand-400)"/><rect x="4" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="6" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="8" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="10" y="8" width="2" height="2" fill="var(--color-brand-400)"/><rect x="12" y="10" width="2" height="2" fill="var(--color-brand-400)"/><rect x="6" y="2" width="2" height="2" fill="var(--color-brand-300)"/><rect x="4" y="10" width="2" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="2" y="12" width="12" height="2" fill="var(--color-brand-400)" opacity="0.3"/></svg> },
-    { label: "Content Accuracy", value: "96%", sub: "AI answer accuracy",
-      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="4" y="2" width="8" height="2" fill="var(--color-brand-400)"/><rect x="2" y="4" width="2" height="8" fill="var(--color-brand-400)"/><rect x="12" y="4" width="2" height="8" fill="var(--color-brand-400)"/><rect x="4" y="12" width="8" height="2" fill="var(--color-brand-400)"/><rect x="6" y="6" width="4" height="4" fill="var(--color-brand-300)"/><rect x="7" y="7" width="2" height="2" fill="var(--color-brand-400)"/></svg> },
-    { label: "Questions Answered", value: "2,847", sub: "Total questions answered",
-      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="6" y="2" width="4" height="2" fill="var(--color-brand-400)"/><rect x="4" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="10" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="6" y="6" width="4" height="2" fill="var(--color-brand-400)"/><rect x="6" y="8" width="4" height="2" fill="var(--color-brand-300)"/><rect x="4" y="10" width="2" height="4" fill="var(--color-brand-400)"/><rect x="10" y="10" width="2" height="4" fill="var(--color-brand-400)"/><rect x="6" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.5"/></svg> },
-    { label: "Visitor Engagement", value: "1,240", sub: "Unique visitors (90 days)",
-      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="6" y="2" width="2" height="2" fill="var(--color-brand-300)"/><rect x="4" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="8" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="2" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="10" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="4" y="8" width="2" height="4" fill="var(--color-brand-400)"/><rect x="8" y="8" width="2" height="4" fill="var(--color-brand-400)"/><rect x="2" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="8" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.5"/></svg> },
-    { label: "Content Freshness", value: "3 days", sub: "Since last update",
-      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="4" y="2" width="8" height="2" fill="var(--color-brand-400)"/><rect x="2" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="12" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="4" y="6" width="2" height="2" fill="var(--color-brand-300)"/><rect x="10" y="6" width="2" height="2" fill="var(--color-brand-300)"/><rect x="6" y="8" width="4" height="2" fill="var(--color-brand-400)"/><rect x="4" y="10" width="8" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="6" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.3"/></svg> },
-    { label: "Update Frequency", value: "8", sub: "Updates this month",
-      icon: <svg className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="2" y="12" width="2" height="2" fill="var(--color-brand-400)"/><rect x="2" y="10" width="2" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="5" y="8" width="2" height="6" fill="var(--color-brand-400)"/><rect x="5" y="6" width="2" height="2" fill="var(--color-brand-300)"/><rect x="8" y="6" width="2" height="8" fill="var(--color-brand-400)"/><rect x="8" y="4" width="2" height="2" fill="var(--color-brand-300)"/><rect x="11" y="2" width="2" height="12" fill="var(--color-brand-400)"/><rect x="11" y="0" width="2" height="2" fill="var(--color-brand-300)"/></svg> },
-  ];
+  const perfCards = useMemo(() => {
+    const metrics = tc.id === "mediacore" ? PERF_METRICS_MEDIACORE : PERF_METRICS_ARCLINE;
+    const icons = [
+      <svg key="p0" className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="2" y="8" width="2" height="2" fill="var(--color-brand-400)"/><rect x="4" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="6" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="8" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="10" y="8" width="2" height="2" fill="var(--color-brand-400)"/><rect x="12" y="10" width="2" height="2" fill="var(--color-brand-400)"/><rect x="6" y="2" width="2" height="2" fill="var(--color-brand-300)"/><rect x="4" y="10" width="2" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="2" y="12" width="12" height="2" fill="var(--color-brand-400)" opacity="0.3"/></svg>,
+      <svg key="p1" className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="4" y="2" width="8" height="2" fill="var(--color-brand-400)"/><rect x="2" y="4" width="2" height="8" fill="var(--color-brand-400)"/><rect x="12" y="4" width="2" height="8" fill="var(--color-brand-400)"/><rect x="4" y="12" width="8" height="2" fill="var(--color-brand-400)"/><rect x="6" y="6" width="4" height="4" fill="var(--color-brand-300)"/><rect x="7" y="7" width="2" height="2" fill="var(--color-brand-400)"/></svg>,
+      <svg key="p2" className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="6" y="2" width="4" height="2" fill="var(--color-brand-400)"/><rect x="4" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="10" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="6" y="6" width="4" height="2" fill="var(--color-brand-400)"/><rect x="6" y="8" width="4" height="2" fill="var(--color-brand-300)"/><rect x="4" y="10" width="2" height="4" fill="var(--color-brand-400)"/><rect x="10" y="10" width="2" height="4" fill="var(--color-brand-400)"/><rect x="6" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.5"/></svg>,
+      <svg key="p3" className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="6" y="2" width="2" height="2" fill="var(--color-brand-300)"/><rect x="4" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="8" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="2" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="10" y="6" width="2" height="2" fill="var(--color-brand-400)"/><rect x="4" y="8" width="2" height="4" fill="var(--color-brand-400)"/><rect x="8" y="8" width="2" height="4" fill="var(--color-brand-400)"/><rect x="2" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="8" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.5"/></svg>,
+      <svg key="p4" className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="4" y="2" width="8" height="2" fill="var(--color-brand-400)"/><rect x="2" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="12" y="4" width="2" height="2" fill="var(--color-brand-400)"/><rect x="4" y="6" width="2" height="2" fill="var(--color-brand-300)"/><rect x="10" y="6" width="2" height="2" fill="var(--color-brand-300)"/><rect x="6" y="8" width="4" height="2" fill="var(--color-brand-400)"/><rect x="4" y="10" width="8" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="6" y="12" width="4" height="2" fill="var(--color-brand-400)" opacity="0.3"/></svg>,
+      <svg key="p5" className="w-11 h-11" viewBox="0 0 16 16" fill="none" style={{ imageRendering: "pixelated" }}><rect x="2" y="12" width="2" height="2" fill="var(--color-brand-400)"/><rect x="2" y="10" width="2" height="2" fill="var(--color-brand-400)" opacity="0.5"/><rect x="5" y="8" width="2" height="6" fill="var(--color-brand-400)"/><rect x="5" y="6" width="2" height="2" fill="var(--color-brand-300)"/><rect x="8" y="6" width="2" height="8" fill="var(--color-brand-400)"/><rect x="8" y="4" width="2" height="2" fill="var(--color-brand-300)"/><rect x="11" y="2" width="2" height="12" fill="var(--color-brand-400)"/><rect x="11" y="0" width="2" height="2" fill="var(--color-brand-300)"/></svg>,
+    ];
+    return metrics.map((m, i) => ({ ...m, icon: icons[i] }));
+  }, [tc.id]);
 
   const heatLevelClass = (level) => {
     if (level === 0) return "bg-bg-elevated";
@@ -1489,7 +1686,7 @@ function TrustCenterHome() {
                 <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}
                   className="absolute top-full left-0 mt-2 w-60 bg-bg-surface border border-border-default rounded-xl p-4 shadow-[0_12px_40px_rgba(0,0,0,0.4)] z-[45]">
                   <div className="text-[10px] font-bold uppercase tracking-[1.2px] text-brand-400 mb-3">Filter by Product</div>
-                  {PRODUCT_LINES.map((product, idx) => (
+                  {productLineList.map((product, idx) => (
                     <button key={product} onClick={() => setProductChecks(prev => { const next = [...prev]; next[idx] = !next[idx]; return next; })}
                       className="flex items-center gap-2.5 py-1.5 w-full text-left text-[13px] font-medium text-text-primary hover:text-brand-400 transition-colors cursor-pointer">
                       <div className={`w-[18px] h-[18px] rounded flex items-center justify-center shrink-0 border-2 transition-all ${productChecks[idx] ? "bg-brand-400 border-brand-400" : "border-border-bright"}`}>
@@ -1579,20 +1776,20 @@ function TrustCenterHome() {
                     <h2 className="text-lg font-bold text-text-primary">{tc.name} Trust Center</h2>
                   </div>
                   <p className="text-[13px] text-text-secondary leading-[1.7] mb-5">
-                    Everything you need to complete your security review is here. Browse documents, certifications, and compliance details with confidence. Our Trust Center is regularly updated to reflect the latest audit results, and subprocessor disclosures. Reach out at <a href="#" className="text-brand-400 no-underline">trust@{tc.name.toLowerCase()}.com</a>.
+                    {tc.trustHeroBody} Reach out at <a href="#" className="text-brand-400 no-underline">{tc.contactEmail}</a>.
                   </p>
                   <div className="flex gap-2.5 flex-wrap">
                     <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary">
-                      <FileText className="w-3.5 h-3.5 text-brand-400" /><span className="text-brand-400 font-bold">28</span> Documents
+                      <FileText className="w-3.5 h-3.5 text-brand-400" /><span className="text-brand-400 font-bold">{tc.stats.docs}</span> Documents
                     </div>
                     <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary">
-                      <BookOpen className="w-3.5 h-3.5 text-brand-400" /><span className="text-brand-400 font-bold">57</span> FAQs
+                      <BookOpen className="w-3.5 h-3.5 text-brand-400" /><span className="text-brand-400 font-bold">{tc.stats.faqs}</span> FAQs
                     </div>
                     <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary">
-                      <Shield className="w-3.5 h-3.5 text-brand-400" /><span className="text-brand-400 font-bold">6</span> Certifications
+                      <Shield className="w-3.5 h-3.5 text-brand-400" /><span className="text-brand-400 font-bold">{tc.stats.certs}</span> Certifications
                     </div>
                     <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-[10px] bg-bg-elevated border border-border-default text-xs font-medium text-text-secondary">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-400" /> Active: 8 minutes ago
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-400" /> {tc.lastActiveLabel}
                     </div>
                   </div>
                 </div>
@@ -1616,11 +1813,11 @@ function TrustCenterHome() {
               {/* Activity Heatmap */}
               <div className="bg-bg-surface border border-border-default rounded-[14px] p-[22px]">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm font-semibold text-text-primary">Trust Center Activity</span>
+                  <span className="text-sm font-semibold text-text-primary">{tc.activityCardTitle}</span>
                   <span className="text-xs font-medium text-brand-400 cursor-pointer">View All</span>
                 </div>
                 <div className="flex justify-between items-center mb-2.5">
-                  <p className="text-xs text-text-secondary">New documents since your last visit: <strong className="text-brand-400">3</strong></p>
+                  <p className="text-xs text-text-secondary">{tc.activityMetricLabel}: <strong className="text-brand-400">{tc.activityNewDocs}</strong></p>
                   <div className="flex items-center gap-1 shrink-0">
                     <span className="text-[9px] text-text-muted">Less</span>
                     {[0, 1, 2, 3, 4].map(l => (
@@ -1637,7 +1834,7 @@ function TrustCenterHome() {
                   </div>
                 </div>
                 <div className="flex mt-2">
-                  {["Jan", "Feb", "Mar", "Apr"].map(m => (
+                  {tc.activityMonths.map(m => (
                     <span key={m} className="flex-1 text-left text-[9px] text-text-muted">{m}</span>
                   ))}
                 </div>
@@ -1649,17 +1846,8 @@ function TrustCenterHome() {
                   <span className="text-sm font-semibold text-text-primary">Certifications</span>
                   <span className="text-xs font-medium text-brand-400 cursor-pointer">View All</span>
                 </div>
-                <div className="grid grid-cols-4 gap-2.5">
-                  {[
-                    { src: "/badges/iso-27001.png", label: "ISO 27001" },
-                    { src: "/badges/iso-27701.svg", label: "ISO 27701" },
-                    { src: "/badges/gdpr.png", label: "GDPR" },
-                    { src: "/badges/nist.png", label: "NIST" },
-                    { src: "/badges/acn.png", label: "ACN" },
-                    { src: "/badges/cmmc.png", label: "CMMC" },
-                    { src: "/badges/hds.png", label: "HDS" },
-                    { src: "/badges/itar.png", label: "ITAR" },
-                  ].map(cert => (
+                <div className={`grid gap-2.5 ${certGrid.length <= 6 ? "grid-cols-3" : "grid-cols-4"}`}>
+                  {certGrid.map(cert => (
                     <div key={cert.label} className="aspect-square rounded-[10px] bg-bg-elevated border border-border-default flex flex-col items-center justify-center gap-1.5 p-2 hover:border-border-bright transition-colors">
                       <img src={cert.src} alt={cert.label} className="w-10 h-10 object-contain rounded-lg" />
                       <span className="text-[9px] font-semibold text-text-muted text-center leading-tight">{cert.label}</span>
@@ -1693,16 +1881,7 @@ function TrustCenterHome() {
                   <span className="text-xs font-medium text-brand-400 cursor-pointer">View All</span>
                 </div>
                 <div className="grid grid-cols-4 gap-2.5">
-                  {[
-                    { name: "Atlassian", logo: "https://cdn.simpleicons.org/atlassian/2684FF" },
-                    { name: "Figma", logo: "https://cdn.simpleicons.org/figma/F24E1E" },
-                    { name: "Intercom", logo: "https://cdn.simpleicons.org/intercom/6AFDEF" },
-                    { name: "Notion", logo: "https://cdn.simpleicons.org/notion/FFFFFF" },
-                    { name: "Scratchpad", logo: "https://cdn.simpleicons.org/scratch/4D97FF" },
-                    { name: "Shopify", logo: "https://cdn.simpleicons.org/shopify/95BF47" },
-                    { name: "Stripe", logo: "https://cdn.simpleicons.org/stripe/635BFF" },
-                    { name: "Dropbox", logo: "https://cdn.simpleicons.org/dropbox/0061FF" },
-                  ].map(c => (
+                  {trustedByCompanies.map(c => (
                     <div key={c.name} className="aspect-square rounded-[10px] bg-bg-elevated border border-border-default flex flex-col items-center justify-center gap-2.5 p-2 hover:border-border-bright transition-colors">
                       <img src={c.logo} alt={c.name} className="w-10 h-10 object-contain" />
                       <span className="text-[9px] font-semibold text-text-muted text-center leading-tight">{c.name}</span>
@@ -1710,7 +1889,7 @@ function TrustCenterHome() {
                   ))}
                 </div>
                 <p className="text-[11px] text-text-muted leading-relaxed mt-4">
-                  {tc.name} is trusted by leading companies across SaaS, fintech, and enterprise software. These organizations rely on our security posture and compliance documentation to streamline their vendor reviews and meet their own audit requirements.
+                  <strong className="text-text-secondary">{tc.name}</strong> {tc.trustedByBlurb}
                 </p>
               </div>
               <div className="bg-bg-surface border border-border-default rounded-[14px] p-[22px]">
@@ -1719,12 +1898,7 @@ function TrustCenterHome() {
                   <span className="text-xs font-medium text-brand-400 cursor-pointer">View Table</span>
                 </div>
                 <div className="flex flex-col gap-2">
-                  {[
-                    { name: "Google Cloud", usage: "Cloud infrastructure, compute, storage, and hosting", location: "US-East, EU-West", logo: "https://cdn.simpleicons.org/googlecloud/4285F4" },
-                    { name: "Datadog", usage: "Application monitoring, logging, and observability", location: "US", logo: "https://cdn.simpleicons.org/datadog/632CA6" },
-                    { name: "Snowflake", usage: "Data warehousing and analytics processing", location: "US-East", logo: "https://cdn.simpleicons.org/snowflake/29B5E8" },
-                    { name: "Stripe", usage: "Payment processing and billing management", location: "US, EU", logo: "https://cdn.simpleicons.org/stripe/635BFF" },
-                  ].map(sp => (
+                  {subprocessors.map(sp => (
                     <div key={sp.name} className="flex items-center gap-3 p-3 px-3.5 rounded-[10px] bg-bg-elevated text-[13px]">
                       <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0 overflow-hidden">
                         <img src={sp.logo} alt={sp.name} className="w-[22px] h-[22px] object-contain" />
@@ -1767,7 +1941,7 @@ function TrustCenterHome() {
                   </div>
                 ))}
                 <div className="mt-3.5 pt-3 border-t border-border-default text-[11px] text-text-muted">
-                  Downloads: <strong className="text-brand-400 font-semibold">1,847</strong> &nbsp;&nbsp; Unique: <strong className="text-brand-400 font-semibold">412</strong>
+                  Downloads: <strong className="text-brand-400 font-semibold">{tc.docEngagement.downloads.toLocaleString()}</strong> &nbsp;&nbsp; Unique: <strong className="text-brand-400 font-semibold">{tc.docEngagement.unique.toLocaleString()}</strong>
                 </div>
               </div>
 
@@ -1935,7 +2109,7 @@ function TrustCenterHome() {
         {activeTab === "updates" && (
           <motion.div key="updates" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
             <div className="flex flex-col gap-4">
-              {UPDATES.map((update, i) => (
+              {updates.map((update, i) => (
                 <div key={i} onClick={() => setSelectedUpdate(i)}
                   className="bg-bg-surface border border-border-default rounded-[14px] p-6 cursor-pointer transition-all hover:border-brand-400 hover:shadow-[0_0_0_1px_var(--color-brand-400)]">
                   <div className="flex items-center gap-2.5 mb-2.5">
@@ -1970,16 +2144,16 @@ function TrustCenterHome() {
             </button>
             <div className="flex items-center gap-2.5 mb-4">
               <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[rgba(34,184,207,0.12)] shrink-0">
-                {UPDATES[selectedUpdate].type === "new" && <Plus className="w-[15px] h-[15px] text-brand-400" />}
-                {UPDATES[selectedUpdate].type === "updated" && <Eye className="w-[15px] h-[15px] text-brand-400" />}
-                {UPDATES[selectedUpdate].type === "removed" && <Trash2 className="w-[15px] h-[15px] text-brand-400" />}
+                {updates[selectedUpdate].type === "new" && <Plus className="w-[15px] h-[15px] text-brand-400" />}
+                {updates[selectedUpdate].type === "updated" && <Eye className="w-[15px] h-[15px] text-brand-400" />}
+                {updates[selectedUpdate].type === "removed" && <Trash2 className="w-[15px] h-[15px] text-brand-400" />}
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.5px] text-brand-400">{UPDATES[selectedUpdate].type}</span>
-              <span className="text-[11px] text-text-muted">{UPDATES[selectedUpdate].date}</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.5px] text-brand-400">{updates[selectedUpdate].type}</span>
+              <span className="text-[11px] text-text-muted">{updates[selectedUpdate].date}</span>
             </div>
-            <div className="text-xl font-bold text-text-primary mb-4 pr-10">{UPDATES[selectedUpdate].title}</div>
+            <div className="text-xl font-bold text-text-primary mb-4 pr-10">{updates[selectedUpdate].title}</div>
             <div className="text-sm text-text-secondary leading-[1.8]">
-              {UPDATES[selectedUpdate].body.split("\n\n").map((p, i) => <p key={i} className="mb-3">{p}</p>)}
+              {updates[selectedUpdate].body.split("\n\n").map((p, i) => <p key={i} className="mb-3">{p}</p>)}
             </div>
             <div className="mt-5 pt-4 border-t border-border-default flex gap-2">
               <button onClick={() => setSelectedUpdate(null)}
@@ -4927,6 +5101,15 @@ const TRUST_CENTERS = [
     greeting: "Hey there! Welcome to Arcline's Trust Center. I'm Coco - your cowork agent for security reviews.",
     tcTitle: "Arcline Trust Center",
     tcSubtitle: "Transparent security for our customers and partners",
+    contactEmail: "trust@arcline.com",
+    trustHeroBody: "Use this hub as the source of truth for workflow automation security: policies, SOC and ISO evidence, data maps, and subprocessors in one place. We publish changes on a rolling cadence so procurement, IT, and InfoSec always see the same version—no more scattered PDFs or stale attachments.",
+    activityCardTitle: "Trust Center activity",
+    activityMetricLabel: "Artifacts updated since your last visit",
+    activityNewDocs: 5,
+    activityMonths: ["Nov", "Dec", "Jan", "Feb"],
+    lastActiveLabel: "Updated 12 minutes ago",
+    docEngagement: { downloads: 1847, unique: 412 },
+    trustedByBlurb: "serves global enterprises that run core operations on automation and integrations. Teams here use our materials for enterprise RFPs, vendor risk cycles, and annual control attestations without waiting on manual packet assembly.",
   },
   {
     id: "mediacore",
@@ -4943,6 +5126,15 @@ const TRUST_CENTERS = [
     greeting: "Hey there! Welcome to MediaCore's Trust Center. I'm Coco - your cowork agent for security reviews.",
     tcTitle: "MediaCore Trust Center",
     tcSubtitle: "Secure digital media infrastructure for our partners",
+    contactEmail: "trust@mediacore.io",
+    trustHeroBody: "Streamers, rights holders, and ad partners use this space for playback security: audit letters, regional data flows, DRM posture, and who touches what in the delivery path. When we add an edge POP, a measurement vendor, or a new SSAI control, the evidence lands here first.",
+    activityCardTitle: "Publishing & audit cadence",
+    activityMetricLabel: "New or revised documents this week",
+    activityNewDocs: 4,
+    activityMonths: ["W1", "W2", "W3", "W4"],
+    lastActiveLabel: "Live catalog sync: 6 min ago",
+    docEngagement: { downloads: 1203, unique: 287 },
+    trustedByBlurb: "is embedded in viewer-facing apps and B2B distribution deals worldwide. The logos below represent the types of programs that run on our stack; they depend on these disclosures for privacy DPIAs, broadcast compliance, and joint security assessments.",
   },
 ];
 
