@@ -1343,7 +1343,7 @@ const TRUSTED_BY_MEDIACORE = [
   { name: 'Netflix', logo: 'https://cdn.simpleicons.org/netflix/E50914' },
   { name: 'Spotify', logo: 'https://cdn.simpleicons.org/spotify/1DB954' },
   { name: 'Twitch', logo: 'https://cdn.simpleicons.org/twitch/9146FF' },
-  { name: 'Hulu', logo: 'https://cdn.simpleicons.org/hulu/1CE783' },
+  { name: 'Plex', logo: 'https://cdn.simpleicons.org/plex/EBAF00' },
   { name: 'Dailymotion', logo: 'https://cdn.simpleicons.org/dailymotion/0066DC' },
   { name: 'SoundCloud', logo: 'https://cdn.simpleicons.org/soundcloud/FF5500' },
   { name: 'Deezer', logo: 'https://cdn.simpleicons.org/deezer/FEAA2D' },
@@ -1351,46 +1351,51 @@ const TRUSTED_BY_MEDIACORE = [
 ];
 
 const TRUSTED_BY_ARCLINE = [
-  { name: 'Salesforce', logo: 'https://cdn.simpleicons.org/salesforce/00A1E0' },
-  { name: 'Workday', logo: 'https://cdn.simpleicons.org/workday/0056D2' },
-  { name: 'ServiceNow', logo: 'https://cdn.simpleicons.org/servicenow/62D84E' },
-  { name: 'SAP', logo: 'https://cdn.simpleicons.org/sap/0FAAFF' },
-  { name: 'Oracle', logo: 'https://cdn.simpleicons.org/oracle/F80000' },
-  { name: 'Cisco', logo: 'https://cdn.simpleicons.org/cisco/1BA0D7' },
-  { name: 'Adobe', logo: 'https://cdn.simpleicons.org/adobe/FF0000' },
-  { name: 'Autodesk', logo: 'https://cdn.simpleicons.org/autodesk/0696D7' },
+  { name: 'GitHub', logo: 'https://cdn.simpleicons.org/github/FFFFFF' },
+  { name: 'GitLab', logo: 'https://cdn.simpleicons.org/gitlab/FC6D26' },
+  { name: 'Linear', logo: 'https://cdn.simpleicons.org/linear/5E6AD2' },
+  { name: 'Jira', logo: 'https://cdn.simpleicons.org/jira/0052CC' },
+  { name: 'HubSpot', logo: 'https://cdn.simpleicons.org/hubspot/FF7A59' },
+  { name: 'Zendesk', logo: 'https://cdn.simpleicons.org/zendesk/03363D' },
+  { name: 'Airtable', logo: 'https://cdn.simpleicons.org/airtable/18BFFF' },
+  { name: 'Docker', logo: 'https://cdn.simpleicons.org/docker/2496ED' },
 ];
 
 const SUBPROCESSORS_MEDIACORE = [
   { name: 'Fastly', usage: 'Edge compute and live linear caching at the network edge', location: 'Global', logo: 'https://cdn.simpleicons.org/fastly/FF282D' },
   { name: 'Akamai', usage: 'Media delivery, token auth, and origin shielding', location: 'Global', logo: 'https://cdn.simpleicons.org/akamai/0096D6' },
   { name: 'Cloudflare', usage: 'DNS, WAF, and bot management in front of public APIs', location: 'Global', logo: 'https://cdn.simpleicons.org/cloudflare/F38020' },
-  { name: 'Amazon Web Services', usage: 'Origin storage, transcoding queues, and analytics lakes', location: 'US, EU, APAC', logo: 'https://cdn.simpleicons.org/amazonaws/232F3E' },
+  { name: 'Google Cloud', usage: 'Origin storage, transcoding queues, and analytics lakes', location: 'US, EU, APAC', logo: 'https://cdn.simpleicons.org/googlecloud/4285F4' },
 ];
 
 const SUBPROCESSORS_ARCLINE = [
-  { name: 'Amazon Web Services', usage: 'Production workloads, secrets management, and encrypted object storage', location: 'US-East, EU-West', logo: 'https://cdn.simpleicons.org/amazonaws/232F3E' },
+  { name: 'Google Cloud', usage: 'Production workloads, secrets management, and encrypted object storage', location: 'US-East, EU-West', logo: 'https://cdn.simpleicons.org/googlecloud/4285F4' },
   { name: 'Okta', usage: 'Workforce and customer identity, SSO, and MFA for the platform', location: 'US, EU', logo: 'https://cdn.simpleicons.org/okta/007DC1' },
   { name: 'PagerDuty', usage: 'Incident paging, on-call schedules, and status communications', location: 'US', logo: 'https://cdn.simpleicons.org/pagerduty/06AC38' },
-  { name: 'Twilio', usage: 'Transactional notifications, verification, and support channels', location: 'US, EU', logo: 'https://cdn.simpleicons.org/twilio/F22F46' },
+  { name: 'Sentry', usage: 'Error monitoring, performance tracing, and release health tracking', location: 'US, EU', logo: 'https://cdn.simpleicons.org/sentry/362D59' },
 ];
 
+/** 2×4 grid order: row-major. MediaCore uses a different sequence than Arcline for quick visual differentiation. */
 const CERTS_MEDIACORE = [
   { src: '/badges/gdpr.png', label: 'GDPR' },
   { src: '/badges/iso-27001.png', label: 'ISO 27001' },
   { src: '/badges/iso-27701.svg', label: 'ISO 27701' },
   { src: '/badges/nist.png', label: 'NIST CSF' },
+  { src: '/badges/itar.png', label: 'ITAR' },
   { src: '/badges/cmmc.png', label: 'CMMC L2' },
   { src: '/badges/hds.png', label: 'HDS' },
+  { src: '/badges/acn.png', label: 'CSA STAR' },
 ];
 
 const CERTS_ARCLINE = [
   { src: '/badges/iso-27001.png', label: 'ISO 27001' },
-  { src: '/badges/nist.png', label: 'NIST 800-53' },
-  { src: '/badges/gdpr.png', label: 'GDPR' },
   { src: '/badges/iso-27701.svg', label: 'ISO 27701' },
+  { src: '/badges/gdpr.png', label: 'GDPR' },
+  { src: '/badges/nist.png', label: 'NIST 800-53' },
+  { src: '/badges/acn.png', label: 'ACN' },
   { src: '/badges/cmmc.png', label: 'CMMC' },
-  { src: '/badges/acn.png', label: 'CSA STAR' },
+  { src: '/badges/hds.png', label: 'HDS' },
+  { src: '/badges/itar.png', label: 'ITAR' },
 ];
 
 /** MediaCore-specific file tree (same shape as FILE_SYSTEM; different labels for key assets). */
@@ -2713,7 +2718,7 @@ function McpConnectFlow({ open, onClose }) {
                       {[
                         { label: "Documents", value: "42 available", icon: FileText },
                         { label: "FAQs", value: "128 indexed", icon: MessageSquare },
-                        { label: "Certifications", value: "6 active", icon: Shield },
+                        { label: "Certifications", value: "8 active", icon: Shield },
                         { label: "Response time", value: "~200ms", icon: Zap },
                       ].map(({ label, value, icon: Icon }) => (
                         <div key={label} className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-bg-elevated border border-border-default">
@@ -4279,10 +4284,20 @@ function ScorecardDashboard() {
   const [gapSnackbar, setGapSnackbar] = useState(null); // snackbar message
 
   /* ── Section 1: Trust Score data ── */
-  const trustScore = { overall: 82, coverage: 94, freshness: 88, depth: 76 };
-  const scoreSummary = "Strong posture with minor gaps in data residency and incident response documentation.";
-  /* Inner → Outer ring order. Legend renders reversed (outermost at top). */
-  const radialData = [
+  const isMediacore = tcId === "mediacore";
+  const trustScore = isMediacore
+    ? { overall: 74, coverage: 86, freshness: 79, depth: 68 }
+    : { overall: 82, coverage: 94, freshness: 88, depth: 76 };
+  const radialData = isMediacore ? [
+    { label: "Depth", value: trustScore.depth, blurb: "Evidence layers across broadcast & ad-tech",
+      detail: "Measures evidence layers per topic. Single FAQ = 1pt, FAQ + document = 2pt, FAQ + doc + certification = 3pt. Strongest in CDN & Delivery, weakest in DRM Key Management." },
+    { label: "Freshness", value: trustScore.freshness, blurb: "Docs refreshed within the last quarter",
+      detail: "Weighted by document importance — SOC 2 and DRM audit weighted 3×. Currently 4 documents are due for refresh including the SSAI threat model. 1 expired document." },
+    { label: "Coverage", value: trustScore.coverage, blurb: "246 media security topics documented",
+      detail: "Measured against CAIQ (197 questions), MPAA/TPN (82 controls), and partner intake forms with de-duplication. 38 topics remaining across DRM Key Management, Ad-Tech Privacy, and Physical Media Security." },
+    { label: "Overall Score", value: trustScore.overall, blurb: "Composite of coverage, freshness, and depth",
+      detail: "Weighted composite: Coverage 40%, Freshness 30%, Depth 30%. Score improved +16 points over the last 6 months. Ranks in the top 24% of 850+ Conveyor Trust Centers." },
+  ] : [
     { label: "Depth", value: trustScore.depth, blurb: "Multi-source evidence per topic",
       detail: "Measures evidence layers per topic. Single FAQ = 1pt, FAQ + document = 2pt, FAQ + doc + certification = 3pt. Strongest in Access Management, weakest in Incident Response." },
     { label: "Freshness", value: trustScore.freshness, blurb: "All docs updated within 90 days",
@@ -4292,7 +4307,12 @@ function ScorecardDashboard() {
     { label: "Overall Score", value: trustScore.overall, blurb: "Composite of coverage, freshness, and depth",
       detail: "Weighted composite: Coverage 40%, Freshness 30%, Depth 30%. Score improved +22 points over the last 6 months. Ranks in the top 12% of 850+ Conveyor Trust Centers." },
   ];
-  const scoreTips = {
+  const scoreTips = isMediacore ? {
+    "Overall Score": "Composite of Coverage (40%), Freshness (30%), and Depth (30%). Coverage measures answers against media-industry frameworks. Freshness weights DRM and SOC docs higher. Depth rewards multi-source evidence.",
+    "Coverage": "86% of 246 media security topics have documented answers. Measured against CAIQ (197 questions) and MPAA/TPN (82 controls) with de-duplication.",
+    "Freshness": "Weighted average of document age. SOC 2 and DRM audit reports weighted 3×. Score: 100% = all docs < 90 days. Current: 79% — 4 documents due for refresh.",
+    "Depth": "Measures evidence layers per topic. FAQ = 1pt, FAQ + document = 2pt, FAQ + doc + certification = 3pt. Current: 68% — strongest in CDN & Delivery, weakest in DRM Key Management.",
+  } : {
     "Overall Score": "Composite of Coverage (40%), Freshness (30%), and Depth (30%). Coverage measures documented answers against standard frameworks. Freshness weights recent documents higher. Depth rewards multi-source evidence (FAQ + doc + cert).",
     "Coverage": "94% of 326 common security review topics have documented answers. Measured against SIG Lite (256 questions), CAIQ (197 questions), and VSA (136 questions) with de-duplication.",
     "Freshness": "Weighted average of document age. SOC 2 reports, pen test results, and certifications weighted 3×. Score: 100% = all docs < 90 days. Current: 88% — 2 documents due for refresh.",
@@ -4300,7 +4320,15 @@ function ScorecardDashboard() {
   };
 
   /* ── Section 2: Category Breakdown ── */
-  const categories = [
+  const categories = isMediacore ? [
+    { name: "CDN & Delivery", score: 92, controls: 11, docs: 8, qaRate: 95, tags: ["Multi-CDN", "Token Auth", "Origin Shielding", "Edge WAF", "TLS 1.3"] },
+    { name: "Content Protection", score: 78, controls: 9, docs: 5, qaRate: 82, tags: ["Widevine", "FairPlay", "PlayReady", "Key Rotation", "Forensic Watermarking"] },
+    { name: "Data Privacy & GDPR", score: 83, controls: 10, docs: 7, qaRate: 86, tags: ["Viewer Consent", "DPA", "Cookie Compliance", "DSAR"] },
+    { name: "Ad-Tech Security", score: 71, controls: 7, docs: 4, qaRate: 74, tags: ["SSAI", "VAST Validation", "Brand Safety", "Prebid Server"] },
+    { name: "Incident Response", score: 66, controls: 6, docs: 3, qaRate: 69, tags: ["NOC Bridge", "Playback Recovery", "Partner Comms"] },
+    { name: "Vendor & Partner Risk", score: 80, controls: 8, docs: 6, qaRate: 84, tags: ["Subprocessor Register", "CDN Vendor Reviews", "Measurement Partners"] },
+    { name: "Origin Infrastructure", score: 88, controls: 12, docs: 8, qaRate: 91, tags: ["AWS Multi-Region", "Auto-Scaling", "Failover", "S3 Encryption"] },
+  ] : [
     { name: "Access Management", score: 89, controls: 12, docs: 8, qaRate: 94, tags: ["SSO", "MFA", "RBAC", "SCIM", "Audit Logs"] },
     { name: "Application Security", score: 82, controls: 10, docs: 6, qaRate: 88, tags: ["SAST", "DAST", "Dependency Scanning", "Code Review"] },
     { name: "Data Privacy & Residency", score: 76, controls: 8, docs: 5, qaRate: 79, tags: ["GDPR", "DPA", "Data Classification", "Encryption at Rest"] },
@@ -4309,10 +4337,12 @@ function ScorecardDashboard() {
     { name: "Vendor Risk Management", score: 88, controls: 9, docs: 7, qaRate: 91, tags: ["Sub-processor List", "Vendor Assessments", "DPA Tracking"] },
     { name: "Business Continuity", score: 85, controls: 7, docs: 6, qaRate: 87, tags: ["BCP", "DR Testing", "RTO/RPO", "Backup Strategy"] },
   ];
-  const frameworks = [
-    { name: "SIG Lite", pct: 92 }, { name: "CAIQ", pct: 87 }, { name: "VSA", pct: 83 }, { name: "Custom Q's", pct: 78 },
-  ];
-  const NETWORK_AVG_SCORES = { "Access Management": 72, "Application Security": 70, "Data Privacy & Residency": 68, "Infrastructure & Hosting": 75, "Incident Response": 66, "Vendor Risk Management": 71, "Business Continuity": 69 };
+  const frameworks = isMediacore
+    ? [{ name: "CAIQ", pct: 84 }, { name: "MPAA/TPN", pct: 76 }, { name: "Custom Q's", pct: 69 }, { name: "SIG Lite", pct: 81 }]
+    : [{ name: "SIG Lite", pct: 92 }, { name: "CAIQ", pct: 87 }, { name: "VSA", pct: 83 }, { name: "Custom Q's", pct: 78 }];
+  const NETWORK_AVG_SCORES = isMediacore
+    ? { "CDN & Delivery": 74, "Content Protection": 65, "Data Privacy & GDPR": 69, "Ad-Tech Security": 58, "Incident Response": 63, "Vendor & Partner Risk": 67, "Origin Infrastructure": 73 }
+    : { "Access Management": 72, "Application Security": 70, "Data Privacy & Residency": 68, "Infrastructure & Hosting": 75, "Incident Response": 66, "Vendor Risk Management": 71, "Business Continuity": 69 };
   const categoryRadarData = categories.map(cat => ({
     category: cat.name.length > 14 ? cat.name.split(" ").slice(0, 2).join(" ") : cat.name,
     thisTC: cat.score,
@@ -4371,8 +4401,15 @@ function ScorecardDashboard() {
   };
 
   /* ── Section 4: How This TC Compares ── */
-  const ranking = { percentile: 12, total: 850 };
-  const dimensions = [
+  const ranking = isMediacore ? { percentile: 24, total: 850 } : { percentile: 12, total: 850 };
+  const dimensions = isMediacore ? [
+    { label: "Response Time", thisTC: "2.2 hr", avg: "4.2 hr", best: "0.3 hr", pct: 68, icon: Timer },
+    { label: "Content Coverage", thisTC: "86%", avg: "76%", best: "99%", pct: 72, icon: Shield },
+    { label: "Doc Freshness", thisTC: "5 days", avg: "28 days", best: "< 1 day", pct: 84, icon: RefreshCw },
+    { label: "AI Answer Accuracy", thisTC: "94%", avg: "81%", best: "99%", pct: 76, icon: Target },
+    { label: "Visitor Traffic (90d)", thisTC: "886", avg: "380", best: "8,500", pct: 54, icon: Users },
+    { label: "Questions Answered", thisTC: "1,903", avg: "620", best: "12,400", pct: 62, icon: MessageSquare },
+  ] : [
     { label: "Response Time", thisTC: "1.8 hr", avg: "4.2 hr", best: "0.3 hr", pct: 78, icon: Timer },
     { label: "Content Coverage", thisTC: "94%", avg: "76%", best: "99%", pct: 85, icon: Shield },
     { label: "Doc Freshness", thisTC: "3 days", avg: "28 days", best: "< 1 day", pct: 91, icon: RefreshCw },
@@ -4380,20 +4417,38 @@ function ScorecardDashboard() {
     { label: "Visitor Traffic (90d)", thisTC: "1,240", avg: "380", best: "8,500", pct: 65, icon: Users },
     { label: "Questions Answered", thisTC: "2,847", avg: "620", best: "12,400", pct: 73, icon: MessageSquare },
   ];
-  const trendData = [
+  const trendData = isMediacore ? [
+    { month: "Oct", score: 52 }, { month: "Nov", score: 56 }, { month: "Dec", score: 61 },
+    { month: "Jan", score: 65 }, { month: "Feb", score: 70 }, { month: "Mar", score: 74 },
+  ] : [
     { month: "Oct", score: 60 }, { month: "Nov", score: 67 }, { month: "Dec", score: 72 },
     { month: "Jan", score: 76 }, { month: "Feb", score: 78 }, { month: "Mar", score: 82 },
   ];
 
   /* ── Section 5: Trust Highlights (buyer-facing) ── */
-  const achievements = [
+  const achievements = isMediacore ? [
+    { title: "Framework Coverage", value: "84%", desc: "CAIQ pre-fill rate", detail: "4 frameworks supported · MPAA/TPN 76% · SIG Lite 81%", icon: "framework" },
+    { title: "Audit Streak", value: "2 years", desc: "Consecutive clean SOC 2", detail: "Zero qualified opinions since 2024", icon: "audit" },
+    { title: "Active Reviewers", value: "31", desc: "Partners reviewed this quarter", detail: "886 unique visitors · 81% first-contact resolution", icon: "reviewers" },
+  ] : [
     { title: "Framework Coverage", value: "92%", desc: "SIG Lite pre-fill rate", detail: "4 frameworks supported · CAIQ 87% · VSA 83%", icon: "framework" },
     { title: "Audit Streak", value: "4 years", desc: "Consecutive clean SOC 2", detail: "Zero qualified opinions since 2022", icon: "audit" },
     { title: "Active Reviewers", value: "47", desc: "Companies reviewed this quarter", detail: "1,240 unique visitors · 89% first-contact resolution", icon: "reviewers" },
   ];
 
   /* ── Section 7: Analytics ── */
-  const analytics = {
+  const analytics = isMediacore ? {
+    satisfaction: { score: 3.8, total: 1203, helpful: 64, partial: 22, not: 14 },
+    resolution: { firstContact: 81, avgLength: 3.1, escalation: 19, aiTime: "1.6s", adminTime: "2.2hr" },
+    topDocs: [
+      { name: "SOC 2 Type II (Broadcast Platform)", views: 512 },
+      { name: "Media Platform Security Overview", views: 341 },
+      { name: "Ad-Tech Subprocessor Register", views: 276 },
+      { name: "Penetration Test Summary — OTT APIs", views: 214 },
+      { name: "Broadcast Partner DPA", views: 189 },
+    ],
+    behavior: { avgSession: "3.9 min", pages: 2.7, returnRate: 28, bounceRate: 24 },
+  } : {
     satisfaction: { score: 4.2, total: 1847, helpful: 72, partial: 19, not: 9 },
     resolution: { firstContact: 89, avgLength: 2.3, escalation: 11, aiTime: "1.2s", adminTime: "1.8hr" },
     topDocs: [
@@ -4411,7 +4466,7 @@ function ScorecardDashboard() {
       {/* ═══ HEADER ═══ */}
       <div>
         <h1 className="text-[28px] font-bold text-text-primary">{tc?.name || "Arcline"} Trust Scorecard</h1>
-        <p className="text-sm text-text-secondary mt-1">Data-driven trust posture, content quality, and benchmarks</p>
+        <p className="text-sm text-text-secondary mt-1">{isMediacore ? "Broadcast & streaming trust posture, content quality, and partner benchmarks" : "Data-driven trust posture, content quality, and benchmarks"}</p>
       </div>
 
       {/* ═══ SECTION 1: TRUST SCORE OVERVIEW ═══ */}
@@ -4596,7 +4651,7 @@ function ScorecardDashboard() {
           <div className="px-5 pb-4 pt-1">
             <div className="flex items-center gap-3 bg-brand-500/5 rounded-lg px-3 py-2.5 border border-brand-600/20">
               <Coco size={24} state="idle" className="shrink-0" />
-              <p className="text-xs text-brand-400 flex-1">"I can pre-fill <strong>92%</strong> of a SIG Lite from this Trust Center — want me to start?"</p>
+              <p className="text-xs text-brand-400 flex-1">"I can pre-fill <strong>{isMediacore ? "84%" : "92%"}</strong> of a {isMediacore ? "CAIQ" : "SIG Lite"} from this Trust Center — want me to start?"</p>
               <button onClick={() => navigate("/trust-center/agent", { state: { skipToUpload: true } })}
                 className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg border border-brand-500/40 text-brand-400 text-[11px] font-medium hover:bg-brand-500/10 transition-colors">
                 Start with Coco <ArrowRight className="w-3 h-3" />
@@ -4612,7 +4667,7 @@ function ScorecardDashboard() {
         <div className="px-5 py-4 border-b border-border-default flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-text-primary">Content Gaps</h2>
-            <p className="text-xs text-text-muted mt-0.5">{contentGaps.filter(g => g.status === "open").length} open gaps · 47 resolved</p>
+            <p className="text-xs text-text-muted mt-0.5">{contentGaps.filter(g => g.status === "open").length} open gaps · {isMediacore ? "34" : "47"} resolved</p>
           </div>
           <button onClick={() => setGapModalOpen(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-500 text-bg-primary text-xs font-medium hover:bg-brand-400 transition-colors">
@@ -4671,8 +4726,8 @@ function ScorecardDashboard() {
         </div>
         {/* Gap analytics */}
         <div className="px-5 py-3 border-t border-border-default flex flex-wrap items-center gap-x-6 gap-y-1">
-          <span className="text-xs text-text-secondary">Gap Resolution Rate: <strong className="text-text-primary">79.7%</strong> (47 of 59 total)</span>
-          <span className="text-xs text-text-secondary">Avg. Time to Resolve: <strong className="text-text-primary">6.2 days</strong></span>
+          <span className="text-xs text-text-secondary">Gap Resolution Rate: <strong className="text-text-primary">{isMediacore ? "72.3%" : "79.7%"}</strong> ({isMediacore ? "34 of 47" : "47 of 59"} total)</span>
+          <span className="text-xs text-text-secondary">Avg. Time to Resolve: <strong className="text-text-primary">{isMediacore ? "8.4 days" : "6.2 days"}</strong></span>
         </div>
         <div className="px-5 pb-4">
           <div className="bg-brand-500/5 rounded-lg px-3 py-2 border border-brand-600/20 flex items-center gap-2">
@@ -4846,7 +4901,7 @@ function ScorecardDashboard() {
           </div>
           <div className="flex gap-3 mt-2">
             <span className="text-[10px] text-text-muted">Recent:</span>
-            {["Globex Inc.", "Initech"].map(c => (
+            {(isMediacore ? ["StreamGuard", "PlaybackHQ"] : ["Globex Inc.", "Initech"]).map(c => (
               <button key={c} className="text-[10px] text-brand-400 hover:underline">{tc?.name || "Arcline"} vs. {c}</button>
             ))}
           </div>
@@ -4865,7 +4920,7 @@ function ScorecardDashboard() {
                 <p className="text-[11px] text-text-secondary leading-relaxed mb-3">of {ranking.total}+ Conveyor Trust Centers across all dimensions</p>
                 <div className="flex items-center gap-1.5">
                   <TrendingUp className="w-3.5 h-3.5 text-brand-400" />
-                  <span className="text-[11px] text-brand-400 font-medium">+22 pts since Oct</span>
+                  <span className="text-[11px] text-brand-400 font-medium">{isMediacore ? "+16 pts since Oct" : "+22 pts since Oct"}</span>
                 </div>
               </div>
               {/* Right: Trend chart */}
@@ -5090,7 +5145,7 @@ const TRUST_CENTERS = [
     subtitle: "Workflow Automation",
     logo: "arcline",
     accent: "oklch(0.65 0.12 200)", // fixed cyan - does not change with theme
-    stats: { docs: 42, faqs: 128, certs: 6 },
+    stats: { docs: 42, faqs: 128, certs: 8, sidebarDocs: "42 docs" },
     theme: {
       brandHue: 200,
       brandChroma: [0.03, 0.05, 0.08, 0.10, 0.12, 0.12, 0.10, 0.08, 0.06, 0.04, 0.03],
@@ -5117,7 +5172,7 @@ const TRUST_CENTERS = [
     subtitle: "Digital media experts",
     logo: "mediacore",
     accent: "oklch(0.55 0.27 288)", // fixed purple - does not change with theme
-    stats: { docs: 28, faqs: 57, certs: 6 },
+    stats: { docs: 34, faqs: 86, certs: 8, sidebarDocs: "34 docs" },
     theme: {
       brandHue: 288, brandChroma: [0.03, 0.06, 0.12, 0.18, 0.24, 0.27, 0.22, 0.18, 0.13, 0.09, 0.06],
       accentHue: 340, accentChroma: [0.03, 0.06, 0.10, 0.14, 0.16, 0.14, 0.12, 0.10, 0.08, 0.06],
@@ -5547,9 +5602,9 @@ function AppShell() {
           {!isAgent && (
             <div className="max-w-[1100px] mx-auto px-6 py-8">
               <AnimatePresence mode="wait">
-                <motion.div key={location.pathname} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.2 }}>
+                <motion.div key={location.pathname + activeTc} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.2 }}>
                   <Routes location={location}>
-                    <Route path="/" element={<TrustCenterHome />} />
+                    <Route path="/" element={<TrustCenterHome key={activeTc} />} />
                     <Route path="/scorecard" element={<ScorecardDashboard />} />
                     <Route path="*" element={<Navigate to="/trust-center" replace />} />
                   </Routes>
