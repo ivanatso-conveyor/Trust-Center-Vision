@@ -1,0 +1,47 @@
+name: Deploy prototype to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "trust-center-prototype/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: trust-center-prototype
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: trust-center-prototype/package-lock.json
+
+      - run: npm ci
+
+      # vite.config.js sets base to /Trust-Center-Vision/ for builds and
+      # emits 404.html so deep links survive a refresh on GitHub Pages.
+      - run: npm run build
+
+      # Pages is configured to serve the root of the gh-pages branch
+      # (repo Settings → Pages → "Deploy from a branch"), so publish dist/ there.
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: trust-center-prototype/dist
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: "Deploy ${{ github.sha }} to GitHub Pages"

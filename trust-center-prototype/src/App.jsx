@@ -22,6 +22,13 @@ import {
   Radar, PieChart, Pie, Cell, BarChart, Bar, ComposedChart, Line,
 } from "recharts";
 
+/**
+ * Resolve a file in public/ against the app base URL. GitHub Pages serves the
+ * prototype from /Trust-Center-Vision/, so hardcoded "/badges/x.png" paths 404
+ * there; import.meta.env.BASE_URL is "/" in dev and the subpath in builds.
+ */
+const asset = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
+
 /* ═══════════════════════════════════════════════════════════════
    THEME CONTEXT
    ═══════════════════════════════════════════════════════════════ */
@@ -1377,25 +1384,25 @@ const SUBPROCESSORS_ARCLINE = [
 
 /** 2×4 grid order: row-major. MediaCore uses a different sequence than Arcline for quick visual differentiation. */
 const CERTS_MEDIACORE = [
-  { src: '/badges/gdpr.png', label: 'GDPR' },
-  { src: '/badges/iso-27001.png', label: 'ISO 27001' },
-  { src: '/badges/iso-27701.svg', label: 'ISO 27701' },
-  { src: '/badges/nist.png', label: 'NIST CSF' },
-  { src: '/badges/itar.png', label: 'ITAR' },
-  { src: '/badges/cmmc.png', label: 'CMMC L2' },
-  { src: '/badges/hds.png', label: 'HDS' },
-  { src: '/badges/acn.png', label: 'CSA STAR' },
+  { src: asset('badges/gdpr.png'), label: 'GDPR' },
+  { src: asset('badges/iso-27001.png'), label: 'ISO 27001' },
+  { src: asset('badges/iso-27701.svg'), label: 'ISO 27701' },
+  { src: asset('badges/nist.png'), label: 'NIST CSF' },
+  { src: asset('badges/itar.png'), label: 'ITAR' },
+  { src: asset('badges/cmmc.png'), label: 'CMMC L2' },
+  { src: asset('badges/hds.png'), label: 'HDS' },
+  { src: asset('badges/acn.png'), label: 'CSA STAR' },
 ];
 
 const CERTS_ARCLINE = [
-  { src: '/badges/iso-27001.png', label: 'ISO 27001' },
-  { src: '/badges/iso-27701.svg', label: 'ISO 27701' },
-  { src: '/badges/gdpr.png', label: 'GDPR' },
-  { src: '/badges/nist.png', label: 'NIST 800-53' },
-  { src: '/badges/acn.png', label: 'ACN' },
-  { src: '/badges/cmmc.png', label: 'CMMC' },
-  { src: '/badges/hds.png', label: 'HDS' },
-  { src: '/badges/itar.png', label: 'ITAR' },
+  { src: asset('badges/iso-27001.png'), label: 'ISO 27001' },
+  { src: asset('badges/iso-27701.svg'), label: 'ISO 27701' },
+  { src: asset('badges/gdpr.png'), label: 'GDPR' },
+  { src: asset('badges/nist.png'), label: 'NIST 800-53' },
+  { src: asset('badges/acn.png'), label: 'ACN' },
+  { src: asset('badges/cmmc.png'), label: 'CMMC' },
+  { src: asset('badges/hds.png'), label: 'HDS' },
+  { src: asset('badges/itar.png'), label: 'ITAR' },
 ];
 
 /** MediaCore-specific file tree (same shape as FILE_SYSTEM; different labels for key assets). */
@@ -5654,7 +5661,7 @@ export default function App() {
     <ThemeContext.Provider value={{ dark, toggle }}>
     <CocoCharacterContext.Provider value={cocoCharacter || "sort"}>
     <CartProvider>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         {/* Welcome page is the root route */}
         <Route path="/" element={

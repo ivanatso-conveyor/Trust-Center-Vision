@@ -17,6 +17,16 @@ Conveyor Trust Center Vision Sprint prototype — a next-gen buyer-facing securi
 - **Build:** `npm run build` from `trust-center-prototype/`
 - **Preview:** `npx vite preview` from `trust-center-prototype/`
 
+## Deployment (GitHub Pages)
+
+Live at https://ivanatso-conveyor.github.io/Trust-Center-Vision/ — served from the root of the `gh-pages` branch (repo Settings → Pages → "Deploy from a branch").
+
+- `vite.config.js` sets `base: "/Trust-Center-Vision/"` for `vite build` and `vite preview`; the dev server stays at `/`. `vite preview` therefore serves at `http://localhost:4173/Trust-Center-Vision/`.
+- `BrowserRouter` gets `basename={import.meta.env.BASE_URL}` so React Router treats the repo subpath as the app root. Without it the catch-all route redirects to `/` and the URL collapses to `ivanatso-conveyor.github.io/`.
+- Files in `public/` referenced from JS (badge images) must go through the `asset()` helper at the top of `App.jsx`, never a hardcoded `/badges/...` path.
+- The build copies `dist/index.html` to `dist/404.html` so refreshing a deep link (e.g. `/trust-center/agent`) boots the app instead of showing the GitHub 404 page. `public/.nojekyll` stops Pages from running Jekyll on the output.
+- `.github/workflows/deploy-pages.yml` builds on every push to `main` that touches `trust-center-prototype/` and force-publishes `dist/` to `gh-pages`. It can also be run manually from the Actions tab.
+
 ## Architecture
 
 Everything is in `trust-center-prototype/src/App.jsx` (~2500+ lines). Key sections:
