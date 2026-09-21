@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome — Arcline Trust Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0D0D12;
+    --bg-surface: #16161E;
+    --bg-elevated: #1E1E2A;
+    --bg-hover: #252536;
+    --border-default: #2A2A3A;
+    --border-bright: #3A3A4F;
+    --text-primary: #E8E8ED;
+    --text-secondary: #9898A8;
+    --text-muted: #5E5E72;
+    --brand-400: #22B8CF;
+    --brand-500: #1898B0;
+    --brand-600: #107888;
+    --brand-glow: rgba(34, 184, 207, 0.12);
+    --teal-300: #7AE0E8;
+    --teal-400: #5DD0DB;
+    --teal-500: #33B8C6;
+    --teal-600: #2A9EB0;
+    --teal-700: #1E7F8F;
+    --teal-900: #0F3640;
+    --gold: #FFD700;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Subtle animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 30% 20%, rgba(34, 184, 207, 0.04), transparent),
+      radial-gradient(ellipse 500px 500px at 70% 80%, rgba(51, 198, 159, 0.03), transparent);
+    pointer-events: none;
+    animation: bgShift 15s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgShift {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  .welcome-container {
+    width: 100%;
+    max-width: 680px;
+    padding: 40px 32px;
+    animation: fadeUp 0.6s ease-out;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header */
+  .welcome-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .welcome-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 99px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .welcome-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal-500);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .welcome-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .welcome-header h1 span {
+    background: linear-gradient(135deg, var(--brand-400), var(--teal-400));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .welcome-header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  /* Character grid */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .character-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .character-card {
+    position: relative;
+    background: var(--bg-surface);
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: 20px 12px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    outline: none;
+  }
+
+  .character-card:hover {
+    border-color: var(--border-bright);
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .character-card.selected {
+    border-color: var(--brand-400);
+    background: rgba(34, 184, 207, 0.06);
+    box-shadow: 0 0 0 1px var(--brand-400), 0 8px 24px rgba(34, 184, 207, 0.1);
+  }
+
+  .character-card.selected::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--brand-400), transparent);
+  }
+
+  /* Checkmark */
+  .check-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border-default);
+    background: var(--bg-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .character-card.selected .check-indicator {
+    border-color: var(--brand-400);
+    background: var(--brand-400);
+  }
+
+  .check-indicator svg {
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .character-card.selected .check-indicator svg {
+    opacity: 1;
+  }
+
+  /* Pixel canvas */
+  .pixel-canvas {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  svg.coco {
+    width: 72px;
+    height: 72px;
+    image-rendering: pixelated;
+  }
+
+  .character-card:hover .pixel-canvas {
+    transform: scale(1.08);
+    transition: transform 0.25s ease;
+  }
+
+  .character-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .character-role {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* Continue button */
+  .continue-area {
+    text-align: center;
+  }
+
+  .continue-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 32px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .continue-btn.active {
+    background: var(--brand-400);
+    color: #fff;
+    pointer-events: auto;
+    box-shadow: 0 4px 16px rgba(34, 184, 207, 0.25);
+  }
+
+  .continue-btn.active:hover {
+    background: var(--brand-500);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(34, 184, 207, 0.3);
+  }
+
+  .continue-btn .arrow {
+    transition: transform 0.2s ease;
+  }
+
+  .continue-btn.active:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  .skip-link {
+    display: block;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .skip-link:hover {
+    color: var(--text-secondary);
+  }
+
+  /* Footer note */
+  .footer-note {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* Transition overlay for the "continue" click */
+  .transition-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    z-index: 100;
+  }
+
+  .transition-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .transition-overlay .pixel-canvas {
+    width: 96px;
+    height: 96px;
+    animation: bounceIn 0.5s ease-out 0.3s both;
+  }
+
+  .transition-overlay svg.coco {
+    width: 96px;
+    height: 96px;
+  }
+
+  @keyframes bounceIn {
+    0% { opacity: 0; transform: scale(0.5); }
+    60% { transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .transition-msg {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    animation: fadeUp 0.4s ease-out 0.5s both;
+  }
+
+  /* Nod animation */
+  @keyframes nod {
+    0%,100%{transform:rotate(0deg)}
+    20%{transform:rotate(5deg)}
+    30%{transform:rotate(0deg)}
+    40%{transform:rotate(5deg)}
+    50%{transform:rotate(0deg)}
+  }
+
+  /* Sway animation */
+  @keyframes sway {
+    0%,100%{transform:rotate(0deg)}
+    25%{transform:rotate(2deg)}
+    75%{transform:rotate(-2deg)}
+  }
+
+  .sway { animation: sway 3s ease-in-out infinite; }
+
+  /* Default badge */
+  .default-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: rgba(34, 184, 207, 0.15);
+    border: 1px solid rgba(34, 184, 207, 0.3);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--brand-400);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="welcome-container" id="mainContent">
+  <!-- Header -->
+  <div class="welcome-header">
+    <div class="welcome-badge">
+      <span class="dot"></span>
+      Access granted
+    </div>
+    <h1>Welcome, <span>Ivana</span></h1>
+    <p>Pick a Coco companion to guide you through your security review. Your character will appear throughout the Trust Center.</p>
+  </div>
+
+  <!-- Character selection -->
+  <div class="section-label">Choose your Coco</div>
+  <div class="character-grid" id="characterGrid">
+
+    <!-- Row 1 -->
+
+    <!-- 1. Sort Coco (default, pre-selected) -->
+    <div class="character-card selected" data-id="sort" tabindex="0" onclick="selectCharacter(this)">
+      <div class="check-indicator">
+        <svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="pixel-canvas">
+        <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="0" width="4" height="1" fill="#5DD0DB"/>
+          <rect x="1" y="1" width="2" height="1" fill="#33B8C6"/>
+          <rect x="1" y="2" width="1" height="1" fill="#33B8C6"/>
+          <rect x="1" y="3" width="1" height="1" fill="#33B8C6"/>
+          <rect x="1" y="4" width="2" height="1" fill="#2A9EB0"/>
+          <rect x="2" y="5" width="4" height="1" fill="#1E7F8F"/>
+          <rect x="3" y="1" width="3" height="1" fill="#2A9EB0"/>
+          <rect x="3" y="4" width="3" height="1" fill="#0F3640" opacity="0.3"/>
+          <rect x="3" y="2" width="1" height="1" fill="#7AE0E8">
+            <animate attributeName="x" values="3;3;2;2;3;3;4;4;3;3" dur="3s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="5" y="2" width="1" height="1" fill="#FFF">
+            <animate attributeName="x" values="5;5;4;4;5;5;6;6;5;5" dur="3s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+          <rect x="0" y="2" width="1" height="1" fill="#5DD0DB"/>
+          <rect x="0" y="1" width="1" height="1" fill="#7AE0E8" opacity="0">
+            <animate attributeName="opacity" values="0;0;0.8;0.4;0;0;0;0;0;0" dur="3s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="7" y="1" width="1" height="1" fill="#FFD700" opacity="0">
+            <animate attributeName="opacity" values="0;0;0;0;0;0;0.8;0.4;0;0" dur="3s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="2" y="6" width="1" height="1" fill="#33B8C6"/>
+          <rect x="5" y="6" width="1" height="1" fill="#33B8C6"/>
+        </svg>
+      </div>
+      <div class="character-name">Sort Coco</div>
+      <div class="character-role">The Organizer</div>
+      <div class="default-badge">Default</div>
+    </div>
+
+    <!-- 2. Search Coco -->
+    <div class="character-card" data-id="search" tabindex="0" onclick="selectCharacter(this)">
+      <div class="check-indicator">
+        <svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="pixel-canvas">
+        <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="0" width="4" height="1" fill="#5DD0DB"/>
+          <rect x="1" y="1" width="2" height="1" fill="#33B8C6"/>
+          <rect x="1" y="2" width="1" height="1" fill="#33B8C6"/>
+          <rect x="1" y="3" width="1" height="1" fill="#33B8C6"/>
+          <rect x="1" y="4" width="2" height="1" fill="#2A9EB0"/>
+          <rect x="2" y="5" width="4" height="1" fill="#1E7F8F"/>
+          <rect x="3" y="1" width="3" height="1" fill="#2A9EB0"/>
+          <rect x="3" y="4" width="3" height="1" fill="#0F3640" opacity="0.3"/>
+          <rect x="3" y="2" width="1" height="1" fill="#7AE0E8"/>
+          <rect x="5" y="2" width="1" height="1" fill="#FFF">
+            <animate attributeName="y" values="2;2;3;3;2;1;1;2" dur="3s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="6" y="2" width="1" height="1" fill="#7AE0E8" opacity="0">
+            <animate attributeName="opacity" values="0;0.4;0.6;0.4;0;0;0;0" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="y" values="2;2;3;3;2;1;1;2" dur="3s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+          <rect x="0" y="2" width="1" height="1" fill="#5DD0DB"/>
+          <rect x="2" y="6" width="1" height="1" fill="#33B8C6"/>
+          <rect x="5" y="6" width="1" height="1" fill="#33B8C6"/>
+        </svg>
+      </div>
+      <div class="character-name">Search Coco</div>
+      <div class="character-role">The Document Finder</div>
+    </div>
+
+    <!-- 3. Stamp Coco -->
+    <div class="character-card" data-id="stamp" tabindex="0" onclick="selectCharacter(this)">
+      <div class="check-indicator">
+        <svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="pixel-canvas">
+        <svg class="coco" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="0" width="4" height="1" fill="#5DD0DB"/>
+          <rect x="1" y="1" width="2" height="1" fill="#33B8C6"/>
+          <rect x="1" y="2" width="1" height="1" fill="#33B8C6"/>
+          <rect x="1" y="3" width="1" height="1" fill="#33B8C6"/>
+          <rect x="1" y="4" width="2" height="1" fill="#2A9EB0"/>
+          <rect x="2" y="5" width="4" height="1" fill="#1E7F8F"/>
+          <rect x="3" y="1" width="3" height="1" fill="#2A9EB0"/>
+          <rect x="3" y="4" width="3" height="1" fill="#0F3640" opacity="0.3"/>
+          <rect x="3" y="2" width="1" height="1" fill="#7AE0E8"/>
+          <rect x="5" y="2" width="1" height="1" fill="#7AE0E8"/>
+          <rect x="1" y="3" width="1" height="1" fill="#FFF" opacity="0.7"/>
+          <rect x="0" y="2" width="1" height="1" fill="#5DD0DB"/>
+          <rect x="7" y="1" width="1" height="1" fill="#5DD0DB">
+            <animate attributeName="y" values="1;1;3;3;1;1" dur="1.4s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="7" y="4" width="1" height="1" fill="#FFD700" opacity="0">
+            <animate attributeName="opacity" values="0;0;0.9;0.4;0;0" dur="1.4s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="2" y="6" width="1" height="1" fill="#33B8C6"/>
+          <rect x="5" y="6" width="1" height="1" fill="#33B8C6"/>
+        </svg>
+      </div>
+      <div class="character-name">Stamp Coco</div>
+      <div class="character-role">The Approver</div>
+    </div>
+
+    <!-- Row 2 -->
+
+    <!-- 4. Wave Crunch -->
+    <div class="character-card" data-id="wave" tabindex="0" onclick="selectCharacter(this)">
+      <div class="check-indicator">
+        <svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="pixel-canvas">
+        <svg class="coco" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+          <rect x="1" y="1" width="5" height="1" fill="#5DD0DB"/>
+          <rect x="1" y="2" width="5" height="1" fill="#33B8C6"/>
+          <rect x="1" y="3" width="5" height="1" fill="#33B8C6"/>
+          <rect x="1" y="4" width="5" height="1" fill="#2A9EB0"/>
+          <rect x="2" y="2" width="1" height="1" fill="#FFF"/>
+          <rect x="4" y="2" width="1" height="1" fill="#FFF"/>
+          <rect x="2" y="4" width="3" height="1" fill="#FFF"/>
+          <rect x="0" y="3" width="1" height="1" fill="#5DD0DB"/>
+          <rect x="6" y="3" width="1" height="1" fill="#5DD0DB">
+            <animate attributeName="y" values="3;2;1;2;3;3" dur="1.2s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="6" y="0" width="1" height="1" fill="#FFD700" opacity="0">
+            <animate attributeName="opacity" values="0;0;0.8;0;0;0" dur="1.2s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="1" y="5" width="1" height="1" fill="#1E7F8F"/>
+          <rect x="5" y="5" width="1" height="1" fill="#1E7F8F"/>
+        </svg>
+      </div>
+      <div class="character-name">Wave Crunch</div>
+      <div class="character-role">The Greeter</div>
+    </div>
+
+    <!-- 5. Typer Crunch -->
+    <div class="character-card" data-id="typer" tabindex="0" onclick="selectCharacter(this)">
+      <div class="check-indicator">
+        <svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="pixel-canvas">
+        <svg class="coco" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="0" width="1" height="1" fill="#FFD700"/>
+          <rect x="1" y="1" width="5" height="1" fill="#5DD0DB"/>
+          <rect x="1" y="2" width="5" height="1" fill="#33B8C6"/>
+          <rect x="1" y="3" width="5" height="1" fill="#33B8C6"/>
+          <rect x="1" y="4" width="5" height="1" fill="#2A9EB0"/>
+          <rect x="2" y="3" width="1" height="1" fill="#FFF"/>
+          <rect x="4" y="3" width="1" height="1" fill="#FFF"/>
+          <rect x="3" y="4" width="1" height="1" fill="#FFF"/>
+          <rect x="0" y="3" width="1" height="1" fill="#5DD0DB">
+            <animate attributeName="y" values="3;4;3;3;4;3" dur="0.7s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="6" y="4" width="1" height="1" fill="#5DD0DB">
+            <animate attributeName="y" values="4;3;4;4;3;4" dur="0.7s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="1" y="5" width="1" height="1" fill="#1E7F8F"/>
+          <rect x="5" y="5" width="1" height="1" fill="#1E7F8F"/>
+        </svg>
+      </div>
+      <div class="character-name">Typer Crunch</div>
+      <div class="character-role">The Auto-Filler</div>
+    </div>
+
+    <!-- 6. Loader Crunch -->
+    <div class="character-card" data-id="loader" tabindex="0" onclick="selectCharacter(this)">
+      <div class="check-indicator">
+        <svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4.5 7.5L8 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="pixel-canvas">
+        <svg class="coco" viewBox="0 0 7 8" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="0" width="3" height="1" fill="#2A9EB0">
+            <animate attributeName="y" values="0;0;1;0" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="2" y="0" width="1" height="1" fill="#FFD700" opacity="0.5">
+            <animate attributeName="y" values="0;0;1;0" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="1" y="1" width="5" height="1" fill="#5DD0DB">
+            <animate attributeName="y" values="1;1;2;1" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="1" y="2" width="5" height="1" fill="#33B8C6">
+            <animate attributeName="y" values="2;2;3;2" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="1" y="3" width="5" height="1" fill="#33B8C6">
+            <animate attributeName="y" values="3;3;4;3" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="1" y="4" width="5" height="1" fill="#2A9EB0">
+            <animate attributeName="y" values="4;4;5;4" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="2" y="2" width="1" height="1" fill="#FFF">
+            <animate attributeName="y" values="2;2;3;2" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="4" y="2" width="1" height="1" fill="#FFF">
+            <animate attributeName="y" values="2;2;3;2" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="3" y="4" width="1" height="1" fill="#FFF">
+            <animate attributeName="y" values="4;4;5;4" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="0" y="1" width="1" height="1" fill="#5DD0DB">
+            <animate attributeName="y" values="1;1;2;1" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="6" y="3" width="1" height="1" fill="#5DD0DB">
+            <animate attributeName="y" values="3;3;4;3" dur="1.8s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="1" y="6" width="1" height="1" fill="#1E7F8F"/>
+          <rect x="5" y="6" width="1" height="1" fill="#1E7F8F"/>
+        </svg>
+      </div>
+      <div class="character-name">Loader Crunch</div>
+      <div class="character-role">The Package Carrier</div>
+    </div>
+
+  </div>
+
+  <!-- Continue button -->
+  <div class="continue-area">
+    <button class="continue-btn" id="continueBtn" onclick="handleContinue()">
+      Enter Trust Center
+      <span class="arrow">→</span>
+    </button>
+  </div>
+
+  <div class="footer-note">
+    You can change your Coco anytime from your profile settings.
+  </div>
+</div>
+
+<!-- Transition overlay -->
+<div class="transition-overlay" id="transitionOverlay">
+  <div class="pixel-canvas" id="transitionCoco"></div>
+  <div class="transition-msg">Loading your Trust Center...</div>
+</div>
+
+<script>
+  let selectedCard = null;
+  let selectedId = null;
+
+  function selectCharacter(card) {
+    // Deselect previous
+    if (selectedCard) {
+      selectedCard.classList.remove('selected');
+    }
+
+    // Select new
+    card.classList.add('selected');
+    selectedCard = card;
+    selectedId = card.dataset.id;
+
+    // Activate continue button
+    const btn = document.getElementById('continueBtn');
+    btn.classList.add('active');
+  }
+
+  // Pre-select Sort Coco on load
+  (function() {
+    const sortCard = document.querySelector('[data-id="sort"]');
+    if (sortCard) {
+      selectedCard = sortCard;
+      selectedId = 'sort';
+      document.getElementById('continueBtn').classList.add('active');
+    }
+  })();
+
+  function handleContinue() {
+    if (!selectedCard) return;
+
+    // Clone the selected Coco SVG into the transition overlay
+    const svg = selectedCard.querySelector('svg.coco').cloneNode(true);
+    svg.classList.add('coco');
+    const container = document.getElementById('transitionCoco');
+    container.innerHTML = '';
+    container.appendChild(svg);
+
+    // Show transition
+    document.getElementById('transitionOverlay').classList.add('active');
+
+    // Simulate navigation
+    setTimeout(() => {
+      // In real implementation, this would navigate to the Trust Center
+      // window.location.href = '/?coco=' + selectedId;
+    }, 2000);
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && selectedCard) {
+      handleContinue();
+    }
+  });
+</script>
+
+</body>
+</html>
